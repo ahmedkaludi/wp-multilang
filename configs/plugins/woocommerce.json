@@ -1,0 +1,120 @@
+{
+  "post_types": {
+    "product": {},
+    "product_variation": {},
+    "shop_coupon": {
+      "post_title": null,
+      "post_content": null
+    }
+  },
+  "post_fields": {
+    "_button_text": {},
+    "_purchase_note": {},
+    "_variation_description": {}
+  },
+  "taxonomies": {
+    "product_cat" : {},
+    "product_tag" : {},
+    "product_shipping_class" : {}
+  },
+  "admin_pages": [
+    "woocommerce_page_wc-settings",
+    "product_page_product_attributes"
+  ],
+  "options": {
+    "woocommerce_registration_privacy_policy_text": {},
+    "woocommerce_checkout_privacy_policy_text": {},
+    "woocommerce_store_address": {},
+    "woocommerce_store_address_2": {},
+    "woocommerce_store_city": {},
+    "woocommerce_email_footer_text": {},
+    "woocommerce_demo_store_notice": {},
+    "woocommerce_price_thousand_sep": {},
+    "woocommerce_price_decimal_sep": {},
+    "woocommerce_price_display_suffix": {},
+    "woocommerce_email_from_name": {},
+    "woocommerce_new_order_settings": {
+      "subject" : {},
+      "heading" : {}
+    },
+    "woocommerce_customer_completed_order_settings": {
+      "subject" : {},
+      "heading" : {},
+      "subject_downloadable" : {},
+      "heading_downloadable" : {}
+    },
+    "woocommerce_customer_invoice_settings": {
+      "subject" : {},
+      "heading" : {},
+      "subject_paid" : {},
+      "heading_paid" : {}
+    },
+    "woocommerce_customer_new_account_settings": {
+      "subject" : {},
+      "heading" : {}
+    },
+    "woocommerce_customer_note_settings": {
+      "subject" : {},
+      "heading" : {}
+    },
+    "woocommerce_customer_reset_password_settings": {
+      "subject" : {},
+      "heading" : {}
+    },
+    "woocommerce_customer_processing_order_settings": {
+      "subject" : {},
+      "heading" : {}
+    },
+    "woocommerce_cancelled_order_settings": {
+      "subject" : {},
+      "heading" : {}
+    },
+    "woocommerce_failed_order_settings": {
+      "subject" : {},
+      "heading" : {}
+    },
+    "woocommerce_customer_on_hold_order_settings": {
+      "subject" : {},
+      "heading" : {}
+    },
+    "woocommerce_customer_refunded_order_settings": {
+      "subject_full" : {},
+      "heading_full" : {},
+      "subject_partial" : {},
+      "heading_partial" : {}
+    },
+    "woocommerce_paypal_settings": {
+      "title" : {},
+      "description" : {},
+      "instructions" : {}
+    },
+    "woocommerce_cheque_settings": {
+      "title" : {},
+      "description" : {},
+      "instructions" : {}
+    },
+    "woocommerce_bacs_settings": {
+      "title" : {},
+      "description" : {},
+      "instructions" : {}
+    },
+    "woocommerce_cod_settings": {
+      "title" : {},
+      "description" : {},
+      "instructions" : {}
+    },
+    "woocommerce_bacs_accounts": {
+      "wpm_each": {
+        "account_name": {},
+        "bank_name": {}
+      }
+    }
+  },
+  "admin_html_tags": {
+    "product_page_product_attributes": {
+      "value": [
+        "#attribute_label"
+      ]
+    }
+  }
+}

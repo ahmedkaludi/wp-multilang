@@ -1,0 +1,59 @@
+{
+  "post_fields": {
+    "_yoast_wpseo_content_score": {},
+    "_yoast_wpseo_title": {},
+    "_yoast_wpseo_bctitle": {},
+    "_yoast_wpseo_metadesc": {},
+    "_yoast_wpseo_metakeywords": {},
+    "_yoast_wpseo_focuskw": {},
+    "_yoast_wpseo_opengraph-title": {},
+    "_yoast_wpseo_opengraph-description": {},
+    "_yoast_wpseo_google-plus-description": {}
+  },
+  "admin_pages": [
+    "seo_page_wpseo_titles",
+    "seo_page_wpseo_advanced"
+  ],
+  "options": {
+    "wpseo_titles": {
+      "title-home-wpseo" : {},
+      "metadesc-home-wpseo" : {},
+      "metakey-home-wpseo" : {},
+      "title-author-wpseo" : {},
+      "metadesc-author-wpseo" : {},
+      "metakey-author-wpseo" : {},
+      "title-archive-wpseo" : {},
+      "metadesc-archive-wpseo" : {},
+      "title-search-wpseo" : {},
+      "title-404-wpseo" : {},
+      "breadcrumbs-home" : {},
+      "breadcrumbs-prefix" : {},
+      "breadcrumbs-archiveprefix" : {},
+      "breadcrumbs-searchprefix" : {},
+      "breadcrumbs-404crumb" : {},
+      "rssbefore" : {},
+      "rssafter" : {}
+    },
+    "wpseo_internallinks": {
+      "breadcrumbs-home" : {},
+      "breadcrumbs-prefix" : {},
+      "breadcrumbs-archiveprefix" : {},
+      "breadcrumbs-searchprefix" : {},
+      "breadcrumbs-404crumb" : {}
+    },
+    "wpseo_rss": {
+      "rssbefore" : {},
+      "rssafter" : {}
+    },
+    "wpseo_taxonomy_meta" : {
+      "wpm_each" : {
+        "wpm_each" : {
+          "wpseo_title" : {},
+          "wpseo_desc" : {},
+          "wpseo_focuskw" : {},
+          "wpseo_content_score" : {}
+        }
+      }
+    }
+  }
+}

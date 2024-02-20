@@ -1,0 +1,47 @@
+.edit-post-header-toolbar {
+
+	.wpm-language-switcher {
+		position: relative;
+		left: 0 !important;
+
+		.lang-main {
+			padding-left: 10px;
+			padding-right: 10px;
+			line-height: 36px;
+
+			img {
+				top: 2px;
+			}
+		}
+	}
+
+	.lang-dropdown {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		background-color: #fff;
+		border: 1px solid #ccc;
+		z-index: 1;
+
+		ul {
+			list-style: none;
+
+			a {
+				padding: 10px;
+				display: block;
+
+				&:hover,
+				&:focus {
+					background-color: #ccc;
+				}
+			}
+		}
+	}
+}
+
+.gutenberg {
+
+	.languagechecklist {
+		list-style: none !important;
+	}
+}

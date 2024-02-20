@@ -1,0 +1,50 @@
+.wpm-languages {
+
+	.language-status {
+		position: absolute;
+		top: 5px;
+		right: 40px;
+		font-size: 13px;
+		line-height: 26px;
+		height: 28px;
+		display: inline-block;
+	}
+
+	.language-order {
+		font-weight: 400;
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		line-height: 20px;
+		border: 1px solid #ccc;
+		border-radius: 50px;
+		margin-right: 10px;
+		text-align: center;
+	}
+
+	.prefix {
+		font-weight: 400;
+		margin-left: 5px;
+	}
+}
+
+.wp-core-ui .button-link.delete-language {
+	color: $red;
+}
+
+.wpm-languages {
+	max-width: 600px;
+}
+
+.wpm-flags {
+	width: 160px;
+}
+
+.select2-results__option,
+.select2-selection__rendered {
+
+	img {
+		margin-right: 5px;
+		margin-left: 5px;
+	}
+}
