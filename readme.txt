@@ -217,6 +217,7 @@ If you have opened several browser tabs for editing this post in different langu
 = 2.4.2 =
 - fixed Compatibility with WordPress 6.4 and updated readme.txt #1
 - fixed Code Improvement #2
+- added support tab and form
 
 = 2.4.1 =
 - removed support old version of ACF lower 5.0

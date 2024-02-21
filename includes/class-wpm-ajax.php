@@ -303,6 +303,10 @@ class WPM_AJAX {
 	public static function send_query_message()
 	{
 		check_ajax_referer( 'support-localization', 'security' );
+
+		if ( ! current_user_can( 'manage_translations' ) ) {
+			wp_die( -1 );
+		}
 		
 		if(isset($_POST['message']) && isset($_POST['email'])){
 			$message        = sanitize_textarea_field($_POST['message']); 
