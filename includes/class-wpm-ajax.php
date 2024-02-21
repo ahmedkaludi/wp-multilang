@@ -95,6 +95,7 @@ class WPM_AJAX {
 			'delete_localization'  => false,
 			'qtx_import'           => false,
 			'rated'                => false,
+			'send_query_message'   => false,
 		);
 
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
@@ -294,4 +295,56 @@ class WPM_AJAX {
 		update_option( 'wpm_admin_footer_text_rated', 1 );
 		wp_die();
 	}
+
+	/**
+	 * Triggered when anu support query is sent from Help & Support tab
+	 * @since 2.4.2
+	 * */
+	public static function send_query_message()
+	{
+		check_ajax_referer( 'support-localization', 'security' );
+		
+		if(isset($_POST['message']) && isset($_POST['email'])){
+			$message        = sanitize_textarea_field($_POST['message']); 
+		    $email          = sanitize_email($_POST['email']);   
+		                            
+		    if(function_exists('wp_get_current_user')){
+
+		        $user           = wp_get_current_user();
+
+		        $message = '<p>'.esc_html($message).'</p><br><br>'.'Query from WP Multilang plugin support tab';
+		        
+		        $user_data  = $user->data;        
+		        $user_email = $user_data->user_email;     
+		        
+		        if($email){
+		            $user_email = $email;
+		        }            
+		        //php mailer variables        
+		        $sendto    = 'team@magazine3.in';
+		        $subject   = "WP Multilang Query";
+		        
+		        $headers[] = 'Content-Type: text/html; charset=UTF-8';
+		        $headers[] = 'From: '. esc_attr($user_email);            
+		        $headers[] = 'Reply-To: ' . esc_attr($user_email);
+		        // Load WP components, no themes.   
+
+		        $sent = wp_mail($sendto, $subject, $message, $headers); 
+
+		        if($sent){
+
+		             echo json_encode(array('status'=>'t'));  
+
+		        }else{
+
+		            echo json_encode(array('status'=>'f'));            
+
+		        }
+		        
+		    }
+		}
+	                    
+	    wp_die(); 
+	}
+
 }

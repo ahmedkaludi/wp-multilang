@@ -182,4 +182,33 @@
 .column-languages {
   width: 100px; }
 
+.wpm-support-container *{
+  font-size: 16px;
+}
+
+.wpm-support-label{
+  margin-top: 4px;
+  float: left;
+  width: 70px;
+  font-size: 14px;
+}
+
+.wpm-star-mark{
+  color: red;
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+.wpm-hide{
+  display: none;
+}
+
+.wpm-query-success{
+  color: ##0b920b;
+}
+
+.wpm-query-error{
+  color: #FF0000;
+}
+
 /*# sourceMappingURL=admin.css.map */

@@ -268,4 +268,4 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed translate 'attr_escape'
 - fixed adding custom fields to menu items
 
-All changelog available on [GitHub](https://github.com/VaLeXaR/wp-multilang/releases).
+All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

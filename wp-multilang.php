@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       WP Multilang
- * Plugin URI:        https://github.com/VaLeXaR/wp-multilang
- * GitHub Plugin URI: https://github.com/VaLeXaR/wp-multilang
+ * Plugin URI:        https://github.com/ahmedkaludi/wp-multilang
+ * GitHub Plugin URI: https://github.com/ahmedkaludi/wp-multilang
  * Description:       Multilingual plugin for WordPress
  * Author:            Valentyn Riaboshtan
  * License:           GPL2

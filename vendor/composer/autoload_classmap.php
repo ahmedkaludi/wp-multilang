@@ -13,6 +13,7 @@ return array(
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Additional' => $baseDir . '/includes/admin/settings/class-wpm-settings-additional.php',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_General' => $baseDir . '/includes/admin/settings/class-wpm-settings-general.php',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Languages' => $baseDir . '/includes/admin/settings/class-wpm-settings-languages.php',
+    'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Support' => $baseDir . '/includes/admin/settings/class-wpm-settings-support.php',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Page' => $baseDir . '/includes/admin/settings/class-wpm-settings-page.php',
     'WPM\\Includes\\Admin\\WPM_Admin' => $baseDir . '/includes/admin/class-wpm-admin.php',
     'WPM\\Includes\\Admin\\WPM_Admin_Assets' => $baseDir . '/includes/admin/class-wpm-admin-assets.php',
