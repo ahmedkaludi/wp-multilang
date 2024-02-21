@@ -1,15 +1,15 @@
 <?php
 /**
  * Plugin Name:       WP Multilang
- * Plugin URI:        https://github.com/VaLeXaR/wp-multilang
- * GitHub Plugin URI: https://github.com/VaLeXaR/wp-multilang
+ * Plugin URI:        https://github.com/ahmedkaludi/wp-multilang
+ * GitHub Plugin URI: https://github.com/ahmedkaludi/wp-multilang
  * Description:       Multilingual plugin for WordPress
  * Author:            Valentyn Riaboshtan
  * License:           GPL2
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wp-multilang
  * Domain Path:       /languages
- * Version:           2.4.1
+ * Version:           2.4.2
  * Copyright:         © 2017-2019 Valentyn Riaboshtan
  *
  * @package  WPM

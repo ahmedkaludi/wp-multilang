@@ -4,8 +4,8 @@ Contributors: magazine3
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EKM42LUA5CVZ4&source=url
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
-Tested up to: 5.3
-Stable tag: 2.4.1
+Tested up to: 6.4
+Stable tag: 2.4.2
 Requires PHP: 5.6+
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -184,6 +184,10 @@ NOTE: Because plugins have different ways of storing data, WP Multilang is not c
 
 Please try WP Multilang in a test-environment before activating it on an existing production site and always make a backup before activating!
 
+== Bug Reports ==
+
+Bug reports for WP Multilang are [welcomed on GitHub](https://github.com/ahmedkaludi/wp-multilang/issues). Please note GitHub is not a support forum, and issues that aren't properly qualified as bugs will be closed.
+
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/wp-multilang` directory, or install the plugin through the WordPress plugins screen directly.
@@ -209,6 +213,11 @@ If you have opened several browser tabs for editing this post in different langu
 5. Post edit page
 
 == Changelog ==
+
+= 2.4.2 =
+- fixed Compatibility with WordPress 6.4 and updated readme.txt #1
+- fixed Code Improvement #2
+- added support tab and form
 
 = 2.4.1 =
 - removed support old version of ACF lower 5.0
@@ -268,4 +277,4 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed translate 'attr_escape'
 - fixed adding custom fields to menu items
 
-All changelog available on [GitHub](https://github.com/VaLeXaR/wp-multilang/releases).
+All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
