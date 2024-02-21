@@ -4,7 +4,7 @@ Contributors: magazine3
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EKM42LUA5CVZ4&source=url
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
-Tested up to: 5.3
+Tested up to: 6.4
 Stable tag: 2.4.1
 Requires PHP: 5.6+
 License: GPLv3
