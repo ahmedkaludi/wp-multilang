@@ -6,6 +6,7 @@ jQuery(document).ready(function($){
 		var email       = $("#wp_query_email").val();  
 
 		if($.trim(message) !='' && $.trim(email) !='' && wpmIsEmail(email) == true){
+			$(this).text('Sending...');
 		 	$.ajax({
 		        type: "POST",    
 		        url:wpm_support_settings_params.ajax_url,                    
@@ -19,8 +20,10 @@ jQuery(document).ready(function($){
                     $(".wpm-query-success").hide();  
                     $(".wpm-query-error").show();
                   }
+                  $('#wpm-send-support-query').text('Send Support Request');
                 },
-                error: function(response){                    
+                error: function(response){        
+                	$('#wpm-send-support-query').text('Send Support Request');            
                 }
 		    });   
 		}else{

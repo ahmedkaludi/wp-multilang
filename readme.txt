@@ -184,6 +184,10 @@ NOTE: Because plugins have different ways of storing data, WP Multilang is not c
 
 Please try WP Multilang in a test-environment before activating it on an existing production site and always make a backup before activating!
 
+== Bug Reports ==
+
+Bug reports for WP Multilang are [welcomed on GitHub](https://github.com/ahmedkaludi/wp-multilang/issues). Please note GitHub is not a support forum, and issues that aren't properly qualified as bugs will be closed.
+
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/wp-multilang` directory, or install the plugin through the WordPress plugins screen directly.
