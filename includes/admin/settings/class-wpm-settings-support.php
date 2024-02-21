@@ -26,8 +26,6 @@ class WPM_Settings_Support extends WPM_Settings_Page {
 		$this->label = __( 'Help & Support', 'wp-multilang' );
 
 		parent::__construct();
-
-		// add_action( 'wpm_admin_field_localizations', array( $this, 'localizations' ) );
 	}
 
 	/**
