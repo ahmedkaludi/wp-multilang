@@ -27,6 +27,9 @@ class WPM_Yoast_Seo {
 		add_filter( 'wpseo_sitemap_url', array( $this, 'add_alternate_sitemaplinks' ), 10, 2 );
 		add_filter( 'wpseo_sitemap_entry', array( $this, 'add_lang_to_url' ), 10, 3 );
 		add_filter( 'wpseo_build_sitemap_post_type', array( $this, 'add_filter_for_maps' ) );
+		add_filter( 'wpseo_opengraph_title', array( $this, 'translate_opengraph_title' ));
+		add_filter( 'wpseo_metadesc', array( $this, 'translate_meta_description' ));
+		add_filter( 'wpseo_opengraph_desc', array( $this, 'translate_meta_description' ));
 
 
 		$options = \WPSEO_Options::get_option( 'wpseo_social' );
@@ -100,6 +103,11 @@ class WPM_Yoast_Seo {
 		$titles_part = explode( $separator, $title );
 		$titles_part = wpm_translate_value( $titles_part );
 		$title       = implode( $separator, $titles_part );
+
+		$get_yoast_og_title = get_post_meta(get_the_ID(), '_yoast_wpseo_title', true);
+		if(!empty($get_yoast_og_title) && is_string($get_yoast_og_title)){
+			$title = $get_yoast_og_title;
+		}
 
 		return $title;
 	}
@@ -311,5 +319,41 @@ class WPM_Yoast_Seo {
 				$wpseo_og->og_tag( 'og:locale:alternate', $language['wpseo_og_locale'] );
 			}
 		}
+	}
+	
+	/**
+	 * Set Description according to the language
+	 *
+	 * @since 2.4.3
+	 *
+	 * @param $description
+	 *
+	 * @return string
+	 */
+	public function translate_meta_description($description)
+	{
+		$get_yoast_mets_desc = get_post_meta(get_the_ID(), '_yoast_wpseo_metadesc', true);
+		if(!empty($get_yoast_mets_desc) && is_string($get_yoast_mets_desc)){
+			$description = $get_yoast_mets_desc;
+		}
+		return $description;
+	}
+
+	/**
+	 * Set og:title according to the language
+	 *
+	 * @since 2.4.3
+	 *
+	 * @param $title
+	 *
+	 * @return string
+	 */
+	public function translate_opengraph_title($title)
+	{
+		$get_yoast_og_title = get_post_meta(get_the_ID(), '_yoast_wpseo_title', true);
+		if(!empty($get_yoast_og_title) && is_string($get_yoast_og_title)){
+			$title = $get_yoast_og_title;
+		}
+		return $title;
 	}
 }
