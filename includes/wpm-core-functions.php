@@ -156,9 +156,9 @@ function wpm_print_js() {
  */
 function wpm_setcookie( $name, $value, $expire = 0, $secure = false ) {
 	if ( ! headers_sent() ) {
-		setcookie( $name, $value, $expire,  COOKIEPATH ? COOKIEPATH : '/', null, $secure );
+		setcookie( $name, $value, $expire,  COOKIEPATH ? COOKIEPATH : '/', '', $secure );
 		if ( COOKIEPATH != SITECOOKIEPATH ) {
-			setcookie( $name, $value, $expire, SITECOOKIEPATH, null, $secure );
+			setcookie( $name, $value, $expire, SITECOOKIEPATH, '', $secure );
 		}
 	} elseif ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 		headers_sent( $file, $line );
