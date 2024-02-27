@@ -36,7 +36,9 @@ class WPM_Yoast_Seo {
 			add_filter( 'wpm_rest_schema_languages', array( $this, 'add_schema_to_rest' ) );
 			add_filter( 'wpm_save_languages', array( $this, 'save_languages' ), 10, 2 );
 			add_filter( 'wpseo_locale', array( $this, 'add_opengraph_locale' ) );
-			add_action( 'wpseo_opengraph', array( $this, 'add_alternate_opengraph_locale' ), 40 );
+			if(defined('WPSEO_VERSION') && version_compare(WPSEO_VERSION, '14.0', '<') ) {
+				add_action( 'wpseo_opengraph', array( $this, 'add_alternate_opengraph_locale' ), 40 );
+			}			
 		}
 	}
 
