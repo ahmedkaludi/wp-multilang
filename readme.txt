@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
 Tested up to: 6.4
-Stable tag: 2.4.2
+Stable tag: 2.4.3
 Requires PHP: 5.6+
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -213,6 +213,12 @@ If you have opened several browser tabs for editing this post in different langu
 5. Post edit page
 
 == Changelog ==
+
+= 2.4.3 =
+- fixed Conflict with Yoast SEO #6
+- enhancement ( ! ) Deprecated: Hook wpseo_opengraph is deprecated since version WPSEO 14.0 with no alternative available #7
+- enhancement ( ! ) Deprecated: setcookie(): Passing null to parameter #5 ($domain) of type string is deprecated #8
+- fixed Issue with the ACF Pro plugin #10
 
 = 2.4.2 =
 - fixed Compatibility with WordPress 6.4 and updated readme.txt #1
