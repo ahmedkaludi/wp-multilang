@@ -334,7 +334,7 @@ class WPM_Yoast_Seo {
 		$query = $wpdb->prepare("SHOW TABLES LIKE %s", $yoast_table_name);
 		$table_exists = $wpdb->get_var($query);
 
-		if ($table_exists == $yoast_table_name) {
+		if ($table_exists) {
 			$post_id = get_the_ID();
 			$table_name = $wpdb->prefix . 'postmeta';
 
@@ -358,9 +358,9 @@ class WPM_Yoast_Seo {
 
 									// Check if data in post meta and yoast_indexable table are not same
 									if($yoast_title_key == $key_name && $result->title !== $meta_value){
-										$update_array_values['title'] = $meta_value; 
+										$update_array_values['title'] = sanitize_text_field($meta_value); 
 									}else if($yoast_desc_key == $key_name && $result->description !== $meta_value){
-										$update_array_values['description'] = $meta_value; 
+										$update_array_values['description'] = sanitize_textarea_field($meta_value); 
 									}
 								}
 							}
