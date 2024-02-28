@@ -28,7 +28,8 @@ class WPM_Yoast_Seo {
 		add_filter( 'wpseo_sitemap_entry', array( $this, 'add_lang_to_url' ), 10, 3 );
 		add_filter( 'wpseo_build_sitemap_post_type', array( $this, 'add_filter_for_maps' ) );
 		if(defined('WPSEO_VERSION') && version_compare(WPSEO_VERSION, '14.0', '>=') ) {
-			add_action( 'wp_after_insert_post', array($this, 'update_yoast_meta_tags'));
+			add_action( 'wp_after_insert_post', array($this, 'update_yoast_post_meta_tags'));
+			add_action( 'saved_term', array($this, 'update_yoast_term_meta_tags'), 9999, 5);
 		}
 
 
@@ -319,10 +320,10 @@ class WPM_Yoast_Seo {
 	}
 
 	/**
-	 * Update yoast meta description field value in yoast_indexable table
+	 * Update yoast meta description field value in yoast_indexable table for posts
 	 * @since 2.4.3
 	 * */
-	public function update_yoast_meta_tags()
+	public function update_yoast_post_meta_tags()
 	{
 		global $wpdb;
 
@@ -336,43 +337,101 @@ class WPM_Yoast_Seo {
 
 		if ($table_exists) {
 			$post_id = get_the_ID();
-			$table_name = $wpdb->prefix . 'postmeta';
+			if($post_id){
+				$table_name = $wpdb->prefix . 'postmeta';
 
-			$yoast_desc_key = '_yoast_wpseo_metadesc';
-			$yoast_title_key = '_yoast_wpseo_title';
+				$yoast_desc_key = '_yoast_wpseo_metadesc';
+				$yoast_title_key = '_yoast_wpseo_title';
 
-			// Get _yoast_wpseo_metadesc and _yoast_wpseo_title values from table
-			$post_meta_result = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE post_id = %d AND (meta_key = %s OR meta_key = %s)", $post_id,$yoast_desc_key, $yoast_title_key ));
-			if(!empty($post_meta_result) && is_array($post_meta_result) && count($post_meta_result) > 0){
+				// Get _yoast_wpseo_metadesc and _yoast_wpseo_title values from table
+				$post_meta_result = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE post_id = %d AND (meta_key = %s OR meta_key = %s)", $post_id,$yoast_desc_key, $yoast_title_key ));
+				if(!empty($post_meta_result) && is_array($post_meta_result) && count($post_meta_result) > 0){
 
-				// Fetch post data from yoast_indexable table
-				$result = $wpdb->get_row($wpdb->prepare("SELECT object_id, title, description FROM $yoast_table_name WHERE object_id = %d", $post_id));
-				if(!empty($result) && is_object($result)){
-					if(isset($result->object_id)){
-						// Loop through the values
-						foreach ($post_meta_result as $pmr_key => $pmr_value){
-							if(!empty($pmr_value) && is_object($pmr_value)){
-								if(isset($pmr_value->post_id)){
-									$key_name = $pmr_value->meta_key;
-									$meta_value = $pmr_value->meta_value;
+					// Fetch post data from yoast_indexable table
+					$result = $wpdb->get_row($wpdb->prepare("SELECT object_id, title, description FROM $yoast_table_name WHERE object_id = %d", $post_id));
+					if(!empty($result) && is_object($result)){
+						if(isset($result->object_id)){
+							// Loop through the values
+							foreach ($post_meta_result as $pmr_key => $pmr_value){
+								if(!empty($pmr_value) && is_object($pmr_value)){
+									if(isset($pmr_value->post_id)){
+										$key_name = $pmr_value->meta_key;
+										$meta_value = $pmr_value->meta_value;
 
-									// Check if data in post meta and yoast_indexable table are not same
-									if($yoast_title_key == $key_name && $result->title !== $meta_value){
-										$update_array_values['title'] = sanitize_text_field($meta_value); 
-									}else if($yoast_desc_key == $key_name && $result->description !== $meta_value){
-										$update_array_values['description'] = sanitize_textarea_field($meta_value); 
+										// Check if data in post meta and yoast_indexable table are not same
+										if($yoast_title_key == $key_name && $result->title !== $meta_value){
+											$update_array_values['title'] = sanitize_text_field($meta_value); 
+										}else if($yoast_desc_key == $key_name && $result->description !== $meta_value){
+											$update_array_values['description'] = sanitize_textarea_field($meta_value); 
+										}
 									}
 								}
 							}
+							
+							if(!empty($update_array_values)){
+								// Update the title and description field values of yoast_indexable table
+								$wpdb->update($yoast_table_name, $update_array_values, array('object_id' => $post_id));
+							}
 						}
-						
-						if(!empty($update_array_values)){
-							// Update the title and description field values of yoast_indexable table
-							$wpdb->update($yoast_table_name, $update_array_values, array('object_id' => $post_id));
+					} 
+				} // post_meta_result if end
+			}
+		} // table_exists if end
+	}
+
+	/**
+	 * Update yoast meta description field value in yoast_indexable table for terms
+	 * @since 2.4.3
+	 * */
+	public function update_yoast_term_meta_tags($term_id, $tt_id, $taxonomy, $update, $args)
+	{
+		if($term_id > 0){
+			global $wpdb;
+			$update_array_values = array();
+
+			$yoast_table_name = $wpdb->prefix . 'yoast_indexable'; 
+
+			// Check if yoast_indexable table exists
+			$query = $wpdb->prepare("SHOW TABLES LIKE %s", $yoast_table_name);
+			$table_exists = $wpdb->get_var($query);
+
+			if ($table_exists) {
+				$table_name = $wpdb->prefix . 'options';
+
+				$yoast_desc_key = '_yoast_wpseo_metadesc';
+				$yoast_title_key = '_yoast_wpseo_title';
+
+				// Get _yoast_wpseo_metadesc and _yoast_wpseo_title values from options table
+				$option_name = 'wpseo_taxonomy_meta';
+				$option_result = $wpdb->get_row($wpdb->prepare("SELECT option_value FROM $table_name WHERE option_name = %s", $option_name ));
+
+				if(is_object($option_result) && isset($option_result->option_value)){
+					if(!empty($option_result->option_value) && is_string($option_result->option_value)){
+						$option_result_value = unserialize($option_result->option_value);	
+						if(!empty($option_result_value) && is_array($option_result_value)){
+							if(isset($option_result_value['category']) && is_array($option_result_value['category'])){
+								$category_array = $option_result_value['category'];
+								if(isset($category_array[$term_id]) && is_array($category_array[$term_id])){
+									$term_option_details = $category_array[$term_id];
+									$yoast_meta_title = ''; $yoast_meta_desc = '';
+									if(isset($term_option_details['wpseo_desc'])){
+										$yoast_meta_desc = $term_option_details['wpseo_desc'];
+									}
+									if(isset($term_option_details['wpseo_title'])){
+										$yoast_meta_title = $term_option_details['wpseo_title'];
+									}
+
+									$update_array_values['title'] = sanitize_text_field($yoast_meta_title);
+									$update_array_values['description'] = sanitize_textarea_field($yoast_meta_desc);
+
+									// Update the title and description field values of yoast_indexable table
+									$wpdb->update($yoast_table_name, $update_array_values, array('object_id' => $term_id));
+								}
+							}
 						}
 					}
-				} 
-			} // post_meta_result if end
-		} // table_exists if end
+				} // option_result if end
+			} // table_exists if end
+		} // term_id if end
 	}
 }
