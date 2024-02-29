@@ -6,7 +6,7 @@ Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
 Tested up to: 6.4
 Stable tag: 2.4.3
-Requires PHP: 5.6+
+Requires PHP: 5.6.20
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
