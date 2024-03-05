@@ -31,6 +31,7 @@ class WPM_AIOSP {
 		add_filter( 'delete_post_metadata', array( $this, 'save_old_fields' ), 10, 5 );
 		add_filter( 'add_post_metadata', array( $this, 'update_old_fields' ), 10, 4 );
 		add_filter( 'init', array( $this, 'translate_options' ) );
+		add_filter( 'aioseo_get_post', array($this, 'aioseo_filter_post_data' ));
 
 		// AIOSP Sitemap do not support simple tag in sitemap like "xhtml:link" what needed in multilingual sitemap
 		//add_filter( 'aiosp_sitemap_xml_namespace', array( $this, 'add_namespace' ) );
@@ -156,5 +157,55 @@ class WPM_AIOSP {
 		$namespace['xmlns:xhtml'] = 'http://www.w3.org/1999/xhtml';
 
 		return $namespace;
+	}
+	
+	/**
+	 * Update all in one seo meta description field value in aioseo_posts table for posts
+	 * @since 2.4.4
+	 * */
+	public function aioseo_filter_post_data( $post ) {
+		global $wpdb;
+		// if(is_singular()){
+		if(!empty($post) && isset($post->post_id)){
+			$post_id = $post->post_id;
+			if(isset($post->title) && isset($post->description)){
+				$current_lang = wpm_get_language();
+
+				$table_name = $wpdb->prefix . 'postmeta';
+
+				$meta_key_array = array('_aioseo_title', '_aioseo_description', '_aioseo_twitter_title', '_aioseo_twitter_description', '_aioseo_og_title', '_aioseo_og_description');
+
+				// Get _aioseo_description and _aioseo_title values from table
+				$post_meta_result = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE post_id = %d AND (meta_key IN('".implode("','", $meta_key_array)."') )", $post_id ));
+
+				if(!empty($post_meta_result) && is_array($post_meta_result) && count($post_meta_result) > 0){
+					foreach ($post_meta_result as $pmr_key => $pmr_value){
+						if(!empty($pmr_value) && is_object($pmr_value)){
+							if(isset($pmr_value->post_id)){
+								if($pmr_value->meta_key == '_aioseo_title'){
+									$post->title = wpm_translate_string($pmr_value->meta_value, $current_lang);
+								}
+								if($pmr_value->meta_key == '_aioseo_description'){
+									$post->description = wpm_translate_string($pmr_value->meta_value, $current_lang);
+								}
+								if($pmr_value->meta_key == '_aioseo_twitter_title'){
+									$post->twitter_title = wpm_translate_string($pmr_value->meta_value, $current_lang);
+								}
+								if($pmr_value->meta_key == '_aioseo_twitter_description'){
+									$post->twitter_description = wpm_translate_string($pmr_value->meta_value, $current_lang);
+								}
+								if($pmr_value->meta_key == '_aioseo_og_title'){
+									$post->og_title = wpm_translate_string($pmr_value->meta_value, $current_lang);
+								}
+								if($pmr_value->meta_key == '_aioseo_og_description'){
+									$post->og_description = wpm_translate_string($pmr_value->meta_value, $current_lang);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return $post;
 	}
 }
