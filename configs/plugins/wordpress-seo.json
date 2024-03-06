@@ -8,7 +8,9 @@
     "_yoast_wpseo_focuskw": {},
     "_yoast_wpseo_opengraph-title": {},
     "_yoast_wpseo_opengraph-description": {},
-    "_yoast_wpseo_google-plus-description": {}
+    "_yoast_wpseo_google-plus-description": {},
+    "_yoast_wpseo_twitter-title": {},
+    "_yoast_wpseo_twitter-description": {}
   },
   "admin_pages": [
     "seo_page_wpseo_titles",
@@ -51,7 +53,11 @@
           "wpseo_title" : {},
           "wpseo_desc" : {},
           "wpseo_focuskw" : {},
-          "wpseo_content_score" : {}
+          "wpseo_content_score" : {},
+          "wpseo_opengraph-title" : {},
+          "wpseo_opengraph-description" : {},
+          "wpseo_twitter-title" : {},
+          "wpseo_twitter-description" : {}
         }
       }
     }
