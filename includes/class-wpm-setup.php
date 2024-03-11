@@ -516,7 +516,6 @@ class WPM_Setup {
 		$integrations = apply_filters( 'wpm_integrations', array(
 			'advanced-custom-fields'     => __NAMESPACE__ . '\Integrations\WPM_Acf',
 			'advanced-custom-fields-pro' => __NAMESPACE__ . '\Integrations\WPM_Acf',
-			'advanced-custom-fields-main' => __NAMESPACE__ . '\Integrations\WPM_Acf',
 			'all-in-one-seo-pack'        => __NAMESPACE__ . '\Integrations\WPM_AIOSP',
 			'better-search'              => __NAMESPACE__ . '\Integrations\WPM_Better_Search',
 			'buddypress'                 => __NAMESPACE__ . '\Integrations\WPM_BuddyPress',
