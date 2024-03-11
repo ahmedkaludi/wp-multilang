@@ -34,6 +34,7 @@ class WPM_Acf {
 		add_filter( 'wpm_acf_text_config', '__return_empty_array' );
 		add_filter( 'wpm_acf_textarea_config', '__return_empty_array' );
 		add_filter( 'wpm_acf_wysiwyg_config', '__return_empty_array' );
+		add_filter( 'wpm_acf_image_config', '__return_empty_array' );
 	}
 
 
