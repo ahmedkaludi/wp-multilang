@@ -53,6 +53,7 @@ class WPM_Posts extends WPM_Object {
 		add_filter( 'wp_insert_post_data', array( $this, 'save_post' ), 99, 2 );
 		add_filter( 'wp_insert_attachment_data', array( $this, 'save_post' ), 99, 2 );
 		add_filter( 'wp_get_attachment_link', array( $this, 'translate_attachment_link' ), 5 );
+		add_filter( 'render_block', array( $this, 'wpm_render_post_block' ), 10, 2);
 	}
 
 
@@ -220,5 +221,26 @@ class WPM_Posts extends WPM_Object {
 		$translated_text = wpm_translate_string( $text );
 
 		return str_replace( $text, $translated_text, $link );
+	}
+
+	/**
+	 * Translate block content
+	 *
+	 * @param string $context
+	 * @param array $block
+	 *
+	 * @return string $context
+	 * @since 2.4.4
+	 */
+	public function wpm_render_post_block($context, $block)
+	{
+		if(is_array($block) && isset($block['blockName'])){
+			if ( $block['blockName'] === 'core/block' && ! empty( $block['attrs']['ref'] ) ) {
+				if(!empty($context) && is_string($context)){
+					$context = wpm_translate_string($context);
+				}
+			}
+		}
+		return $context;
 	}
 }
