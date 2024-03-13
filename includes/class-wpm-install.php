@@ -269,11 +269,11 @@ class WPM_Install {
 				$code = ''; $name = '';
 				$flag = explode( '_', strtolower( $locale ) );
 				if(isset($available_translations[ $locale ]) && is_array($available_translations[ $locale ])){
-					if(isset($available_translations[ $locale ]['iso']) && is_array($available_translations[ $locale ]['iso'])){
+					if(isset($available_translations[ $locale ]['iso'])){
 						$code = sanitize_title( current( $available_translations[ $locale ]['iso'] ) );
 					}
-					if(isset($available_translations[ $locale ]['native_name']) && is_array($available_translations[ $locale ]['native_name'])){
-						$name = $available_translations[ $locale ]['native_name'];
+					if(isset($available_translations[ $locale ]['native_name'])){
+						$name = sanitize_text_field($available_translations[ $locale ]['native_name']);
 					}
 				}
 				$languages[ $code ] = array(
