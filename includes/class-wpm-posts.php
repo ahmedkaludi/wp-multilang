@@ -234,7 +234,7 @@ class WPM_Posts extends WPM_Object {
 	 */
 	public function wpm_render_post_block($context, $block)
 	{
-		if(is_array($block) && isset($block['blockName'])){
+		if(isset($block['blockName'])){
 			if ( $block['blockName'] === 'core/block' && ! empty( $block['attrs']['ref'] ) ) {
 				if(!empty($context) && is_string($context)){
 					$context = wpm_translate_string($context);
