@@ -166,7 +166,7 @@ class WPM_AIOSP {
 	public function aioseo_filter_post_data( $post ) {
 		global $wpdb;
 		// if(is_singular()){
-		if(!empty($post) && isset($post->post_id)){
+		if(is_object($post) && isset($post->post_id)){
 			$post_id = $post->post_id;
 			if(isset($post->title) && isset($post->description)){
 				$current_lang = wpm_get_language();
@@ -178,7 +178,7 @@ class WPM_AIOSP {
 				// Get _aioseo_description and _aioseo_title values from table
 				$post_meta_result = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE post_id = %d AND (meta_key IN('".implode("','", $meta_key_array)."') )", $post_id ));
 
-				if(!empty($post_meta_result) && is_array($post_meta_result) && count($post_meta_result) > 0){
+				if(is_array($post_meta_result) && count($post_meta_result) > 0){
 					foreach ($post_meta_result as $pmr_key => $pmr_value){
 						if(!empty($pmr_value) && is_object($pmr_value)){
 							if(isset($pmr_value->post_id)){
