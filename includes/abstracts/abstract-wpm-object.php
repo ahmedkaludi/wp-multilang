@@ -73,6 +73,11 @@ abstract class WPM_Object {
 		$object_fields_config = apply_filters( "wpm_{$this->object_type}_fields_config", $config[ "{$this->object_type}_fields" ] );
 
 		if ( ! isset( $object_fields_config[ $meta_key ] ) ) {
+			if($meta_key == 'wp_yoast_notifications'){
+				if($value == null){
+					return '';
+				}
+			}
 			return $value;
 		}
 

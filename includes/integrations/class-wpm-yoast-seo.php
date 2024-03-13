@@ -27,6 +27,7 @@ class WPM_Yoast_Seo {
 		add_filter( 'wpseo_sitemap_url', array( $this, 'add_alternate_sitemaplinks' ), 10, 2 );
 		add_filter( 'wpseo_sitemap_entry', array( $this, 'add_lang_to_url' ), 10, 3 );
 		add_filter( 'wpseo_build_sitemap_post_type', array( $this, 'add_filter_for_maps' ) );
+		add_filter( 'wpseo_opengraph_url', array( $this, 'update_opengraph_url' ) );
 		if(defined('WPSEO_VERSION') && version_compare(WPSEO_VERSION, '14.0', '>=') ) {
 			add_action( 'wp_after_insert_post', array($this, 'update_yoast_post_meta_tags'));
 			add_action( 'saved_term', array($this, 'update_yoast_term_meta_tags'), 10, 5);
@@ -206,7 +207,6 @@ class WPM_Yoast_Seo {
 			$new_loc    = str_replace( '</url>', implode( '', $alternate ) . '</url>', $new_loc );
 			$new_output .= $new_loc;
 		}
-
 		return $new_output;
 	}
 
@@ -340,11 +340,10 @@ class WPM_Yoast_Seo {
 			if($post_id){
 				$table_name = $wpdb->prefix . 'postmeta';
 
-				$yoast_desc_key = '_yoast_wpseo_metadesc';
-				$yoast_title_key = '_yoast_wpseo_title';
+				$meta_key_array = array('_yoast_wpseo_title', '_yoast_wpseo_metadesc', '_yoast_wpseo_opengraph-title','_yoast_wpseo_opengraph-description', '_yoast_wpseo_twitter-title', '_yoast_wpseo_twitter-description', '_yoast_wpseo_focuskw');
 
 				// Get _yoast_wpseo_metadesc and _yoast_wpseo_title values from table
-				$post_meta_result = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE post_id = %d AND (meta_key = %s OR meta_key = %s)", $post_id,$yoast_desc_key, $yoast_title_key ));
+				$post_meta_result = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE post_id = %d AND (meta_key IN('".implode("','", $meta_key_array)."') )", $post_id ));
 				if(!empty($post_meta_result) && is_array($post_meta_result) && count($post_meta_result) > 0){
 
 					// Fetch post data from yoast_indexable table
@@ -359,10 +358,20 @@ class WPM_Yoast_Seo {
 										$meta_value = $pmr_value->meta_value;
 
 										// Check if data in post meta and yoast_indexable table are not same
-										if($yoast_title_key == $key_name && $result->title !== $meta_value){
+										if($key_name == '_yoast_wpseo_title' && $result->title !== $meta_value){
 											$update_array_values['title'] = sanitize_text_field($meta_value); 
-										}else if($yoast_desc_key == $key_name && $result->description !== $meta_value){
+										}else if($key_name == '_yoast_wpseo_metadesc' && $result->description !== $meta_value){
 											$update_array_values['description'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_opengraph-title' && $result->description !== $meta_value){
+											$update_array_values['open_graph_title'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_opengraph-description' && $result->description !== $meta_value){
+											$update_array_values['open_graph_description'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_twitter-title' && $result->description !== $meta_value){
+											$update_array_values['twitter_title'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_twitter-description' && $result->description !== $meta_value){
+											$update_array_values['twitter_description'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_focuskw' && $result->description !== $meta_value){
+											$update_array_values['primary_focus_keyword'] = sanitize_textarea_field($meta_value); 
 										}
 									}
 								}
@@ -404,21 +413,34 @@ class WPM_Yoast_Seo {
 			if(is_object($option_result) && isset($option_result->option_value)){
 				if(!empty($option_result->option_value) && is_string($option_result->option_value)){
 					$option_result_value = unserialize($option_result->option_value);	
+
 					if(!empty($option_result_value) && is_array($option_result_value)){
 						if(isset($option_result_value[$taxonomy]) && is_array($option_result_value[$taxonomy])){
 							$category_array = $option_result_value[$taxonomy];
 							if(isset($category_array[$term_id]) && is_array($category_array[$term_id])){
 								$term_option_details = $category_array[$term_id];
-								$yoast_meta_title = ''; $yoast_meta_desc = '';
+
 								if(isset($term_option_details['wpseo_desc'])){
-									$yoast_meta_desc = $term_option_details['wpseo_desc'];
+									$update_array_values['description'] = sanitize_textarea_field($term_option_details['wpseo_desc']);
 								}
 								if(isset($term_option_details['wpseo_title'])){
-									$yoast_meta_title = $term_option_details['wpseo_title'];
+									$update_array_values['title'] = sanitize_text_field($term_option_details['wpseo_title']);
 								}
-
-								$update_array_values['title'] = sanitize_text_field($yoast_meta_title);
-								$update_array_values['description'] = sanitize_textarea_field($yoast_meta_desc);
+								if(isset($term_option_details['wpseo_opengraph-title'])){
+									$update_array_values['open_graph_title'] = sanitize_text_field($term_option_details['wpseo_opengraph-title']);
+								}
+								if(isset($term_option_details['wpseo_opengraph-description'])){
+									$update_array_values['open_graph_description'] = sanitize_text_field($term_option_details['wpseo_opengraph-description']);
+								}
+								if(isset($term_option_details['wpseo_twitter-title'])){
+									$update_array_values['twitter_title'] = sanitize_text_field($term_option_details['wpseo_twitter-title']);
+								}
+								if(isset($term_option_details['wpseo_twitter-description'])){
+									$update_array_values['twitter_description'] = sanitize_text_field($term_option_details['wpseo_twitter-description']);
+								}
+								if(isset($term_option_details['wpseo_focuskw'])){
+									$update_array_values['primary_focus_keyword'] = sanitize_text_field($term_option_details['wpseo_focuskw']);
+								}
 
 								// Update the title and description field values of yoast_indexable table
 								$wpdb->update($yoast_table_name, $update_array_values, array('object_id' => $term_id));
@@ -428,5 +450,19 @@ class WPM_Yoast_Seo {
 				}
 			} // option_result if end
 		} // table_exists if end
+	}
+
+	/**
+	 * Update yoast opengraph url 
+	 * @since 2.4.4
+	 * @param $url String
+	 * @return $url String
+	 * */
+	public function update_opengraph_url($url)
+	{
+		if(!is_admin()){
+			$url = get_permalink();
+		}
+		return $url;
 	}
 }

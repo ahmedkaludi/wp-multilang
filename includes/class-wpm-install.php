@@ -263,21 +263,29 @@ class WPM_Install {
 
 		$languages              = array();
 		$available_translations = wpm_get_available_translations();
-
-		foreach ( wpm_get_installed_languages() as $locale ) {
-
-			$code = sanitize_title( current( $available_translations[ $locale ]['iso'] ) );
-			$flag = explode( '_', strtolower( $locale ) );
-
-			$languages[ $code ] = array(
-				'enable'      => 1,
-				'locale'      => $locale,
-				'name'        => $available_translations[ $locale ]['native_name'],
-				'translation' => $locale,
-				'date'        => '',
-				'time'        => '',
-				'flag'        => ( isset( $flag[1] ) ? $flag[1] : $flag[0] ) . '.png',
-			);
+		$installed_languages = wpm_get_installed_languages();
+		if(!empty($installed_languages) && is_array($installed_languages)){
+			foreach ( $installed_languages as $locale ) {
+				$code = ''; $name = '';
+				$flag = explode( '_', strtolower( $locale ) );
+				if(is_array($available_translations[ $locale ])){
+					if(isset($available_translations[ $locale ]['iso']) && is_array($available_translations[ $locale ]['iso'])){
+						$code = sanitize_title( current( $available_translations[ $locale ]['iso'] ) );
+					}
+					if(isset($available_translations[ $locale ]['native_name'])){
+						$name = sanitize_text_field($available_translations[ $locale ]['native_name']);
+					}
+				}
+				$languages[ $code ] = array(
+					'enable'      => 1,
+					'locale'      => $locale,
+					'name'        => $name,
+					'translation' => $locale,
+					'date'        => '',
+					'time'        => '',
+					'flag'        => ( isset( $flag[1] ) ? $flag[1] : $flag[0] ) . '.png',
+				);
+			}
 		}
 
 		add_option( 'wpm_languages', $languages );
