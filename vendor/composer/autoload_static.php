@@ -50,6 +50,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Integrations\\WPM_Newsletter' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-newsletter.php',
         'WPM\\Includes\\Integrations\\WPM_PBSO' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-pbso.php',
         'WPM\\Includes\\Integrations\\WPM_Rank_Math' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-rank-math.php',
+        'WPM\\Includes\\Integrations\\WPM_Elementor' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-elementor.php',
         'WPM\\Includes\\Integrations\\WPM_Tablepress' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-tablepress.php',
         'WPM\\Includes\\Integrations\\WPM_VC' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-vc.php',
         'WPM\\Includes\\Integrations\\WPM_WooCommerce' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-woocommerce.php',
