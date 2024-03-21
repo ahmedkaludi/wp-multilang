@@ -24,32 +24,7 @@ class WPM_Admin_Widgets {
 	 */
 	public function __construct() {
 		add_filter( 'widget_form_callback', 'wpm_translate_value', 5 );
-		add_filter( 'widget_update_callback', array( $this, 'pre_save_widget' ), 99, 4 );
 		add_action( 'in_widget_form', array( $this, 'add_language_fields' ), 15, 3 );
-	}
-
-	/**
-	 * Update widget translation. Title and text field translate for all widgets.
-	 *
-	 * @param $instance
-	 * @param $new_instance
-	 * @param $old_instance
-	 * @param $widget
-	 *
-	 * @return array
-	 *
-	 */
-	public function pre_save_widget( $instance, $new_instance, $old_instance, $widget ) {
-
-		$widget_config = wpm_get_widget_config( $widget->id_base );
-
-		if ( null === $widget_config ) {
-			return $instance;
-		}
-
-		$instance = wpm_set_new_value( $old_instance, $new_instance, $widget_config );
-
-		return $instance;
 	}
 
 

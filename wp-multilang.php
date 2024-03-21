@@ -29,6 +29,7 @@ if ( ! defined( 'WPM_PLUGIN_FILE' ) ) {
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/includes/wpm-widget-block-editor.php';
 
 function wpm() {
 	return WP_Multilang::instance();
