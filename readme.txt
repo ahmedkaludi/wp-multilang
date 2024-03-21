@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
 Tested up to: 6.4
-Stable tag: 2.4.4
+Stable tag: 2.4.5
 Requires PHP: 5.6.20
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -17,6 +17,10 @@ Multilingual plugin for WordPress.
 WP Multilang is a multilingual plugin for WordPress.
 
 Translations of post types, taxonomies, meta fields, options, text fields in miltimedia files, menus, titles and text fields in widgets.
+
+== New Features of the plugin WP Multilang ==
+* Support block based widgets
+* Support different feature image for each language
 
 == Features of the plugin WP Multilang ==
 
@@ -214,6 +218,17 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.5 =
+- feature Different product or post images for each language #20
+- fixed Widget block translate issue #29
+- fixed Fatal Error with latest Yoast SEO plugin update #30
+- fixed Translation of special mail tags for Contact Form 7 #31
+- fixed Translation of the "title" attribute in the shortcode of Contact Form 7 #32
+- fixed wpseo_og:locale:alternate to be set properly #33
+- fixed Translate escaping text #34
+- fixed Rank Math custom fields getting duplicated on the translated posts #35
+- fixed Issue with language switcher regex for gutenberg #36
+
 = 2.4.4 =
 - fixed issue with ACF PRO #12
 - fixed An error occurred when deleting a post #13
@@ -278,9 +293,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed compatibility with Gutenberg
 - fixed checking for JSON strings
 - fixed regex for ml strings
-
-= 2.2.1 =
-- fixed escaping text. Have error on some sites.
-- fixed ACF PRO menu integration. Have error on ACFv4.
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
