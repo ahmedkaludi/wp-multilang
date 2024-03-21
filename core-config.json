@@ -13,7 +13,8 @@
     "revision": null
   },
   "post_fields": {
-    "_wp_attachment_image_alt": {}
+    "_wp_attachment_image_alt": {},
+    "_thumbnail_id":{}
   },
   "taxonomies": {
     "category" : {},
