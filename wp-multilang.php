@@ -9,7 +9,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wp-multilang
  * Domain Path:       /languages
- * Version:           2.4.4
+ * Version:           2.4.5
  * Copyright:         © 2017-2019 Valentyn Riaboshtan
  *
  * @package  WPM
@@ -29,6 +29,7 @@ if ( ! defined( 'WPM_PLUGIN_FILE' ) ) {
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/includes/wpm-widget-block-editor.php';
 
 function wpm() {
 	return WP_Multilang::instance();

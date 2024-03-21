@@ -530,7 +530,7 @@ class WPM_Setup {
 			'tablepress'                 => __NAMESPACE__ . '\Integrations\WPM_Tablepress',
 			'woocommerce'                => __NAMESPACE__ . '\Integrations\WPM_WooCommerce',
 			'wordpress-seo'              => __NAMESPACE__ . '\Integrations\WPM_Yoast_Seo',
-			'seo-by-rank-math'           => __NAMESPACE__ . '\Integrations\WPM_Rank_Math',
+			'seo-by-rank-math'           => __NAMESPACE__ . '\Integrations\WPM_Rank_Math'
 		) );
 
 		$active_plugins = wp_cache_get( 'active_plugins', 'wpm' );
