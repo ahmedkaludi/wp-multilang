@@ -39,7 +39,6 @@ return array(
     'WPM\\Includes\\Integrations\\WPM_Newsletter' => $baseDir . '/includes/integrations/class-wpm-newsletter.php',
     'WPM\\Includes\\Integrations\\WPM_PBSO' => $baseDir . '/includes/integrations/class-wpm-pbso.php',
     'WPM\\Includes\\Integrations\\WPM_Rank_Math' => $baseDir . '/includes/integrations/class-wpm-rank-math.php',
-    'WPM\\Includes\\Integrations\\WPM_Elementor' => $baseDir . '/includes/integrations/class-wpm-elementor.php',
     'WPM\\Includes\\Integrations\\WPM_Tablepress' => $baseDir . '/includes/integrations/class-wpm-tablepress.php',
     'WPM\\Includes\\Integrations\\WPM_VC' => $baseDir . '/includes/integrations/class-wpm-vc.php',
     'WPM\\Includes\\Integrations\\WPM_WooCommerce' => $baseDir . '/includes/integrations/class-wpm-woocommerce.php',

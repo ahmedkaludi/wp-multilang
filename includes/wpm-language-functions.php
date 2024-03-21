@@ -117,10 +117,7 @@ function wpm_get_language() {
 
 		if ( wp_doing_ajax() ) {
 			if ( $referrer && ! is_front_ajax() ) {
-				$query = wp_parse_url( $referrer, PHP_URL_QUERY );
-				if(is_string($query)){
-					parse_str($query, $query);
-				}								
+				$query = wp_parse_url( $referrer, PHP_URL_QUERY );								
 			} else {
 				return wpm_get_user_language();
 			}
