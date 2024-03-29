@@ -5,7 +5,7 @@
 $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
-return array(
+$class_map_array =  array(
     'WPM\\Includes\\Abstracts\\WPM_Object' => $baseDir . '/includes/abstracts/abstract-wpm-object.php',
     'WPM\\Includes\\Abstracts\\WPM_Widget' => $baseDir . '/includes/abstracts/abstract-wpm-widget.php',
     'WPM\\Includes\\Admin\\Meta_Boxes\\WPM_Meta_Box_Comment_Languages' => $baseDir . '/includes/admin/meta-boxes/class-wpm-meta-box-comment-languages.php',
@@ -66,3 +66,6 @@ return array(
     'WPM\\Includes\\WP_Multilang' => $baseDir . '/includes/class-wp-multilang.php',
     'WPM\\Includes\\Widgets\\WPM_Widget_Language_Switcher' => $baseDir . '/includes/widgets/class-wpm-widget-language-switcher.php',
 );
+
+$class_map_array = apply_filters('wpmpro_autoload_classmap', $class_map_array);
+return $class_map_array;

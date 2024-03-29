@@ -84,6 +84,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
             $loader->prefixesPsr0 = ComposerStaticInit10f68284d303303872430af9e5a79198::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit10f68284d303303872430af9e5a79198::$classMap;
 
+            $loader->classMap = apply_filters('wpmpro_autoload_static', $loader->classMap);
         }, null, ClassLoader::class);
     }
 }
