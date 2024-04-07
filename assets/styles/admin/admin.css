@@ -108,7 +108,7 @@
 }
 
 .wp-core-ui .button-link.delete-language {
-  color: #dc3232;
+  color: #f00;
 }
 
 .wpm-languages {
@@ -156,22 +156,22 @@
   box-shadow: none;
 }
 
-.edit-post-header-toolbar {
+.edit-post-header-toolbar, .edit-widgets-header__navigable-toolbar-wrapper {
   margin-left: 48px !important;
 }
-.edit-post-header-toolbar .wpm-language-switcher {
+.edit-post-header-toolbar .wpm-language-switcher, .edit-widgets-header__navigable-toolbar-wrapper .wpm-language-switcher {
   position: absolute;
   left: 10px !important;
 }
-.edit-post-header-toolbar .wpm-language-switcher .lang-main {
+.edit-post-header-toolbar .wpm-language-switcher .lang-main, .edit-widgets-header__navigable-toolbar-wrapper .wpm-language-switcher .lang-main {
   padding-left: 10px;
   padding-right: 10px;
   line-height: 36px;
 }
-.edit-post-header-toolbar .wpm-language-switcher .lang-main img {
+.edit-post-header-toolbar .wpm-language-switcher .lang-main img, .edit-widgets-header__navigable-toolbar-wrapper .wpm-language-switcher .lang-main img {
   top: 2px;
 }
-.edit-post-header-toolbar .lang-dropdown {
+.edit-post-header-toolbar .lang-dropdown, .edit-widgets-header__navigable-toolbar-wrapper .lang-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
@@ -179,14 +179,14 @@
   border: 1px solid #ccc;
   z-index: 1;
 }
-.edit-post-header-toolbar .lang-dropdown ul {
+.edit-post-header-toolbar .lang-dropdown ul, .edit-widgets-header__navigable-toolbar-wrapper .lang-dropdown ul {
   list-style: none;
 }
-.edit-post-header-toolbar .lang-dropdown ul a {
+.edit-post-header-toolbar .lang-dropdown ul a, .edit-widgets-header__navigable-toolbar-wrapper .lang-dropdown ul a {
   padding: 10px;
   display: block;
 }
-.edit-post-header-toolbar .lang-dropdown ul a:hover, .edit-post-header-toolbar .lang-dropdown ul a:focus {
+.edit-post-header-toolbar .lang-dropdown ul a:hover, .edit-post-header-toolbar .lang-dropdown ul a:focus, .edit-widgets-header__navigable-toolbar-wrapper .lang-dropdown ul a:hover, .edit-widgets-header__navigable-toolbar-wrapper .lang-dropdown ul a:focus {
   background-color: #ccc;
 }
 
@@ -206,7 +206,7 @@
   font-weight: 700;
 }
 .js-wpm-action + .error {
-  color: #dc3232;
+  color: #f00;
   font-style: italic;
   display: inline-block;
   margin-left: 10px;
@@ -225,6 +225,31 @@
 
 .column-languages {
   width: 100px;
+}
+
+.wpm-support-label {
+  margin-top: 4px;
+  float: left;
+  width: 70px;
+  font-size: 14px;
+}
+
+.wpm-star-mark {
+  color: #f00;
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+.wpm-hide {
+  display: none;
+}
+
+.wpm-query-success {
+  color: #46b450;
+}
+
+.wpm-query-error {
+  color: #f00;
 }
 
 /*# sourceMappingURL=admin.css.map */
