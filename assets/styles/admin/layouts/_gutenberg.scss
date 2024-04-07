@@ -1,8 +1,9 @@
 .edit-post-header-toolbar {
+    margin-left: 48px !important;
 
 	.wpm-language-switcher {
-		position: relative;
-		left: 0 !important;
+		position: absolute;
+		left: 10px !important;
 
 		.lang-main {
 			padding-left: 10px;

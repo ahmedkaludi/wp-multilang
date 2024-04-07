@@ -195,7 +195,16 @@ class WPM_Admin_Assets {
                 $(window).on('pageshow',function(){
                     if ($('#wpm-language-switcher').length === 0) {
                         var language_switcher = wp.template( 'wpm-ls-customizer' );
-                        $('.edit-post-header-toolbar').prepend(language_switcher);
+                        
+                        var wpm_add_language_switcher_deferred = function() {
+                            var toolbar = $('.edit-post-header-toolbar');
+                            if(toolbar.length) {
+                                toolbar.prepend(language_switcher);
+                            } else {
+                                window.setTimeout(wpm_add_language_switcher_deferred, 100);
+                            }
+                        }
+                        wpm_add_language_switcher_deferred();
                     }
                 });
 
