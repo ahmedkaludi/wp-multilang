@@ -390,10 +390,9 @@ class WPM_AJAX {
 
 	    $subject = isset( $data['wpm_disable_reason'] ) ? $data['wpm_disable_reason'] : '(no reason given)';
 
-	    $subject = $subject.' - WP Multilang';
-
-	    if($subject == 'technical - WP Multilang'){
-
+	    if($subject == 'technical'){
+	    	  $subject = $subject.' - WP Multilang';
+	    	  
 	          $text = trim($text);
 
 	          if(!empty($text)){
