@@ -252,4 +252,8 @@
   color: #f00;
 }
 
+.edit-post-header-toolbar .wpm-language-switcher{
+  left: 75px !important;
+}
+
 /*# sourceMappingURL=admin.css.map */
