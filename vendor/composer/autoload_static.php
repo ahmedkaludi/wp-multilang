@@ -38,6 +38,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Admin\\WPM_Admin_Settings' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin-settings.php',
         'WPM\\Includes\\Admin\\WPM_Admin_Taxonomies' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin-taxonomies.php',
         'WPM\\Includes\\Admin\\WPM_Admin_Widgets' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin-widgets.php',
+        'WPM\\Includes\\Admin\\WPM_Deactivate_Feedback_Form' => __DIR__ . '/../..' . '/includes/admin/tracking/class-wpm-feedback-form.php',
         'WPM\\Includes\\Integrations\\WPM_AIOSP' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-aiosp.php',
         'WPM\\Includes\\Integrations\\WPM_Acf' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-acf.php',
         'WPM\\Includes\\Integrations\\WPM_Better_Search' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-better-search.php',
