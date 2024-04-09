@@ -200,11 +200,9 @@ class WPM_Admin_Assets {
                             var toolbar = $('.edit-post-header-toolbar');
                             if(toolbar.length) {
                                 toolbar.prepend(language_switcher);
-                            } else {
-                                window.setTimeout(wpm_add_language_switcher_deferred, 100);
                             }
                         }
-                        wpm_add_language_switcher_deferred();
+                        window.setTimeout(wpm_add_language_switcher_deferred, 500);
                     }
                 });
 
