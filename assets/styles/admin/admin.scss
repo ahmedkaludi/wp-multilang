@@ -6,3 +6,28 @@
 @import "layouts/gutenberg";
 @import "layouts/settings";
 @import "layouts/table";
+
+.wpm-support-label{
+  margin-top: 4px;
+  float: left;
+  width: 70px;
+  font-size: 14px;
+}
+
+.wpm-star-mark{
+  color: $red;
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+.wpm-hide{
+  display: none;
+}
+
+.wpm-query-success{
+  color: $green;
+}
+
+.wpm-query-error{
+  color: $red;
+}
