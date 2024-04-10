@@ -41,6 +41,8 @@ class WPM_Yoast_Seo {
 			add_filter( 'wpm_rest_schema_languages', array( $this, 'add_schema_to_rest' ) );
 			add_filter( 'wpm_save_languages', array( $this, 'save_languages' ), 10, 2 );
 			add_filter( 'wpseo_locale', array( $this, 'add_opengraph_locale' ) );
+			add_filter( 'wpseo_opengraph_image', array($this, 'wpm_translate_opengraph_image' ) );
+			add_filter( 'wpseo_twitter_image', array($this, 'wpm_translate_twitter_image' ) );
 			if(defined('WPSEO_VERSION') && version_compare(WPSEO_VERSION, '14.0', '<') ) {
 				add_action( 'wpseo_opengraph', array( $this, 'add_alternate_opengraph_locale' ), 40 );
 			}else {
@@ -342,7 +344,7 @@ class WPM_Yoast_Seo {
 			if($post_id){
 				$table_name = $wpdb->prefix . 'postmeta';
 
-				$meta_key_array = array('_yoast_wpseo_title', '_yoast_wpseo_metadesc', '_yoast_wpseo_opengraph-title','_yoast_wpseo_opengraph-description', '_yoast_wpseo_twitter-title', '_yoast_wpseo_twitter-description', '_yoast_wpseo_focuskw');
+				$meta_key_array = array('_yoast_wpseo_title', '_yoast_wpseo_metadesc', '_yoast_wpseo_opengraph-title','_yoast_wpseo_opengraph-description', '_yoast_wpseo_twitter-title', '_yoast_wpseo_twitter-description', '_yoast_wpseo_focuskw', '_yoast_wpseo_schema_page_type', '_yoast_wpseo_schema_article_type', '_yoast_wpseo_opengraph-image', '_yoast_wpseo_opengraph-image-id', '_yoast_wpseo_twitter-image', '_yoast_wpseo_twitter-image-id');
 
 				// Get _yoast_wpseo_metadesc and _yoast_wpseo_title values from table
 				$post_meta_result = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE post_id = %d AND (meta_key IN('".implode("','", $meta_key_array)."') )", $post_id ));
@@ -364,16 +366,28 @@ class WPM_Yoast_Seo {
 											$update_array_values['title'] = sanitize_text_field($meta_value); 
 										}else if($key_name == '_yoast_wpseo_metadesc' && $result->description !== $meta_value){
 											$update_array_values['description'] = sanitize_textarea_field($meta_value); 
-										}else if($key_name == '_yoast_wpseo_opengraph-title' && $result->description !== $meta_value){
+										}else if($key_name == '_yoast_wpseo_opengraph-title' && $result->open_graph_title !== $meta_value){
 											$update_array_values['open_graph_title'] = sanitize_textarea_field($meta_value); 
-										}else if($key_name == '_yoast_wpseo_opengraph-description' && $result->description !== $meta_value){
+										}else if($key_name == '_yoast_wpseo_opengraph-description' && $result->open_graph_description !== $meta_value){
 											$update_array_values['open_graph_description'] = sanitize_textarea_field($meta_value); 
-										}else if($key_name == '_yoast_wpseo_twitter-title' && $result->description !== $meta_value){
+										}else if($key_name == '_yoast_wpseo_twitter-title' && $result->twitter_title !== $meta_value){
 											$update_array_values['twitter_title'] = sanitize_textarea_field($meta_value); 
-										}else if($key_name == '_yoast_wpseo_twitter-description' && $result->description !== $meta_value){
+										}else if($key_name == '_yoast_wpseo_twitter-description' && $result->twitter_description !== $meta_value){
 											$update_array_values['twitter_description'] = sanitize_textarea_field($meta_value); 
-										}else if($key_name == '_yoast_wpseo_focuskw' && $result->description !== $meta_value){
+										}else if($key_name == '_yoast_wpseo_focuskw' && $result->primary_focus_keyword !== $meta_value){
 											$update_array_values['primary_focus_keyword'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_schema_page_type' && $result->schema_page_type !== $meta_value){
+											$update_array_values['schema_page_type'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_schema_article_type' && $result->schema_article_type !== $meta_value){
+											$update_array_values['schema_article_type'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_opengraph-image' && $result->open_graph_image !== $meta_value){
+											$update_array_values['open_graph_image'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_opengraph-image-id' && $result->open_graph_image_id !== $meta_value){
+											$update_array_values['open_graph_image_id'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_twitter-image' && $result->twitter_image !== $meta_value){
+											$update_array_values['twitter_image'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_twitter-image-id' && $result->twitter_image_id !== $meta_value){
+											$update_array_values['twitter_image_id'] = sanitize_textarea_field($meta_value); 
 										}
 									}
 								}
@@ -442,6 +456,18 @@ class WPM_Yoast_Seo {
 								}
 								if(isset($term_option_details['wpseo_focuskw'])){
 									$update_array_values['primary_focus_keyword'] = sanitize_text_field($term_option_details['wpseo_focuskw']);
+								}
+								if(isset($term_option_details['wpseo_opengraph-image'])){
+									$update_array_values['open_graph_image'] = sanitize_text_field($term_option_details['wpseo_opengraph-image']);
+								}
+								if(isset($term_option_details['wpseo_opengraph-image-id'])){
+									$update_array_values['open_graph_image_id'] = sanitize_text_field($term_option_details['wpseo_opengraph-image-id']);
+								}
+								if(isset($term_option_details['wpseo_twitter-image'])){
+									$update_array_values['twitter_image'] = sanitize_text_field($term_option_details['wpseo_twitter-image']);
+								}
+								if(isset($term_option_details['wpseo_twitter-image-id'])){
+									$update_array_values['twitter_image_id'] = sanitize_text_field($term_option_details['wpseo_twitter-image-id']);
 								}
 
 								// Update the title and description field values of yoast_indexable table
@@ -512,5 +538,86 @@ class WPM_Yoast_Seo {
 
 		// There is a risk that 2 languages have the same Facebook locale. So let's make sure to output each locale only once.
 		return array_unique( $alternates );
+	}
+	
+	/**
+	 * Translate opengraph image
+	 *
+	 * @since 2.4.6
+	 * 
+	 * @param $image String
+	 *
+	 * @return $image String
+	 */
+	public function wpm_translate_opengraph_image($image)
+	{
+		$id = 0;
+		if(is_singular()){
+			$id = get_the_ID();
+		}else if(is_archive() || is_product_category()){
+			$id = get_queried_object_id();
+		}
+
+		if($id > 0){
+			$result = $this->wpm_get_yoast_data($id, 'open_graph_image');
+
+			if(is_object($result) && isset($result->open_graph_image)){
+
+				if(!empty($result->open_graph_image) && is_string($result->open_graph_image)){
+					$image = wpm_translate_value($result->open_graph_image);
+				}
+			}
+		}
+		return $image;
+	}
+
+	/**
+	 * Translate twitter image
+	 *
+	 * @since 2.4.6
+	 * 
+	 * @param $image String
+	 *
+	 * @return $image String
+	 */
+	public function wpm_translate_twitter_image($image)
+	{
+		$id = 0;
+		if(is_singular()){
+			$id = get_the_ID();
+		}else if(is_archive() || is_product_category()){
+			$id = get_queried_object_id();
+		}
+
+		if($id > 0){
+			$result = $this->wpm_get_yoast_data($id, 'twitter_image');
+
+			if(is_object($result) && isset($result->twitter_image)){
+				
+				if(!empty($result->twitter_image) && is_string($result->twitter_image)){
+					$image = wpm_translate_value($result->twitter_image);
+				}
+			}
+		}
+		return $image;
+	}
+
+	/**
+	 * Get data from yoast_indexable table
+	 *
+	 * @since 2.4.6
+	 * 
+	 * @param $object_id Integer
+	 * @param $field_name String
+	 *
+	 * @return $result Object
+	 */
+	public function wpm_get_yoast_data($object_id, $field_name)
+	{
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'yoast_indexable'; 
+
+		$result = $wpdb->get_row($wpdb->prepare("SELECT $field_name FROM $table_name WHERE object_id = %d", $object_id ));
+		return $result;
 	}
 }

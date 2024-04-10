@@ -9,7 +9,13 @@
     "_yoast_wpseo_opengraph-title": {},
     "_yoast_wpseo_opengraph-description": {},
     "_yoast_wpseo_twitter-title": {},
-    "_yoast_wpseo_twitter-description": {}
+    "_yoast_wpseo_twitter-description": {},
+    "_yoast_wpseo_schema_page_type": {},
+    "_yoast_wpseo_schema_article_type": {},
+    "_yoast_wpseo_opengraph-image": {},
+    "_yoast_wpseo_opengraph-image-id": {},
+    "_yoast_wpseo_twitter-image": {},
+    "_yoast_wpseo_twitter-image-id": {}
   },
   "admin_pages": [
     "seo_page_wpseo_titles",
@@ -56,7 +62,11 @@
           "wpseo_opengraph-title" : {},
           "wpseo_opengraph-description" : {},
           "wpseo_twitter-title" : {},
-          "wpseo_twitter-description" : {}
+          "wpseo_twitter-description" : {},
+          "wpseo_opengraph-image" : {},
+          "wpseo_opengraph-image-id" : {},
+          "wpseo_twitter-image" : {},
+          "wpseo_twitter-image-id" : {}
         }
       }
     }
