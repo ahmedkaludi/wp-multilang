@@ -28,6 +28,7 @@ class WPM_Yoast_Seo {
 		add_filter( 'wpseo_sitemap_entry', array( $this, 'add_lang_to_url' ), 10, 3 );
 		add_filter( 'wpseo_build_sitemap_post_type', array( $this, 'add_filter_for_maps' ) );
 		add_filter( 'wpseo_opengraph_url', array( $this, 'update_opengraph_url' ) );
+		add_filter( 'wpseo_schema_graph', array( $this, 'wpm_translate_schema_graph' ), 10, 2 );
 		if(defined('WPSEO_VERSION') && version_compare(WPSEO_VERSION, '14.0', '>=') ) {
 			add_action( 'wp_after_insert_post', array($this, 'update_yoast_post_meta_tags'));
 			add_action( 'saved_term', array($this, 'update_yoast_term_meta_tags'), 10, 5);
@@ -619,5 +620,21 @@ class WPM_Yoast_Seo {
 
 		$result = $wpdb->get_row($wpdb->prepare("SELECT $field_name FROM $table_name WHERE object_id = %d", $object_id ));
 		return $result;
+	}
+
+	/**
+	 * Translate yoast schema graph
+	 * 
+	 * @since 2.4.6
+	 * 
+	 * @param $schema_data Array
+	 * 
+	 * @return $schema_data Array
+	 * */
+	public function wpm_translate_schema_graph($schema_data, $context){
+		if(!empty($schema_data) && is_array($schema_data)){
+			$schema_data = wpm_translate_value($schema_data);
+		}
+		return $schema_data;
 	}
 }
