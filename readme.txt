@@ -231,9 +231,8 @@ If you have opened several browser tabs for editing this post in different langu
 
 = 2.4.6 =
 - enhancement Updated website links like contact page and other info in plugin and wp.org #45
-- feature Added WooCommerce Full support #49
 - feature Adedd feedback popup on deactivation #54
-- feature Compatibility with yoast multilingual schema and structured data support #57
+- feature Added compatibility with Elementor (Premium) 
 
 = 2.4.5 =
 - feature Different product or post images for each language #20
