@@ -4,8 +4,8 @@ Contributors: magazine3
 Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
-Tested up to: 6.4
-Stable tag: 2.4.5
+Tested up to: 6.5
+Stable tag: 2.4.6
 Requires PHP: 5.6.20
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -229,6 +229,12 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.6 =
+- enhancement Updated website links like contact page and other info in plugin and wp.org #45
+- feature Added WooCommerce Full support #49
+- feature Adedd feedback popup on deactivation #54
+- feature Compatibility with yoast multilingual schema and structured data support #57
+
 = 2.4.5 =
 - feature Different product or post images for each language #20
 - fixed Widget block translate issue #29
@@ -296,13 +302,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fix translating
 - fix saving metabox
 - fix set home url in subfolder
-
-= 2.2.2 =
-- added shortcode for display language switcher
-- add filters for set json config files for integration
-- fixed checking for ml strings
-- fixed compatibility with Gutenberg
-- fixed checking for JSON strings
-- fixed regex for ml strings
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
