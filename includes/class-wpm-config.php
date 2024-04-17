@@ -81,6 +81,8 @@ class WPM_Config {
 		if ( file_exists( $theme_config_file ) ) {
 			self::$config_files[ 'theme_' . $theme_name ] = $theme_config_file;
 		}
+		
+		self::$config_files = apply_filters('wpmpro_load_core_configs', self::$config_files, self::$active_plugins);
 	}
 
 	/**

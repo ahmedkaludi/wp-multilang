@@ -9,7 +9,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wp-multilang
  * Domain Path:       /languages
- * Version:           2.4.5
+ * Version:           2.4.6
  * Copyright:         © 2017-2019 Valentyn Riaboshtan
  *
  * @package  WPM
@@ -36,3 +36,51 @@ function wpm() {
 }
 
 wpm();
+
+
+/**
+ * Set transient on plugin activation
+ * @since 1.0
+ * */
+function wpm_activate_plugin( $network_active ) {
+
+	// Not network active i.e. plugin is activated on a single install (normal WordPress install) or a single site on a multisite network
+	if ( ! $network_active ) {
+		
+		// Set transient for single site activation notice
+		set_transient( 'wpm_admin_notice_activation', true, 60 );
+		
+		return;
+	}
+}
+register_activation_hook( __FILE__, 'wpm_activate_plugin' );
+
+
+/**
+ * Admin notice on plugin activation
+ *
+ * @since 1.0 
+ */
+function wpm_activation_admin_notices() {
+	
+	// Notices only for admins
+	if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    // Admin notice on plugin activation
+	if ( get_transient( 'wpm_admin_notice_activation' ) ) {
+	
+		$wpm_is_ready = '';
+		
+		// Do not display link to settings UI if we are already in the UI.
+		$screen = get_current_screen();
+		$wpm_ui_link_text = ( strpos( $screen->id, 'wpm' ) === false ) ? sprintf( __( '<a href="%s">Add your languages & Customize your settings &rarr;</a>', 'wp-multilang' ), admin_url( 'admin.php?page=wpm-settings' ) ) : '';
+		
+		echo '<div class="updated notice is-dismissible"><p>' . __( 'Thank you for installing <strong>WP Multilang!</strong> ', 'wp-multilang' ) . $wpm_is_ready . $wpm_ui_link_text . '</p></div>';
+		
+		// Delete transient
+		delete_transient( 'wpm_admin_notice_activation' );
+	}
+}
+add_action( 'admin_notices', 'wpm_activation_admin_notices' );

@@ -96,6 +96,7 @@ class WPM_AJAX {
 			'qtx_import'           => false,
 			'rated'                => false,
 			'send_query_message'   => false,
+			'send_feedback'   	   => false,
 		);
 
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
@@ -297,7 +298,7 @@ class WPM_AJAX {
 	}
 
 	/**
-	 * Triggered when anu support query is sent from Help & Support tab
+	 * Triggered when any support query is sent from Help & Support tab
 	 * @since 2.4.2
 	 * */
 	public static function send_query_message()
@@ -349,6 +350,65 @@ class WPM_AJAX {
 		}
 	                    
 	    wp_die(); 
+	}
+	
+	/**
+	 * Triggered when any support query is sent from Help & Support tab
+	 * @since 2.4.6
+	 * */
+	public static function send_feedback()
+	{
+		if ( ! current_user_can( 'manage_translations' ) ) {
+			wp_die( -1 );
+		}
+
+		if( isset( $_POST['data'] ) ) {
+	        parse_str( $_POST['data'], $data );
+	    }
+
+	    if(!isset($data['wpm_feedback_nonce'])){
+	    	wp_die( -1 );
+	    }
+
+	    if ( !wp_verify_nonce( $data['wpm_feedback_nonce'], 'wpm_feedback_nonce' ) ){
+       		return;  
+    	}
+
+		$text = '';
+	    if( isset( $data['wpm_disable_text'] ) ) {
+	        $text = implode( "\n\r", $data['wpm_disable_text'] );
+	    }
+
+	    $headers = array();
+
+	    $from = isset( $data['wpm_disable_from'] ) ? $data['wpm_disable_from'] : '';
+	    if( $from ) {
+	    	$headers[] = 'Content-Type: text/html; charset=UTF-8';
+	        $headers[] = "From: $from";
+	        $headers[] = "Reply-To: $from";
+	    }
+
+	    $subject = isset( $data['wpm_disable_reason'] ) ? $data['wpm_disable_reason'] : '(no reason given)';
+
+	    if($subject == 'technical'){
+	    	  $subject = $subject.' - WP Multilang';
+	    	  
+	          $text = trim($text);
+
+	          if(!empty($text)){
+
+	            $text = 'technical issue description: '.$text;
+
+	          }else{
+
+	            $text = 'no description: '.$text;
+	          }
+	      
+	    }
+
+	    $success = wp_mail( 'team@magazine3.in', $subject, $text, $headers );
+
+		wp_die();
 	}
 
 }

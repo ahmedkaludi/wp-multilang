@@ -25,6 +25,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Admin\\Settings\\WPM_Settings_General' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-general.php',
         'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Languages' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-languages.php',
         'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Support' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-support.php',
+        'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Upgrade_Pro' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-upgradepro.php',
         'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Page' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-page.php',
         'WPM\\Includes\\Admin\\WPM_Admin' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin.php',
         'WPM\\Includes\\Admin\\WPM_Admin_Assets' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin-assets.php',
@@ -38,6 +39,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Admin\\WPM_Admin_Settings' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin-settings.php',
         'WPM\\Includes\\Admin\\WPM_Admin_Taxonomies' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin-taxonomies.php',
         'WPM\\Includes\\Admin\\WPM_Admin_Widgets' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin-widgets.php',
+        'WPM\\Includes\\Admin\\WPM_Deactivate_Feedback_Form' => __DIR__ . '/../..' . '/includes/admin/tracking/class-wpm-feedback-form.php',
         'WPM\\Includes\\Integrations\\WPM_AIOSP' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-aiosp.php',
         'WPM\\Includes\\Integrations\\WPM_Acf' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-acf.php',
         'WPM\\Includes\\Integrations\\WPM_Better_Search' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-better-search.php',
@@ -84,6 +86,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
             $loader->prefixesPsr0 = ComposerStaticInit10f68284d303303872430af9e5a79198::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit10f68284d303303872430af9e5a79198::$classMap;
 
+            $loader->classMap = apply_filters('wpmpro_autoload_static', $loader->classMap);
         }, null, ClassLoader::class);
     }
 }

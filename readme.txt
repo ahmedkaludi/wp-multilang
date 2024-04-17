@@ -1,11 +1,11 @@
 === WP Multilang ===
 
 Contributors: magazine3
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EKM42LUA5CVZ4&source=url
+Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
-Tested up to: 6.4
-Stable tag: 2.4.5
+Tested up to: 6.5
+Stable tag: 2.4.6
 Requires PHP: 5.6.20
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -17,6 +17,8 @@ Multilingual plugin for WordPress.
 WP Multilang is a multilingual plugin for WordPress.
 
 Translations of post types, taxonomies, meta fields, options, text fields in miltimedia files, menus, titles and text fields in widgets.
+
+[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/)
 
 == New Features of the plugin WP Multilang ==
 * Support block based widgets
@@ -40,6 +42,11 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Possibility for add new languages for any user with capability `manage_options`.
 * Exist the role "Translator" for editing posts, terms. It can not publish or delete.
 * No limits by languages or by possibilities.
+
+== Premium Features of the plugin WP Multilang ==
+
+* Elementor Compatibility
+* Priority help & support
 
 == WP Multilang compatible with plugins ==
 
@@ -188,6 +195,10 @@ NOTE: Because plugins have different ways of storing data, WP Multilang is not c
 
 Please try WP Multilang in a test-environment before activating it on an existing production site and always make a backup before activating!
 
+== Support ==
+
+We try our best to provide support on WordPress.org forums. However, We have a special [community support](https://wp-multilang.com/contact-us/) where you can ask us questions and get help about your WP Multilang related questions. Delivering a good user experience means a lot to us and so we try our best to reply each and every question that gets asked.
+
 == Bug Reports ==
 
 Bug reports for WP Multilang are [welcomed on GitHub](https://github.com/ahmedkaludi/wp-multilang/issues). Please note GitHub is not a support forum, and issues that aren't properly qualified as bugs will be closed.
@@ -217,6 +228,11 @@ If you have opened several browser tabs for editing this post in different langu
 5. Post edit page
 
 == Changelog ==
+
+= 2.4.6 =
+- enhancement Updated website links like contact page and other info in plugin and wp.org #45
+- feature Adedd feedback popup on deactivation #54
+- feature Added compatibility with Elementor (Premium) 
 
 = 2.4.5 =
 - feature Different product or post images for each language #20
@@ -285,13 +301,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fix translating
 - fix saving metabox
 - fix set home url in subfolder
-
-= 2.2.2 =
-- added shortcode for display language switcher
-- add filters for set json config files for integration
-- fixed checking for ml strings
-- fixed compatibility with Gutenberg
-- fixed checking for JSON strings
-- fixed regex for ml strings
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

@@ -35,53 +35,64 @@
     "woocommerce_email_from_name": {},
     "woocommerce_new_order_settings": {
       "subject" : {},
-      "heading" : {}
+      "heading" : {},
+      "additional_content" : {}
     },
     "woocommerce_customer_completed_order_settings": {
       "subject" : {},
       "heading" : {},
       "subject_downloadable" : {},
-      "heading_downloadable" : {}
+      "heading_downloadable" : {},
+      "additional_content" : {}
     },
     "woocommerce_customer_invoice_settings": {
       "subject" : {},
       "heading" : {},
       "subject_paid" : {},
-      "heading_paid" : {}
+      "heading_paid" : {},
+      "additional_content" : {}
     },
     "woocommerce_customer_new_account_settings": {
       "subject" : {},
-      "heading" : {}
+      "heading" : {},
+      "additional_content" : {}
     },
     "woocommerce_customer_note_settings": {
       "subject" : {},
-      "heading" : {}
+      "heading" : {},
+      "additional_content" : {}
     },
     "woocommerce_customer_reset_password_settings": {
       "subject" : {},
-      "heading" : {}
+      "heading" : {},
+      "additional_content" : {}
     },
     "woocommerce_customer_processing_order_settings": {
       "subject" : {},
-      "heading" : {}
+      "heading" : {},
+      "additional_content" : {}
     },
     "woocommerce_cancelled_order_settings": {
       "subject" : {},
-      "heading" : {}
+      "heading" : {},
+      "additional_content" : {}
     },
     "woocommerce_failed_order_settings": {
       "subject" : {},
-      "heading" : {}
+      "heading" : {},
+      "additional_content" : {}
     },
     "woocommerce_customer_on_hold_order_settings": {
       "subject" : {},
-      "heading" : {}
+      "heading" : {},
+      "additional_content" : {}
     },
     "woocommerce_customer_refunded_order_settings": {
       "subject_full" : {},
       "heading_full" : {},
       "subject_partial" : {},
-      "heading_partial" : {}
+      "heading_partial" : {},
+      "additional_content" : {}
     },
     "woocommerce_paypal_settings": {
       "title" : {},
