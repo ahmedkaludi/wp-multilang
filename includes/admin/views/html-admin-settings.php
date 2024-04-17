@@ -24,7 +24,11 @@ if ( ! $tab_exists ) {
 			<?php
 
 			foreach ( $tabs as $slug => $label ) {
-				echo '<a href="' . esc_html( admin_url( 'options-general.php?page=wpm-settings&tab=' . esc_attr( $slug ) ) ) . '" class="nav-tab ' . ( $current_tab === $slug ? 'nav-tab-active' : '' ) . '">' . esc_html( $label ) . '</a>';
+				if($slug == 'upgradetopro'){
+					echo '<a href="https://wp-multilang.com/pricing/" class="nav-tab ' . ( $current_tab === $slug ? 'nav-tab-active' : '' ) . '" class="wpm-upgrade-to-pro" style="background-color: #0099E7; color:#fff" target="_blank">' . esc_html( $label ) . '</a>';
+				}else{
+					echo '<a href="' . esc_html( admin_url( 'options-general.php?page=wpm-settings&tab=' . esc_attr( $slug ) ) ) . '" class="nav-tab ' . ( $current_tab === $slug ? 'nav-tab-active' : '' ) . '">' . esc_html( $label ) . '</a>';
+				}
 			}
 
 			do_action( 'wpm_settings_tabs' );
@@ -41,7 +45,13 @@ if ( ! $tab_exists ) {
 		?>
 		<p class="submit">
 			<?php if ( empty( $GLOBALS['hide_save_button'] ) ) : ?>
-				<?php submit_button(); ?>
+				<?php 
+				echo '<style>.submit{float:left;}</style>';
+				submit_button(); 
+				if(!defined('WP_MULTILANG_PRO_VERSION')){
+					echo '<a class="button" style="background: #0099E7;color: #fff;margin: 30px 0px 0px 25px;" href="https://wp-multilang.com/pricing/" target="_blank">'.__( 'Upgrade to PRO', 'wp-multilang').'</a>';
+				}
+				?>
 			<?php endif; ?>
 			<?php wp_nonce_field( 'wpm-settings' ); ?>
 		</p>

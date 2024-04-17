@@ -50,6 +50,9 @@ class WPM_Admin_Settings {
 			$settings[] = new Settings\WPM_Settings_Languages();
 			$settings[] = new Settings\WPM_Settings_Additional();
 			$settings[] = new Settings\WPM_Settings_Support();
+			if(!defined('WP_MULTILANG_PRO_VERSION')){
+				$settings[] = new Settings\WPM_Settings_Upgrade_Pro();
+			}
 
 			self::$settings = apply_filters( 'wpm_get_settings_pages', $settings );
 		}
