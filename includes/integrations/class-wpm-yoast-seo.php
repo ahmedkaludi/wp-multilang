@@ -555,7 +555,7 @@ class WPM_Yoast_Seo {
 		$id = 0;
 		if(is_singular()){
 			$id = get_the_ID();
-		}else if(is_archive() || is_product_category()){
+		}else if(is_archive()){
 			$id = get_queried_object_id();
 		}
 
@@ -586,7 +586,7 @@ class WPM_Yoast_Seo {
 		$id = 0;
 		if(is_singular()){
 			$id = get_the_ID();
-		}else if(is_archive() || is_product_category()){
+		}else if(is_archive()){
 			$id = get_queried_object_id();
 		}
 
