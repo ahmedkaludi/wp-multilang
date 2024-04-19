@@ -18,7 +18,7 @@ WP Multilang is a multilingual plugin for WordPress.
 
 Translations of post types, taxonomies, meta fields, options, text fields in miltimedia files, menus, titles and text fields in widgets.
 
-[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/)
+[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/) | [Premium](https://wp-multilang.com/)
 
 == New Features of the plugin WP Multilang ==
 * Support block based widgets
@@ -43,13 +43,9 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Exist the role "Translator" for editing posts, terms. It can not publish or delete.
 * No limits by languages or by possibilities.
 
-== Premium Features of the plugin WP Multilang ==
-
-* Elementor Compatibility
-* Priority help & support
-
 == WP Multilang compatible with plugins ==
 
+* Elementor [available in premium version](https://wp-multilang.com/) - [View Tutorial](https://wp-multilang.com/)
 * ACF, ACF Pro
 * WooCommerce
 * WooCommerce Customizer
@@ -194,6 +190,8 @@ Function 'get_page_by_title' not working, because in title field are stored titl
 NOTE: Because plugins have different ways of storing data, WP Multilang is not compatible with every single plugin out-of-the-box (mostly page builders). This may result in texts not being translatable or translations not being saved. Most of these issues can be resolved using the integration options (wpm-config.json or filters) of WP Multilang.
 
 Please try WP Multilang in a test-environment before activating it on an existing production site and always make a backup before activating!
+
+[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/) | [Premium](https://wp-multilang.com/)
 
 == Support ==
 

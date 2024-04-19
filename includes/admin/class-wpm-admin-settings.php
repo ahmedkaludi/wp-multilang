@@ -49,6 +49,7 @@ class WPM_Admin_Settings {
 			$settings[] = new Settings\WPM_Settings_General();
 			$settings[] = new Settings\WPM_Settings_Languages();
 			$settings[] = new Settings\WPM_Settings_Additional();
+			$settings[] = new Settings\WPM_Settings_Premium();
 			$settings[] = new Settings\WPM_Settings_Support();
 			if(!defined('WP_MULTILANG_PRO_VERSION')){
 				$settings[] = new Settings\WPM_Settings_Upgrade_Pro();
@@ -405,7 +406,7 @@ class WPM_Admin_Settings {
 					if ( ! isset( $value['checkboxgroup'] ) || 'start' === $value['checkboxgroup'] ) {
 						?>
 							<tr valign="top" class="<?php echo esc_attr( implode( ' ', $visibility_class ) ); ?>">
-								<th scope="row" class="titledesc"><?php echo esc_html( $value['title'] ) ?></th>
+								<th scope="row" class="titledesc"><label class="wpm-label-cursor" style="cursor:pointer;" for="<?php echo $value['id'] ?>"><?php echo esc_html( $value['title'] ) ?></label></th>
 								<td class="forminp forminp-checkbox">
 									<fieldset>
 						<?php
@@ -447,6 +448,12 @@ class WPM_Admin_Settings {
 						<?php
 					}
 					break;
+
+				case 'section_note':
+					if ( ! empty( $value['desc'] ) ) {
+						echo wpautop( wptexturize( wp_kses_post( $value['desc'] ) ) );
+					}
+				break;	
 
 				// Default: run an action
 				default:

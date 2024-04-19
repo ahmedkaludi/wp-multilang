@@ -5,6 +5,7 @@
  * GitHub Plugin URI: https://github.com/ahmedkaludi/wp-multilang
  * Description:       Multilingual plugin for WordPress
  * Author:            Valentyn Riaboshtan
+ * Author URI: 		  https://wp-multilang.com/
  * License:           GPL2
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wp-multilang

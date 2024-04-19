@@ -25,7 +25,7 @@ if ( ! $tab_exists ) {
 
 			foreach ( $tabs as $slug => $label ) {
 				if($slug == 'upgradetopro'){
-					echo '<a href="https://wp-multilang.com/pricing/" class="nav-tab ' . ( $current_tab === $slug ? 'nav-tab-active' : '' ) . '" class="wpm-upgrade-to-pro" style="background-color: #0099E7; color:#fff" target="_blank">' . esc_html( $label ) . '</a>';
+					echo '<a href="https://wp-multilang.com/pricing/" class="nav-tab wpm-upgrade-pro-btn ' . ( $current_tab === $slug ? 'nav-tab-active' : '' ) . '" class="wpm-upgrade-to-pro" style="background-color: #0099E7; color:#fff; border: none; font-weight: 500;" target="_blank">' . esc_html( $label ) . '</a>';
 				}else{
 					echo '<a href="' . esc_html( admin_url( 'options-general.php?page=wpm-settings&tab=' . esc_attr( $slug ) ) ) . '" class="nav-tab ' . ( $current_tab === $slug ? 'nav-tab-active' : '' ) . '">' . esc_html( $label ) . '</a>';
 				}
@@ -49,7 +49,7 @@ if ( ! $tab_exists ) {
 				echo '<style>.submit{float:left;}</style>';
 				submit_button(); 
 				if(!defined('WP_MULTILANG_PRO_VERSION')){
-					echo '<a class="button" style="background: #0099E7;color: #fff;margin: 30px 0px 0px 25px;" href="https://wp-multilang.com/pricing/" target="_blank">'.__( 'Upgrade to PRO', 'wp-multilang').'</a>';
+					echo '<a class="button wpm-upgrade-pro-btn" style="background: #0099E7;color: #fff; border: none; font-weight: 500; margin: 30px 0px 0px 25px;" href="https://wp-multilang.com/pricing/" target="_blank">'.__( 'Upgrade to PRO', 'wp-multilang').'</a>';
 				}
 				?>
 			<?php endif; ?>
