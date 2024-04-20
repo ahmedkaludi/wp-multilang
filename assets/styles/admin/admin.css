@@ -262,7 +262,7 @@
 .wpm-upgrade-pro-btn, .wpm-upgrade-pro-btn:hover{
   background-color: #0099E7; 
   color:#fff;
-  border: none;
+  border: 1px solid #0099E7;
   font-weight: 500;
 }
 

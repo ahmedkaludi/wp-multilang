@@ -3,7 +3,7 @@
  * Plugin Name:       WP Multilang
  * Plugin URI:        https://github.com/ahmedkaludi/wp-multilang
  * GitHub Plugin URI: https://github.com/ahmedkaludi/wp-multilang
- * Description:       Multilingual plugin for WordPress
+ * Description:       Multilingual plugin for WordPress. Go Multilingual in minutes with full WordPress support. Translate your site easily with this localization plugin.
  * Author:            Valentyn Riaboshtan
  * Author URI: 		  https://wp-multilang.com/
  * License:           GPL2

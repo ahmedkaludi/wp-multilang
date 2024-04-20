@@ -1,5 +1,5 @@
 jQuery(document).ready(function($){
-	let proBtn = '<a class="button wpm-upgrade-pro-btn wpm-pro-free-btn" style="background: #0099E7;color: #fff; border: none; font-weight: 500; margin-left: 20px;" href="https://wp-multilang.com/pricing/" target="_blank">Upgrade to PRO</a>';
+	let proBtn = '<span class="wpm-pro-free-btn"> This Compatibility requires the <a href="https://wp-multilang.com/pricing/" target="__blank">Premium Version</span>';
 
 	$(document).on('change', '.wpm_free_compatibilities', function(e){
 		e.preventDefault();

@@ -1,4 +1,4 @@
-=== WP Multilang ===
+=== WP Multilang - Translation and Multilingual Plugin ===
 
 Contributors: magazine3
 Donate link: https://paypal.me/kaludi
@@ -10,7 +10,7 @@ Requires PHP: 5.6.20
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Multilingual plugin for WordPress.
+Multilingual plugin for WordPress. Go Multilingual in minutes with full WordPress support. Translate your site easily with this localization plugin.
 
 == Description ==
 
@@ -45,7 +45,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 
 == WP Multilang compatible with plugins ==
 
-* Elementor [(available in premium version)](https://wp-multilang.com/) - [View Tutorial](https://wp-multilang.com/docs)
+* Elementor ([available in premium version])(https://wp-multilang.com/) - [View Tutorial](https://wp-multilang.com/docs)
 * ACF, ACF Pro
 * WooCommerce
 * WooCommerce Customizer

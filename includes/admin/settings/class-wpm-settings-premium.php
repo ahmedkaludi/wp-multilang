@@ -47,11 +47,12 @@ class WPM_Settings_Premium extends WPM_Settings_Page {
 		wp_localize_script( 'wpm_premium_settings', 'wpm_premium_settings_params', $main_params );
 		wp_enqueue_script( 'wpm_premium_settings' );
 
-		$section_note = array( 'title' => '', 'type' => 'section_note', 'desc' => 'If you <strong>can’t find your compatibility</strong> with <strong>WP Multilang Pro</strong>, then we’ll make the integration for you without any extra charge, if you upgrade to pro.');
+		$section_note = array( 'title' => '', 'type' => 'section_note', 'desc' => __('If you <strong>can’t find your compatibility</strong> with <strong>WP Multilang</strong>, then we’ll make the integration. <a href="https://wp-multilang.com/contact-us/">Contact Us</a>', 'wp-multilang'));
 
 		$compat_Settings = array(
 				'title'   => __( 'Elementor', 'wp-multilang' ),
 				'class'   => 'wpm_free_compatibilities',
+				'id'      => 'wpm_elementor_compatibility_free',
 				'default' => 'no',
 				'type'    => 'checkbox',
 			);
