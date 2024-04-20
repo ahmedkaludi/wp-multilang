@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
 Tested up to: 6.5
-Stable tag: 2.4.6
+Stable tag: 2.4.7
 Requires PHP: 5.6.20
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -226,6 +226,11 @@ If you have opened several browser tabs for editing this post in different langu
 5. Post edit page
 
 == Changelog ==
+
+= 2.4.7 =
+- fixed Call to undefined function #65
+- feature Admin settings page UI/UX changes #67
+- feature Added Newsletter Form #68
 
 = 2.4.6 =
 - enhancement Updated website links like contact page and other info in plugin and wp.org #45
