@@ -129,6 +129,7 @@ class WPM_Admin_Settings {
 
 		wp_localize_script( 'wpm_settings', 'wpm_settings_params', array(
 			'nav_warning' => __( 'The changes you made will be lost if you navigate away from this page.', 'wp-multilang' ),
+			'wpm_admin_settings_nonce'    => wp_create_nonce( 'wpm_admin_settings_nonce' )
 		) );
 
 		// Get tabs for the settings page

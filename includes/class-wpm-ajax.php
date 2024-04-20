@@ -97,6 +97,9 @@ class WPM_AJAX {
 			'rated'                => false,
 			'send_query_message'   => false,
 			'send_feedback'   	   => false,
+			'subscribe_to_news_letter' => false,
+			'newsletter_hide_form' => false,
+			'settings_newsletter_submit' => false
 		);
 
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
@@ -410,5 +413,110 @@ class WPM_AJAX {
 
 		wp_die();
 	}
+	
+	/**
+	 * Triggered when any newsletter subscribe button is clicked
+	 * @since 2.4.7
+	 * */
+	public static function subscribe_to_news_letter(){
+  
+		if(!current_user_can('manage_options')){
+            wp_die( -1 );    
+        }
 
+        if ( ! isset( $_POST['wpm_security_nonce'] ) ){
+            wp_die( -1 ); 
+        }
+
+        if ( !wp_verify_nonce( $_POST['wpm_security_nonce'], 'wpm_security_nonce' ) ){
+           wp_die( -1 );  
+        }
+                        
+    	$name    = isset($_POST['name'])?sanitize_text_field($_POST['name']):'';
+        $email   = isset($_POST['email'])?sanitize_text_field($_POST['email']):'';
+        $website = isset($_POST['website'])?sanitize_text_field($_POST['website']):'';
+        
+        if($email){
+                
+            $api_url = 'http://magazine3.company/wp-json/api/central/email/subscribe';
+
+		    $api_params = array(
+		        'name'    => $name,
+		        'email'   => $email,
+		        'website' => $website,
+		        'type'    => 'wpmultilang'
+		            );
+		            
+		    $response = wp_remote_post( $api_url, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+		            $response = wp_remote_retrieve_body( $response );                    
+		    echo $response;
+
+        }else{
+                echo esc_html__('Email id required', 'wp-multilang');                        
+        }                        
+
+        wp_die();
+	}
+
+	/**
+	 * Triggered when clicked on close button of newsletter form present in settings 
+	 * @since 2.4.7
+	 * */
+	public static function newsletter_hide_form(){  
+		if(!current_user_can('manage_options')){
+            wp_die( -1 );    
+        }
+
+        if ( ! isset( $_POST['wpm_admin_settings_nonce'] ) ){
+            wp_die( -1 ); 
+        }
+
+        if ( !wp_verify_nonce( $_POST['wpm_admin_settings_nonce'], 'wpm_admin_settings_nonce' ) ){
+           wp_die( -1 );  
+        } 
+
+		update_option( 'wpm_hide_newsletter', 'yes' , false);
+
+		echo wp_json_encode(array('status'=>200, 'message'=>esc_html__('Submitted ','wp-multilang')));
+
+	    wp_die();
+	}
+
+	/**
+	 * Triggered when clicked on subscribe button of newsletter form present in settings
+	 * @since 2.4.7
+	 * */
+	public static function settings_newsletter_submit(){  
+		if(!current_user_can('manage_options')){
+            wp_die( -1 );    
+        }
+
+        if ( ! isset( $_POST['wpm_admin_settings_nonce'] ) ){
+            wp_die( -1 ); 
+        }
+
+        if ( !wp_verify_nonce( $_POST['wpm_admin_settings_nonce'], 'wpm_admin_settings_nonce' ) ){
+           wp_die( -1 );  
+        } 
+
+	    if(issset($_POST['email']) && !empty($_POST['email'])){
+			global $current_user;
+			$api_url = 'http://magazine3.company/wp-json/api/central/email/subscribe';
+		    $api_params = array(
+		        'name' => sanitize_text_field($current_user->display_name),
+		        'email'=> sanitize_email($_POST['email']),
+		        'website'=> sanitize_url( get_site_url() ),
+		        'type'=> 'wpmultilang'
+		    );
+
+		    $response = wp_remote_post( $api_url, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+			if ( !is_wp_error( $response ) ) {
+				$response = wp_remote_retrieve_body( $response );
+				echo wp_json_encode(array('status'=>200, 'message'=>esc_html__('Submitted ','wp-multilang'), 'response'=> $response));
+			}else{
+				echo wp_json_encode(array('status'=>500, 'message'=>esc_html__('No response from API','wp-multilang')));	
+			}
+		    wp_die();
+		}
+	}
 }

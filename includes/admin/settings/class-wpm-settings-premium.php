@@ -47,6 +47,8 @@ class WPM_Settings_Premium extends WPM_Settings_Page {
 		wp_localize_script( 'wpm_premium_settings', 'wpm_premium_settings_params', $main_params );
 		wp_enqueue_script( 'wpm_premium_settings' );
 
+		$section_note = array( 'title' => '', 'type' => 'section_note', 'desc' => 'If you <strong>can’t find your compatibility</strong> with <strong>WP Multilang Pro</strong>, then we’ll make the integration for you without any extra charge, if you upgrade to pro.');
+
 		$compat_Settings = array(
 				'title'   => __( 'Elementor', 'wp-multilang' ),
 				'class'   => 'wpm_free_compatibilities',
@@ -55,14 +57,15 @@ class WPM_Settings_Premium extends WPM_Settings_Page {
 			);
 		if(defined('WP_MULTILANG_PRO_VERSION')){
 			$compat_Settings = apply_filters('wpm_premium_settings_pro', array());
+			$section_note = array();
 		}
 
 		$settings = apply_filters( 'wpm_' . $this->id . '_settings', array(
 
-			array( 'title' => __( 'Premium Features', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'premium_features' ),
+			array( 'title' => __( 'Compatibility', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'premium_features' ),
 			$compat_Settings,
 			array( 'type' => 'sectionend', 'id' => 'premium_features' ),
-			array( 'title' => '', 'type' => 'section_note', 'desc' => 'If you <strong>can’t find your compatibility</strong> with <strong>WP Multilang Pro</strong>, then we’ll make the integration for you without any extra charge, if you upgrade to pro.')
+			$section_note
 
 		) );
 
@@ -73,8 +76,10 @@ class WPM_Settings_Premium extends WPM_Settings_Page {
 	 * Save settings.
 	 */
 	public function save() {
-		$settings = $this->get_settings();
+		if(defined('WP_MULTILANG_PRO_VERSION')){
+			$settings = $this->get_settings();
 
-		WPM_Admin_Settings::save_fields( $settings );
+			WPM_Admin_Settings::save_fields( $settings );
+		}
 	}
 }

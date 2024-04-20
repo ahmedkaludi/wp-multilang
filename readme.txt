@@ -45,7 +45,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 
 == WP Multilang compatible with plugins ==
 
-* Elementor [available in premium version](https://wp-multilang.com/) - [View Tutorial](https://wp-multilang.com/)
+* Elementor [available in premium version](https://wp-multilang.com/) - [View Tutorial](https://wp-multilang.com/docs)
 * ACF, ACF Pro
 * WooCommerce
 * WooCommerce Customizer

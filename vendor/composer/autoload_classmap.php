@@ -29,6 +29,7 @@ $class_map_array =  array(
     'WPM\\Includes\\Admin\\WPM_Admin_Settings' => $baseDir . '/includes/admin/class-wpm-admin-settings.php',
     'WPM\\Includes\\Admin\\WPM_Admin_Taxonomies' => $baseDir . '/includes/admin/class-wpm-admin-taxonomies.php',
     'WPM\\Includes\\Admin\\WPM_Admin_Widgets' => $baseDir . '/includes/admin/class-wpm-admin-widgets.php',
+    'WPM\\Includes\\Admin\\WPM_Admin_Newsletter' => $baseDir . '/includes/admin/class-wpm-admin-newsletter.php',
     'WPM\\Includes\\Admin\\WPM_Deactivate_Feedback_Form' => $baseDir . '/includes/admin/tracking/class-wpm-feedback-form.php',
     'WPM\\Includes\\Integrations\\WPM_AIOSP' => $baseDir . '/includes/integrations/class-wpm-aiosp.php',
     'WPM\\Includes\\Integrations\\WPM_Acf' => $baseDir . '/includes/integrations/class-wpm-acf.php',
