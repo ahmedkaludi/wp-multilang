@@ -51,6 +51,7 @@ class WPM_Admin {
 		new WPM_Admin_Taxonomies();
 		new WPM_Admin_Settings();
 		new WPM_Admin_Widgets();
+		new WPM_Admin_Newsletter();
 		new WPM_Admin_Assets();
 		new WPM_Admin_Qtranslate();
 		new WPM_Deactivate_Feedback_Form();

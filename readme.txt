@@ -1,16 +1,16 @@
-=== WP Multilang ===
+=== WP Multilang - Translation and Multilingual Plugin ===
 
 Contributors: magazine3
 Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
 Tested up to: 6.5
-Stable tag: 2.4.6
+Stable tag: 2.4.7
 Requires PHP: 5.6.20
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Multilingual plugin for WordPress.
+Multilingual plugin for WordPress. Go Multilingual in minutes with full WordPress support. Translate your site easily with this localization plugin.
 
 == Description ==
 
@@ -18,7 +18,7 @@ WP Multilang is a multilingual plugin for WordPress.
 
 Translations of post types, taxonomies, meta fields, options, text fields in miltimedia files, menus, titles and text fields in widgets.
 
-[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/)
+[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/) | [Premium](https://wp-multilang.com/)
 
 == New Features of the plugin WP Multilang ==
 * Support block based widgets
@@ -43,13 +43,9 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Exist the role "Translator" for editing posts, terms. It can not publish or delete.
 * No limits by languages or by possibilities.
 
-== Premium Features of the plugin WP Multilang ==
-
-* Elementor Compatibility
-* Priority help & support
-
 == WP Multilang compatible with plugins ==
 
+* Elementor ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs)
 * ACF, ACF Pro
 * WooCommerce
 * WooCommerce Customizer
@@ -195,6 +191,8 @@ NOTE: Because plugins have different ways of storing data, WP Multilang is not c
 
 Please try WP Multilang in a test-environment before activating it on an existing production site and always make a backup before activating!
 
+[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/) | [Premium](https://wp-multilang.com/)
+
 == Support ==
 
 We try our best to provide support on WordPress.org forums. However, We have a special [community support](https://wp-multilang.com/contact-us/) where you can ask us questions and get help about your WP Multilang related questions. Delivering a good user experience means a lot to us and so we try our best to reply each and every question that gets asked.
@@ -228,6 +226,11 @@ If you have opened several browser tabs for editing this post in different langu
 5. Post edit page
 
 == Changelog ==
+
+= 2.4.7 =
+- fixed Call to undefined function #65
+- feature Admin settings page UI/UX changes #67
+- feature Added Newsletter Form #68
 
 = 2.4.6 =
 - enhancement Updated website links like contact page and other info in plugin and wp.org #45

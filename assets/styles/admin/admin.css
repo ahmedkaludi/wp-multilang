@@ -256,4 +256,14 @@
   left: 75px !important;
 }
 
+/**
+ * Upgrade to pro button design changes
+ * */
+.wpm-upgrade-pro-btn, .wpm-upgrade-pro-btn:hover{
+  background-color: #0099E7; 
+  color:#fff;
+  border: 1px solid #0099E7;
+  font-weight: 500;
+}
+
 /*# sourceMappingURL=admin.css.map */
