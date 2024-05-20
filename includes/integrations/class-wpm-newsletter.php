@@ -59,8 +59,12 @@ class WPM_Newsletter {
 	 * Translate options
 	 */
 	public function translate_options() {
-		\NewsletterSubscription::instance()->options = wpm_translate_value( \NewsletterSubscription::instance()->options );
-		\Newsletter::instance()->options = wpm_translate_value( \Newsletter::instance()->options );
+		if(class_exists('NewsletterSubscription') && isset(\NewsletterSubscription::instance()->options)){
+			\NewsletterSubscription::instance()->options = wpm_translate_value( \NewsletterSubscription::instance()->options );
+		}
+		if(class_exists('Newsletter') && isset(\Newsletter::instance()->options)){
+			\Newsletter::instance()->options = wpm_translate_value( \Newsletter::instance()->options );
+		}
 
 		/**
 		 * Compatibility with extension WP Users Integration
