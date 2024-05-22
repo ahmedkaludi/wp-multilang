@@ -97,9 +97,10 @@ class WPM_CF7 {
 					$table = $wpdb->prefix.'postmeta';
 					$post_content = wp_unslash($post_content->post_content);
 					$flag = $wpdb->query($wpdb->prepare("UPDATE $table SET meta_value = %s WHERE post_id = %d AND meta_key = '_form'", $post_content, $object_id));
+					return true;
 				}
 			}
 		}
-		return true;
+		return $check;
 	}
 }
