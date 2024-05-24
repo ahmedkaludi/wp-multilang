@@ -113,6 +113,7 @@ abstract class WPM_Object {
 				$value = apply_filters( 'wpm_get_meta_value', $value, $meta_key );
 				$value = apply_filters( "wpm_get_{$meta_key}_meta_value", $value );
 				$value = apply_filters( "wpm_get_{$this->object_type}_meta_{$meta_key}_value", $value );
+				$value = apply_filters( "wpm_unslash_form_meta_value", $value,  $meta_key);
 
 				$values[] = $value;
 			}
