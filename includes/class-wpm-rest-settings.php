@@ -24,6 +24,8 @@ class WPM_REST_Settings {
 		add_filter( 'rest_pre_get_setting', array( $this, 'get_languages_setting' ), 10, 3 );
 		add_filter( 'rest_pre_update_setting', array( $this, 'update_languages_setting' ), 10, 3 );
 		add_filter( 'rest_pre_update_setting', array( $this, 'update_site_language_setting' ), 10, 3 );
+		add_filter( 'rest_prepare_post', array( $this, 'update_post_or_page_url' ), 10, 3 );
+		add_filter( 'rest_prepare_page', array( $this, 'update_post_or_page_url' ), 10, 3 );
 	}
 
 	/**
@@ -207,5 +209,26 @@ class WPM_REST_Settings {
 		}
 
 		return $updated;
+	}
+	
+	/**
+	 * Translate post or page url of editor when post is created or updated
+	 * @since 2.4.8
+	 * */
+	public function update_post_or_page_url($response, $post, $request){
+		if(is_object($response) && isset($response->data)){
+
+			$response_data = $response->data;
+
+			if(is_array($response_data) && isset($response_data['type']) && ($response_data['type'] == 'post' || $response_data['type'] == 'page')){
+
+				if(isset($response_data['link'])){
+					$response->data['link'] = wpm_translate_url($response_data['link']);
+				}
+
+			}
+
+		}
+		return $response;
 	}
 }
