@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
 Tested up to: 6.5
-Stable tag: 2.4.7
+Stable tag: 2.4.8
 Requires PHP: 5.6.20
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -227,6 +227,14 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.8 =
+- fixed admin_html_tags leaving empty fields #41
+- feature Gutenberg view post should redirect to current language post #55
+- fixed Conflicts with the Newsletter plugin #61
+- feature Woocommerce product attributes translation issue #70
+- fixed Issue with CF7 form #73
+- fixed Language switch button interface Guternberg block button  #74
+
 = 2.4.7 =
 - fixed Call to undefined function #65
 - feature Admin settings page UI/UX changes #67
@@ -298,11 +306,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed compatibility with SiteOrigin
 - fixed http to https redirect error
 - fixed styles
-
-= 2.2.3 =
-- fix translate menu
-- fix translating
-- fix saving metabox
-- fix set home url in subfolder
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
