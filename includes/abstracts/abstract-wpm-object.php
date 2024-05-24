@@ -157,6 +157,7 @@ abstract class WPM_Object {
 
 		$config               = wpm_get_config();
 		$object_fields_config = apply_filters( "wpm_{$this->object_type}_fields_config", $config[ "{$this->object_type}_fields" ] );
+		$object_fields_config = apply_filters( "wpm_modify_woocommerce_product_attributes_config", $object_fields_config, $meta_key, $meta_value, $object_id);
 
 		if ( ! isset( $object_fields_config[ $meta_key ] ) ) {
 			return $check;
