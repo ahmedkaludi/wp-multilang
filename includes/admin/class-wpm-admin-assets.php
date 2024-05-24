@@ -201,11 +201,33 @@ class WPM_Admin_Assets {
                             var toolbar = $('.edit-post-header-toolbar');
                             if(toolbar.length) {
                                 toolbar.prepend(language_switcher);
+
+                                wpm_change_switcher_margin();
                             }
                         }
                         window.setTimeout(wpm_add_language_switcher_deferred, 500);
                     }
                 });
+                
+                $(document).on('click', '.components-menu-item__button', function(e){
+                	let firstChild = $(this).find('.components-menu-item__info-wrapper');
+                	if(firstChild.length > 0){
+                		let secondChild = firstChild.find('.components-menu-item__item');
+                		if(secondChild.length > 0){
+                			if(secondChild.text() == 'Fullscreen mode'){
+                				wpm_change_switcher_margin();
+                			}
+                		}
+                	}
+                });
+
+                function wpm_change_switcher_margin(){
+                	if($('body').hasClass('is-fullscreen-mode')){
+                    	$('.wpm-language-switcher').css({'margin-left': '75px'});
+                    }else{
+                    	$('.wpm-language-switcher').css({'margin-left': '10px'});
+                    }	
+                }
 
 				$(document).on('click', '#wpm-language-switcher .lang-dropdown a', function(){
 					var lang = $(this).data('lang');

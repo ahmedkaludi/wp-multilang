@@ -62,6 +62,7 @@ class WPM_WooCommerce {
 		add_action( 'admin_action_duplicate_product', array( $this, 'remove_filters' ), 9 );
 		add_filter( 'woocommerce_rest_prepare_product_object', array( $this, 'translate_rest_object' ), 10, 3 );
 		add_filter( 'woocommerce_rest_prepare_product_variation_object', array( $this, 'translate_rest_object' ), 10, 3 );
+		add_filter( 'wpm_modify_woocommerce_product_attributes_config', array( $this, 'modify_product_attributes' ), 10, 4 );
 
 		if ( is_admin() ) {
 			add_filter( 'wpm_taxonomies_config', array( $this, 'add_attribute_taxonomies' ) );
@@ -369,5 +370,34 @@ class WPM_WooCommerce {
 		}
 
 		return $response;
+	}
+	
+	public function modify_product_attributes($object_fields_config, $meta_key, $meta_value, $product_id){
+
+		$attribute_key = array();
+
+		if($meta_key == '_product_attributes'){
+
+			if(function_exists('wc_get_product')){
+
+				$product = wc_get_product($product_id);
+				if($product->get_type() == 'simple'){
+					if(isset($object_fields_config[$meta_key]) && is_array($object_fields_config[$meta_key])){
+						if(is_array($meta_value) && !empty($meta_value)){
+							$attr_array = array();
+							foreach ($object_fields_config[$meta_key] as $ofc_key => $ofc_value) {
+								$attr_array = $ofc_value;
+							}
+							foreach ($meta_value as $key => $value) {
+								$attribute_key[] = $key;
+								$object_fields_config[$meta_key][$key] = $attr_array;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $object_fields_config;
 	}
 }

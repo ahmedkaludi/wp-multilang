@@ -71,6 +71,10 @@
   .language-switcher a {
     margin-top: 0 !important;
   }
+  .edit-post-header-toolbar .wpm-language-switcher{
+    left: 10px;
+    margin-left: 0px !important;
+  }
 }
 .language-switcher {
   left: 0;
@@ -161,7 +165,7 @@
 }
 .edit-post-header-toolbar .wpm-language-switcher, .edit-widgets-header__navigable-toolbar-wrapper .wpm-language-switcher {
   position: absolute;
-  left: 10px !important;
+  left: 10px;
 }
 .edit-post-header-toolbar .wpm-language-switcher .lang-main, .edit-widgets-header__navigable-toolbar-wrapper .wpm-language-switcher .lang-main {
   padding-left: 10px;
@@ -250,10 +254,6 @@
 
 .wpm-query-error {
   color: #f00;
-}
-
-.edit-post-header-toolbar .wpm-language-switcher{
-  left: 75px !important;
 }
 
 /**

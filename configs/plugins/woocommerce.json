@@ -10,7 +10,13 @@
   "post_fields": {
     "_button_text": {},
     "_purchase_note": {},
-    "_variation_description": {}
+    "_variation_description": {},
+    "_product_attributes": {
+      "size" : {
+        "name" : {},
+        "value" : {}
+      }
+    }
   },
   "taxonomies": {
     "product_cat" : {},
