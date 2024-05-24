@@ -212,7 +212,7 @@ class WPM_REST_Settings {
 	}
 	
 	/**
-	 * Translate post or page url of editor when post is created or updated
+	 * Translate gutenberg block post or page url of editor when post is created or updated
 	 * @since 2.4.8
 	 * */
 	public function update_post_or_page_url($response, $post, $request){
