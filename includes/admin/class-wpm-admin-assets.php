@@ -27,6 +27,7 @@ class WPM_Admin_Assets {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'add_language_switcher' ) );
+		add_action( 'enqueue_block_editor_assets', array( $this, 'add_language_switcher_block_theme' ) );
 	}
 
 	/**
@@ -191,6 +192,39 @@ class WPM_Admin_Assets {
 			return;
 		}
 
+		$script = $this->render_language_switcher(500);
+
+		wp_add_inline_script( 'wp-edit-post', $script );
+		add_action( 'admin_footer', 'wpm_admin_language_switcher_customizer' );
+	}
+	
+	/**
+	 * Add language switcher 
+	 * @since 2.4.9
+	 * */
+	public function add_language_switcher_block_theme(){
+		$screen       = get_current_screen();
+		if(is_object($screen) && !empty($screen)){
+			$screen_id    = $screen ? $screen->id : '';
+			$block_editor = $screen ? $screen->is_block_editor : '';
+			if ( $screen_id == 'site-editor' && $block_editor == 1){
+				if ( count( wpm_get_languages() ) <= 1 ) {
+					return;
+				}
+
+				$script = $this->render_language_switcher(4000);
+
+				wp_add_inline_script( 'wp-edit-site', $script );
+				add_action( 'admin_footer', 'wpm_admin_language_switcher_customizer' );
+			}
+		}
+	}
+	
+	/**
+	 * Display language switcher on theme site editor
+	 * @since 2.4.9
+	 * */
+	public function render_language_switcher($interval){
 		$script = "
 			(function( $ ) {
                 $(window).on('pageshow',function(){
@@ -205,7 +239,7 @@ class WPM_Admin_Assets {
                                 wpm_change_switcher_margin();
                             }
                         }
-                        window.setTimeout(wpm_add_language_switcher_deferred, 500);
+                        window.setTimeout(wpm_add_language_switcher_deferred, $interval);
                     }
                 });
                 
@@ -243,8 +277,6 @@ class WPM_Admin_Assets {
 				});
 			})( jQuery );
 		";
-
-		wp_add_inline_script( 'wp-edit-post', $script );
-		add_action( 'admin_footer', 'wpm_admin_language_switcher_customizer' );
+		return $script;
 	}
 }
