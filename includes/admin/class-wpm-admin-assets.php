@@ -224,7 +224,7 @@ class WPM_Admin_Assets {
 	 * Display language switcher on theme site editor
 	 * @since 2.4.9
 	 * */
-	public function render_language_switcher($interval){
+	public function render_language_switcher($interval = 2000){
 		$script = "
 			(function( $ ) {
                 $(window).on('pageshow',function(){
@@ -274,6 +274,18 @@ class WPM_Admin_Assets {
 						href = url + query + '&edit_lang=' + lang + document.location.hash;
 					}
 					$(this).attr('href', href);
+				});
+
+				$(document).on('click', '.edit-site-sidebar-button', function(e){
+					if ($('#wpm-language-switcher').length === 0) {
+						var language_switcher = wp.template( 'wpm-ls-customizer' );
+						var toolbar = $('.edit-post-header-toolbar');
+	                    if(toolbar.length) {
+	                        toolbar.prepend(language_switcher);
+
+	                        wpm_change_switcher_margin();
+	                    }
+	                }
 				});
 			})( jQuery );
 		";
