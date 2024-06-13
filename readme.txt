@@ -18,7 +18,7 @@ WP Multilang is a multilingual plugin for WordPress.
 
 Translations of post types, taxonomies, meta fields, options, text fields in miltimedia files, menus, titles and text fields in widgets.
 
-[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/) | [Premium](https://wp-multilang.com/)
+[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/) | [Premium Features](https://wp-multilang.com/#features)
 
 == New Features of the plugin WP Multilang ==
 * Support block based widgets
