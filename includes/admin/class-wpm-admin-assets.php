@@ -240,6 +240,18 @@ class WPM_Admin_Assets {
                             }
                         }
                         window.setTimeout(wpm_add_language_switcher_deferred, $interval);
+
+                        var wpm_site_editor_lang_switcher_deferred = function() {
+                            var SiteToolBar = $('.edit-site-layout__header-container .edit-site-site-hub__site-view-link');
+                            
+                            if(SiteToolBar.length) {
+                                SiteToolBar.before(language_switcher);
+
+                                $('.edit-site-layout__header-container .wpm-language-switcher').css({'left': '67%'});
+                            }
+                        }
+
+                        window.setTimeout(wpm_site_editor_lang_switcher_deferred, 4000);
                     }
                 });
                 
@@ -271,7 +283,11 @@ class WPM_Admin_Assets {
 					if (query.search(/edit_lang=/i) !== -1) {
 						href = url + query.replace(/edit_lang=[a-z]{2,4}((-[a-z]{2,4})?)*/i, 'edit_lang=' + lang) + document.location.hash;
 					} else {
-						href = url + query + '&edit_lang=' + lang + document.location.hash;
+						if(query.length == 0){
+							href = url + '?edit_lang=' + lang + document.location.hash;
+						}else{
+							href = url + query + '&edit_lang=' + lang + document.location.hash;
+						}
 					}
 					$(this).attr('href', href);
 				});
