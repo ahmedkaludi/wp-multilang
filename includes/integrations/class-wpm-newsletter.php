@@ -83,7 +83,11 @@ class WPM_Newsletter {
 
 
 	public function save_profile_20( $data ) {
-		$data['profile_20'] = wpm_get_language();
+		if(is_object($data) && isset($data->profile_20)){
+			$data->profile_20 = wpm_get_language();
+		}else if(is_array($data) && isset($data['profile_20'])){
+			$data['profile_20'] = wpm_get_language();
+		}
 
 		return $data;
 	}
