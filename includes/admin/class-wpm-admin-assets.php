@@ -251,7 +251,7 @@ class WPM_Admin_Assets {
                             }
                         }
 
-                        window.setTimeout(wpm_site_editor_lang_switcher_deferred, 4000);
+                        window.setTimeout(wpm_site_editor_lang_switcher_deferred, 5000);
                     }
                 });
                 
@@ -303,6 +303,39 @@ class WPM_Admin_Assets {
 	                    }
 	                }
 				});
+				
+
+				var wpm_site_editor_on_canvas_click = function() {
+					if($('.edit-site-visual-editor__editor-canvas').length > 0 ){
+						var iframe = $('.edit-site-visual-editor__editor-canvas')[0];
+						var iframeBody = $(iframe.contentWindow.document.body);
+						
+						iframeBody.on('click', function() {
+							if($('.edit-site-visual-editor').length > 0){
+								if($('.edit-site-visual-editor').hasClass('is-view-mode')){
+									$('.wpm-language-switcher').css({'left': '75px'});
+								}
+							}
+		                });
+		            }
+
+		            if($('.edit-site-site-hub__view-mode-toggle-container').length > 0){
+		            	$(document).on('click', '.edit-site-site-hub__view-mode-toggle-container', function(e){
+		            		$('.wpm-language-switcher').css({'left': '67%'});
+		            	});
+		            }
+	            }
+
+                window.setTimeout(wpm_site_editor_on_canvas_click , 6000);
+
+                $(window).on('popstate', function(event) {
+                	if($('.edit-site-layout').length > 0){
+	                	if($('.wpm-language-switcher').length > 0){
+			            	$('.wpm-language-switcher').css({'left': '67%'});
+			            }
+			        }
+	            });
+
 			})( jQuery );
 		";
 		return $script;

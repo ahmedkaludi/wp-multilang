@@ -50,13 +50,13 @@ class WPM_Settings_Support extends WPM_Settings_Page {
 			<div class="wpm-support-div-form">
 	            <ul>
 	                <li>
-	                  <label class="wpm-support-label"><?php echo esc_html_e('Email', 'wp-multilang') ?><span class="wpm-star-mark">*</span></label>
+	                  <label class="wpm-support-label"><strong><?php echo esc_html_e('Email', 'wp-multilang') ?></strong><span class="wpm-star-mark">*</span></label>
 	                   <div class="support-input">
 	                      <input type="text" id="wp_query_email" name="wp_query_email" size="47" placeholder="Enter your Email" required="">
 	                   </div>
 	                </li>
 	                <li>
-	                    <label class="wpm-support-label"><?php echo esc_html_e('Query', 'wp-multilang') ?><span class="wpm-star-mark">*</span></label>  
+	                    <label class="wpm-support-label"><strong><?php echo esc_html_e('Query', 'wp-multilang') ?></strong><span class="wpm-star-mark">*</span></label>  
 	                    <div class="support-input"><textarea rows="5" cols="50" id="wpm_query_message" name="wpm_query_message" placeholder="Write your query"></textarea>
 	                    </div>
 	                </li>
