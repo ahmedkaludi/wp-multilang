@@ -212,7 +212,7 @@ class WPM_Posts extends WPM_Object {
 				$pos = strpos($pcontent, '[:]');
 				if($pos === false){
 					$decode_pcontent = json_decode($pcontent);
-					if(is_object($decode_pcontent) && (isset($decode_pcontent->settings) || ($decode_pcontent->styles) || ($decode_pcontent->isGlobalStylesUserThemeJSON))){
+					if(is_object($decode_pcontent) && (isset($decode_pcontent->settings) || isset($decode_pcontent->styles) || isset($decode_pcontent->isGlobalStylesUserThemeJSON))){
 						if(!empty($post_content)){
 							$current_language = wpm_get_language();
 							$data['post_content'] = '[:'.$current_language.']'.$post_content.'[:]';

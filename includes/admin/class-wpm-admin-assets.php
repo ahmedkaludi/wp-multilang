@@ -227,6 +227,9 @@ class WPM_Admin_Assets {
 	public function render_language_switcher($interval = 2000){
 		$script = "
 			(function( $ ) {
+
+				var wpm_site_editor_lang_switcher_deferred = '';
+
                 $(window).on('pageshow',function(){
                     if ($('#wpm-language-switcher').length === 0) {
                         var language_switcher = wp.template( 'wpm-ls-customizer' );
@@ -241,7 +244,7 @@ class WPM_Admin_Assets {
                         }
                         window.setTimeout(wpm_add_language_switcher_deferred, $interval);
 
-                        var wpm_site_editor_lang_switcher_deferred = function() {
+                        wpm_site_editor_lang_switcher_deferred = function() {
                             var SiteToolBar = $('.edit-site-layout__header-container .edit-site-site-hub__site-view-link');
                             
                             if(SiteToolBar.length) {
@@ -319,11 +322,16 @@ class WPM_Admin_Assets {
 		                });
 		            }
 
-		            if($('.edit-site-site-hub__view-mode-toggle-container').length > 0){
-		            	$(document).on('click', '.edit-site-site-hub__view-mode-toggle-container', function(e){
-		            		$('.wpm-language-switcher').css({'left': '67%'});
-		            	});
-		            }
+	            	$(document).on('click', '.edit-site-site-hub__view-mode-toggle-container', function(e){
+	            		if($('.wpm-language-switcher').length > 0){
+	            			$('.wpm-language-switcher').css({'left': '67%'});
+
+	            			window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
+
+	            		}else{
+	            			window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
+	            		}
+	            	});
 	            }
 
                 window.setTimeout(wpm_site_editor_on_canvas_click , 6000);
@@ -332,6 +340,10 @@ class WPM_Admin_Assets {
                 	if($('.edit-site-layout').length > 0){
 	                	if($('.wpm-language-switcher').length > 0){
 			            	$('.wpm-language-switcher').css({'left': '67%'});
+
+			            	window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
+			            }else{
+			            	window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
 			            }
 			        }
 	            });
