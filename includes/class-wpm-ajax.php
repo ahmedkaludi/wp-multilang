@@ -539,14 +539,13 @@ class WPM_AJAX {
         }
 
         $all_languages = wpm_get_languages();
-		$current_language = wpm_get_language();
 
-		$current_url = esc_url($_POST['current_url']);
+		$current_url = sanitize_url($_POST['current_url']);
 
 		$translated_urls = array();
 		if(!empty($all_languages) && is_array($all_languages)){
 			foreach ($all_languages as $al_key => $al_value) {
-				$translated_urls[$al_key] = $url = wpm_translate_url( $current_url, $al_key );
+				$translated_urls[$al_key] = wpm_translate_url( $current_url, $al_key );
 			}
 		}
 

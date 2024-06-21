@@ -1,7 +1,7 @@
 <?php /** @var $show string */ ?>
-<ul class="wpm-language-switcher switcher-<?php esc_attr_e( $type ); ?>">
+<ul class="wpm-language-switcher wpm-switcher-<?php esc_attr_e( $type ); ?>">
 	<?php foreach ( $languages as $code => $language ) { ?>
-		<li class="item-language-<?php echo esc_attr( $code ); ?><?php if ( $code === $lang ) { ?> active<?php } ?>">
+		<li class="wpm-item-language-<?php echo esc_attr( $code ); ?><?php if ( $code === $lang ) { ?> active<?php } ?>">
 			<?php if ( wpm_get_language() == $code ) { ?>
 				<span data-lang="<?php echo esc_attr( $code ); ?>">
 			<?php } else { ?>

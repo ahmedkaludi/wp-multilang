@@ -1,35 +1,35 @@
-.switcher-list {
+.wpm-switcher-list {
   list-style: none;
   margin-bottom: 0;
   padding-left: 0; }
-  .switcher-list li a,
-  .switcher-list li > span {
+  .wpm-switcher-list li a,
+  .wpm-switcher-list li > span {
     color: #333333; }
-    .switcher-list li a:hover,
-    .switcher-list li > span:hover {
+    .wpm-switcher-list li a:hover,
+    .wpm-switcher-list li > span:hover {
       color: #000; }
-    .switcher-list li a img,
-    .switcher-list li > span img {
+    .wpm-switcher-list li a img,
+    .wpm-switcher-list li > span img {
       display: inline-block;
       margin-right: 3px; }
-  .switcher-list li.active a,
-  .switcher-list li.active > span {
+  .wpm-switcher-list li.active a,
+  .wpm-switcher-list li.active > span {
     color: #000; }
 
-.switcher-dropdown {
+.wpm-switcher-dropdown {
   list-style: none;
   margin-bottom: 0;
   padding-left: 0;
   position: relative; }
-  .switcher-dropdown a img,
-  .switcher-dropdown span img {
+  .wpm-switcher-dropdown a img,
+  .wpm-switcher-dropdown span img {
     display: inline-block;
     margin-right: 3px; }
-  .switcher-dropdown a {
+  .wpm-switcher-dropdown a {
     color: #333333; }
-    .switcher-dropdown a:hover {
+    .wpm-switcher-dropdown a:hover {
       color: #000; }
-  .switcher-dropdown .language-dropdown {
+  .wpm-switcher-dropdown .wpm-language-dropdown {
     display: none;
     left: 0;
     list-style: none;
@@ -38,11 +38,11 @@
     padding-left: 0;
     position: absolute;
     top: 100%; }
-  .switcher-dropdown > li {
+  .wpm-switcher-dropdown > li {
     position: relative; }
-    .switcher-dropdown > li:hover .language-dropdown {
+    .wpm-switcher-dropdown > li:hover .wpm-language-dropdown {
       display: block; }
-  .switcher-dropdown .item-language-main > span:hover {
+  .wpm-switcher-dropdown .wpm-item-language-main > span:hover {
     cursor: pointer; }
 
 .wpm-languages.menu-item > a img {

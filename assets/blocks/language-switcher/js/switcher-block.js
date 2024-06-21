@@ -3,7 +3,7 @@ jQuery(document).ready(function($){
 		let switcherDiv = $('.wp-block-wpm-language-switcher')
 		let findUl = $(switcherDiv).find('ul');
 
-		let selectSwitcher = switcherDiv.find('.switcher-select');
+		let selectSwitcher = switcherDiv.find('.wpm-switcher-select');
 
 		if(findUl.length > 0 || selectSwitcher.length > 0){
 
@@ -56,7 +56,7 @@ jQuery(document).ready(function($){
 		}
 	}
 
-	$(document).on('change', '.wp-block-wpm-language-switcher .switcher-select', function(e){
+	$(document).on('change', '.wp-block-wpm-language-switcher .wpm-switcher-select', function(e){
 		let selectedOpt = $(this).val();
 		window.location.href = selectedOpt;
 	});

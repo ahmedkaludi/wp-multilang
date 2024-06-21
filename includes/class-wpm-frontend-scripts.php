@@ -197,6 +197,10 @@ class WPM_Frontend_Scripts {
 		}
 	}
 	
+	/**
+	 * Change link of anchor tag href attribute when switcher is added on site editor or through post or page block
+	 * @since 2.4.9
+	 * */
 	public static function wpm_block_script(){
 		$suffix    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
@@ -205,7 +209,11 @@ class WPM_Frontend_Scripts {
                 'ajax_url'              	=> admin_url( 'admin-ajax.php' ),
                 'current_url'				=> wpm_get_current_url()
         );
-        wp_register_script( 'wpm-switcher-block-script', wpm_asset_path( 'scripts/switcher-block' . $suffix . '.js' ), array('jquery'), WPM_VERSION );
+
+		$filename = '/assets/blocks/language-switcher/js/switcher-block' . $suffix . '.js';
+        $css_style_path = wpm()->plugin_url().$filename;
+
+        wp_register_script( 'wpm-switcher-block-script', $css_style_path, array('jquery'), WPM_VERSION );
         wp_localize_script( 'wpm-switcher-block-script', 'wpm_localize_data', $script_data );
         wp_enqueue_script( 'wpm-switcher-block-script' );
 	}

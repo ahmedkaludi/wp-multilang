@@ -9,6 +9,7 @@ import { __ }   from '@wordpress/i18n';
 // Register the block
 registerBlockType( 'wpm/language-switcher', {
 	title: "Language Switcher",
+	icon: "translation",
 	supports: {
               multiple: false
     },
@@ -51,8 +52,8 @@ registerBlockType( 'wpm/language-switcher', {
 
 
         const renderDropdownSwitcher = () => {
-        	let ulClass = "wpm-language-switcher switcher-dropdown";
-        	let liClass = "item-language-main item-language-en";
+        	let ulClass = "wpm-language-switcher wpm-switcher-dropdown";
+        	let liClass = "wpm-item-language-main wpm-item-language-en";
 
         	return (
     			<ul className={ulClass}>
@@ -65,10 +66,10 @@ registerBlockType( 'wpm/language-switcher', {
 								<span>{defaultLang}</span>
 							}
     					</span> 
-    					<ul className="language-dropdown">
+    					<ul className="wpm-language-dropdown">
     						{convertlangArray.map((langIndex, langValue) => ( 
     							langIndex != lang && 
-        						<li key={langValue} className={'item-language-'+langIndex}>
+        						<li key={langValue} className={'wpm-item-language-'+langIndex}>
 									<a href="#" data-lang={langIndex}>
 										{ (attributes.switchShow == "flag" || attributes.switchShow == "both") && 
 											<img src={baseFlagUrl+languages[langIndex].flag} alt={languages[langIndex].name} />
@@ -87,9 +88,9 @@ registerBlockType( 'wpm/language-switcher', {
 
         const renderListSwitcher = () => {
         	return (
-        		<ul className="wpm-language-switcher switcher-list">
+        		<ul className="wpm-language-switcher wpm-switcher-list">
         			{convertlangArray.map((langIndex, langValue) => ( 
-        				<li key={langValue} className={'item-language-'+langIndex}>
+        				<li key={langValue} className={'wpm-item-language-'+langIndex}>
         					{ lang == langIndex && 
         						<span data-lang={langIndex}>
         						{ (attributes.switchShow == "flag" || attributes.switchShow == "both") && 
@@ -119,7 +120,7 @@ registerBlockType( 'wpm/language-switcher', {
 
         const renderSelectSwitcher = () => {
         	return (
-	        	<select className="wpm-language-switcher switcher-select" title={__( 'Language Switcher', 'wp-multilang' )}>
+	        	<select className="wpm-language-switcher wpm-switcher-select" title={__( 'Language Switcher', 'wp-multilang' )}>
 	        		{convertlangArray.map((langIndex, langValue) => (
 	        			lang != langIndex ?
 	        				<option key={langValue} value={langIndex} data-lang={langIndex}>{languages[langIndex].name}</option> :
@@ -191,8 +192,8 @@ registerBlockType( 'wpm/language-switcher', {
 
 
         const renderDropdownSwitcher = () => {
-        	let ulClass = "wpm-language-switcher switcher-dropdown";
-        	let liClass = "item-language-main item-language-en";
+        	let ulClass = "wpm-language-switcher wpm-switcher-dropdown";
+        	let liClass = "wpm-item-language-main wpm-item-language-en";
 
         	return (
     			<ul className={ulClass}>
@@ -205,10 +206,10 @@ registerBlockType( 'wpm/language-switcher', {
 								<span>{defaultLang}</span>
 							}
     					</span> 
-    					<ul className="language-dropdown">
+    					<ul className="wpm-language-dropdown">
     						{convertlangArray.map((langIndex, langValue) => ( 
     							langIndex != lang && 
-        						<li key={langValue} className={'item-language-'+langIndex}>
+        						<li key={langValue} className={'wpm-item-language-'+langIndex}>
 									<a href="#" data-lang={langIndex}>
 										{ (attributes.switchShow == "flag" || attributes.switchShow == "both") && 
 											<img src={baseFlagUrl+languages[langIndex].flag} alt={languages[langIndex].name} />
@@ -227,9 +228,9 @@ registerBlockType( 'wpm/language-switcher', {
 
         const renderListSwitcher = () => {
         	return (
-        		<ul className="wpm-language-switcher switcher-list">
+        		<ul className="wpm-language-switcher wpm-switcher-list">
         			{convertlangArray.map((langIndex, langValue) => ( 
-        				<li key={langValue} className={'item-language-'+langIndex}>
+        				<li key={langValue} className={'wpm-item-language-'+langIndex}>
         					{ lang == langIndex && 
         						<span data-lang={langIndex}>
         						{ (attributes.switchShow == "flag" || attributes.switchShow == "both") && 
@@ -259,7 +260,7 @@ registerBlockType( 'wpm/language-switcher', {
 
         const renderSelectSwitcher = () => {
         	return (
-	        	<select className="wpm-language-switcher switcher-select" title={__( 'Language Switcher', 'wp-multilang' )}>
+	        	<select className="wpm-language-switcher wpm-switcher-select" title={__( 'Language Switcher', 'wp-multilang' )}>
 	        		{convertlangArray.map((langIndex, langValue) => (
 	        			lang != langIndex ?
 	        				<option key={langValue} value={langIndex} data-lang={langIndex}>{languages[langIndex].name}</option> :
