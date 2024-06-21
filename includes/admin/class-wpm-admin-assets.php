@@ -326,6 +326,8 @@ class WPM_Admin_Assets {
 	            		if($('.wpm-language-switcher').length > 0){
 	            			$('.wpm-language-switcher').css({'left': '67%'});
 
+	            			$('.edit-site-layout__header-container .wpm-language-switcher').remove();
+
 	            			window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
 
 	            		}else{
@@ -334,12 +336,14 @@ class WPM_Admin_Assets {
 	            	});
 	            }
 
-                window.setTimeout(wpm_site_editor_on_canvas_click , 6000);
+                window.setTimeout(wpm_site_editor_on_canvas_click , 5000);
 
                 $(window).on('popstate', function(event) {
                 	if($('.edit-site-layout').length > 0){
 	                	if($('.wpm-language-switcher').length > 0){
 			            	$('.wpm-language-switcher').css({'left': '67%'});
+
+			            	$('.edit-site-layout__header-container .wpm-language-switcher').remove();
 
 			            	window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
 			            }else{

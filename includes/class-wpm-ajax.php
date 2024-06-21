@@ -99,7 +99,8 @@ class WPM_AJAX {
 			'send_feedback'   	   => false,
 			'subscribe_to_news_letter' => false,
 			'newsletter_hide_form' => false,
-			'settings_newsletter_submit' => false
+			'settings_newsletter_submit' => false,
+			'block_lang_switcher' => true
 		);
 
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
@@ -519,4 +520,37 @@ class WPM_AJAX {
 		    wp_die();
 		}
 	}
+
+	/**
+	 * Prepare url to change the href of block language switcher
+	 * @since 2.4.9
+	 * */
+	public static function block_lang_switcher(){  
+        if ( ! isset( $_POST['security'] ) ){
+            wp_die( -1 ); 
+        }
+
+        if ( !wp_verify_nonce( $_POST['security'], 'wpm_ajax_security_nonce' ) ){
+           wp_die( -1 );  
+        } 
+
+        if(empty($_POST['current_url'])){
+        	wp_die( -1 );  
+        }
+
+        $all_languages = wpm_get_languages();
+		$current_language = wpm_get_language();
+
+		$current_url = esc_url($_POST['current_url']);
+
+		$translated_urls = array();
+		if(!empty($all_languages) && is_array($all_languages)){
+			foreach ($all_languages as $al_key => $al_value) {
+				$translated_urls[$al_key] = $url = wpm_translate_url( $current_url, $al_key );
+			}
+		}
+
+		echo wp_json_encode($translated_urls);
+		wp_die();
+    }
 }
