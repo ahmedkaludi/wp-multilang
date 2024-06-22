@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
 Tested up to: 6.5
-Stable tag: 2.4.8
+Stable tag: 2.4.9
 Requires PHP: 5.6.20
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -21,6 +21,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 [Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/) | [Premium Features](https://wp-multilang.com/#features)
 
 == New Features of the plugin WP Multilang ==
+* Support full site editor for block based themes
 * Support block based widgets
 * Support different feature image for each language
 
@@ -227,6 +228,12 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.9 =
+- feature WordPress full site editing support #46
+- fixed Conflicts with the Newsletter plugin #61
+- enhancement Changed premium tab to Premium Features in readme.txt #80
+- feature Added Language Switcher Gutenberg Block #82
+
 = 2.4.8 =
 - fixed admin_html_tags leaving empty fields #41
 - feature Gutenberg view post should redirect to current language post #55
@@ -299,12 +306,5 @@ If you have opened several browser tabs for editing this post in different langu
 = 2.2.5 =
 - fixed Gutenberg compatibility
 - fixed translation WC coupons
-
-= 2.2.4 =
-- added "no-cache" header in admin on language change
-- added WC coupon for translating
-- fixed compatibility with SiteOrigin
-- fixed http to https redirect error
-- fixed styles
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
