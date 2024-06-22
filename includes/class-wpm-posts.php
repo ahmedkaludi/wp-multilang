@@ -55,6 +55,7 @@ class WPM_Posts extends WPM_Object {
 		add_filter( 'wp_insert_attachment_data', array( $this, 'save_post' ), 99, 2 );
 		add_filter( 'wp_get_attachment_link', array( $this, 'translate_attachment_link' ), 5 );
 		add_filter( 'render_block', array( $this, 'wpm_render_post_block' ), 10, 2);
+		add_filter( 'rest_post_dispatch', array( $this, 'wpm_rest_post_dispatch' ), 10, 3);
 	}
 
 
@@ -172,6 +173,8 @@ class WPM_Posts extends WPM_Object {
 		}
 
 		$post_id = isset( $data['ID'] ) ? wpm_clean( $data['ID'] ) : ( isset( $postarr['ID'] ) ? wpm_clean( $postarr['ID'] ) : 0 );
+	
+		$post_content = isset($data['post_content'])?$data['post_content']:'';
 
 		foreach ( $data as $key => $content ) {
 			if ( isset( $post_config[ $key ] ) ) {
@@ -202,6 +205,23 @@ class WPM_Posts extends WPM_Object {
 			}
 		}
 
+		if('wp_global_styles' === $data['post_type']){
+
+			$pcontent = $data['post_content'];
+			if(!empty($pcontent) && is_string($pcontent)){
+				$pos = strpos($pcontent, '[:]');
+				if($pos === false){
+					$decode_pcontent = json_decode($pcontent);
+					if(is_object($decode_pcontent) && (isset($decode_pcontent->settings) || isset($decode_pcontent->styles) || isset($decode_pcontent->isGlobalStylesUserThemeJSON))){
+						if(!empty($post_content)){
+							$current_language = wpm_get_language();
+							$data['post_content'] = '[:'.$current_language.']'.$post_content.'[:]';
+						}	
+					}
+				}
+			}
+		}
+		
 		if ( empty( $data['post_name'] ) ) {
 			$data['post_name'] = sanitize_title( wpm_translate_value( $data['post_title'] ) );
 		}
@@ -243,5 +263,42 @@ class WPM_Posts extends WPM_Object {
 			}
 		}
 		return $context;
+	}
+	
+	/**
+	 * Translate global style post content for full site editor
+	 * @since 2.4.9
+	 * */
+	public function wpm_rest_post_dispatch($result, $server, $request){
+		if(!empty($result->data) && is_array($result->data)){
+			if(isset($result->data['settings']) && $result->data['styles']){
+				if(!empty($result->data['id'])){
+					$style_id = $result->data['id'];
+					if($style_id > 0){
+						$get_style = get_post($style_id);
+						if(!empty($get_style) && is_object($get_style)){
+							if(!empty($get_style->post_content)){
+								if($get_style->post_type == 'wp_global_styles'){
+									$translate_object = wpm_translate_object($get_style);
+									$raw_config = json_decode($translate_object->post_content, true);
+									$is_global_styles_user_theme_json = isset( $raw_config['isGlobalStylesUserThemeJSON'] ) && true === $raw_config['isGlobalStylesUserThemeJSON'];
+									if ( $is_global_styles_user_theme_json ) {
+										$config = ( new \WP_Theme_JSON( $raw_config, 'custom' ) )->get_raw_data();
+										if(!empty($config['settings'])){
+											$result->data['settings'] = $config['settings'];
+										}
+
+										if(!empty($config['styles'])){
+											$result->data['styles'] = $config['styles'];
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return $result;
 	}
 }

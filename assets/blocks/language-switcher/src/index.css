@@ -1,4 +1,10 @@
-.wpm-switcher-list {
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+ .wpm-switcher-list {
   list-style: none;
   margin-bottom: 0;
   padding-left: 0; }
@@ -48,5 +54,3 @@
 .wpm-languages.menu-item > a img {
   display: inline-block;
   margin-right: 5px; }
-
-/*# sourceMappingURL=main.css.map */

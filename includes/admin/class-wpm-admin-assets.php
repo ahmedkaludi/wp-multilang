@@ -27,6 +27,7 @@ class WPM_Admin_Assets {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'add_language_switcher' ) );
+		add_action( 'enqueue_block_editor_assets', array( $this, 'add_language_switcher_block_theme' ) );
 	}
 
 	/**
@@ -191,8 +192,44 @@ class WPM_Admin_Assets {
 			return;
 		}
 
+		$script = $this->render_language_switcher(500);
+
+		wp_add_inline_script( 'wp-edit-post', $script );
+		add_action( 'admin_footer', 'wpm_admin_language_switcher_customizer' );
+	}
+	
+	/**
+	 * Add language switcher 
+	 * @since 2.4.9
+	 * */
+	public function add_language_switcher_block_theme(){
+		$screen       = get_current_screen();
+		if(is_object($screen) && !empty($screen)){
+			$screen_id    = $screen ? $screen->id : '';
+			$block_editor = $screen ? $screen->is_block_editor : '';
+			if ( $screen_id == 'site-editor' && $block_editor == 1){
+				if ( count( wpm_get_languages() ) <= 1 ) {
+					return;
+				}
+
+				$script = $this->render_language_switcher(4000);
+
+				wp_add_inline_script( 'wp-edit-site', $script );
+				add_action( 'admin_footer', 'wpm_admin_language_switcher_customizer' );
+			}
+		}
+	}
+	
+	/**
+	 * Display language switcher on theme site editor
+	 * @since 2.4.9
+	 * */
+	public function render_language_switcher($interval = 2000){
 		$script = "
 			(function( $ ) {
+
+				var wpm_site_editor_lang_switcher_deferred = '';
+
                 $(window).on('pageshow',function(){
                     if ($('#wpm-language-switcher').length === 0) {
                         var language_switcher = wp.template( 'wpm-ls-customizer' );
@@ -205,7 +242,19 @@ class WPM_Admin_Assets {
                                 wpm_change_switcher_margin();
                             }
                         }
-                        window.setTimeout(wpm_add_language_switcher_deferred, 500);
+                        window.setTimeout(wpm_add_language_switcher_deferred, $interval);
+
+                        wpm_site_editor_lang_switcher_deferred = function() {
+                            var SiteToolBar = $('.edit-site-layout__header-container .edit-site-site-hub__site-view-link');
+                            
+                            if(SiteToolBar.length) {
+                                SiteToolBar.before(language_switcher);
+
+                                $('.edit-site-layout__header-container .wpm-language-switcher').css({'left': '67%'});
+                            }
+                        }
+
+                        window.setTimeout(wpm_site_editor_lang_switcher_deferred, 5000);
                     }
                 });
                 
@@ -237,14 +286,74 @@ class WPM_Admin_Assets {
 					if (query.search(/edit_lang=/i) !== -1) {
 						href = url + query.replace(/edit_lang=[a-z]{2,4}((-[a-z]{2,4})?)*/i, 'edit_lang=' + lang) + document.location.hash;
 					} else {
-						href = url + query + '&edit_lang=' + lang + document.location.hash;
+						if(query.length == 0){
+							href = url + '?edit_lang=' + lang + document.location.hash;
+						}else{
+							href = url + query + '&edit_lang=' + lang + document.location.hash;
+						}
 					}
 					$(this).attr('href', href);
 				});
+
+				$(document).on('click', '.edit-site-sidebar-button', function(e){
+					if ($('#wpm-language-switcher').length === 0) {
+						var language_switcher = wp.template( 'wpm-ls-customizer' );
+						var toolbar = $('.edit-post-header-toolbar');
+	                    if(toolbar.length) {
+	                        toolbar.prepend(language_switcher);
+
+	                        wpm_change_switcher_margin();
+	                    }
+	                }
+				});
+				
+
+				var wpm_site_editor_on_canvas_click = function() {
+					if($('.edit-site-visual-editor__editor-canvas').length > 0 ){
+						var iframe = $('.edit-site-visual-editor__editor-canvas')[0];
+						var iframeBody = $(iframe.contentWindow.document.body);
+						
+						iframeBody.on('click', function() {
+							if($('.edit-site-visual-editor').length > 0){
+								if($('.edit-site-visual-editor').hasClass('is-view-mode')){
+									$('.wpm-language-switcher').css({'left': '75px'});
+								}
+							}
+		                });
+		            }
+
+	            	$(document).on('click', '.edit-site-site-hub__view-mode-toggle-container', function(e){
+	            		if($('.wpm-language-switcher').length > 0){
+	            			$('.wpm-language-switcher').css({'left': '67%'});
+
+	            			$('.edit-site-layout__header-container .wpm-language-switcher').remove();
+
+	            			window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
+
+	            		}else{
+	            			window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
+	            		}
+	            	});
+	            }
+
+                window.setTimeout(wpm_site_editor_on_canvas_click , 5000);
+
+                $(window).on('popstate', function(event) {
+                	if($('.edit-site-layout').length > 0){
+	                	if($('.wpm-language-switcher').length > 0){
+			            	$('.wpm-language-switcher').css({'left': '67%'});
+
+			            	$('.edit-site-layout__header-container .wpm-language-switcher').remove();
+
+			            	window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
+			            }else{
+			            	window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
+			            }
+			        }
+	            });
+
 			})( jQuery );
 		";
-
-		wp_add_inline_script( 'wp-edit-post', $script );
-		add_action( 'admin_footer', 'wpm_admin_language_switcher_customizer' );
+		return $script;
 	}
 }

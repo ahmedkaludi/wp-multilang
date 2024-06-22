@@ -1,4 +1,4 @@
-.switcher-list {
+.wpm-switcher-list {
 	list-style: none;
 	margin-bottom: 0;
 	padding-left: 0;
@@ -29,7 +29,7 @@
 	}
 }
 
-.switcher-dropdown {
+.wpm-switcher-dropdown {
 	list-style: none;
 	margin-bottom: 0;
 	padding-left: 0;
@@ -52,7 +52,7 @@
 		}
 	}
 
-	.language-dropdown {
+	.wpm-language-dropdown {
 		display: none;
 		left: 0;
 		list-style: none;
@@ -68,13 +68,13 @@
 
 		&:hover {
 
-			.language-dropdown {
+			.wpm-language-dropdown {
 				display: block;
 			}
 		}
 	}
 
-	.item-language-main {
+	.wpm-item-language-main {
 
 		> span {
 
