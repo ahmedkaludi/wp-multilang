@@ -97,7 +97,8 @@ class WPM_Admin_Gutenberg_Block {
                     wp_register_script(
                         $block['handler'],
                         $block['path'],
-                        array( 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-edit-widgets' )                                 
+                        array( 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-edit-widgets' ), 
+                        WPM_VERSION                                
                     );
 
                 } else {
@@ -105,7 +106,8 @@ class WPM_Admin_Gutenberg_Block {
                     wp_register_script(
                         $block['handler'],
                         $block['path'],
-                        array( 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-editor' )                                 
+                        array( 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-editor' ),
+                        WPM_VERSION                                 
                     );
                     
                 }

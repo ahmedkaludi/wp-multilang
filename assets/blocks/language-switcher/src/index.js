@@ -10,6 +10,7 @@ import { __ }   from '@wordpress/i18n';
 registerBlockType( 'wpm/language-switcher', {
 	title: "Language Switcher",
 	icon: "translation",
+	keywords: ['Lang', 'Language Switcher', 'Switcher', 'Language', 'Translate'],
 	supports: {
               multiple: false
     },
