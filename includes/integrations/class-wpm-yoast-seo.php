@@ -53,6 +53,12 @@ class WPM_Yoast_Seo {
 		}
 	}
 
+	/**
+	 * Translate canonical URL
+	 * @since 2.4.10
+	 * @param $canonical  String
+	 * @return $canonical String
+	 * */
 	public function seo_canonical_translation( $canonical ) {
 		
 		return wpm_translate_url($canonical);
