@@ -122,7 +122,7 @@ function wpm_get_language() {
 					parse_str($query, $query);
 				}						
 			} else {
-				return wpm_get_user_language();
+				return apply_filters('wpm_get_language_from_url', wpm_get_user_language());
 			}
 		}
 
@@ -138,7 +138,7 @@ function wpm_get_language() {
 		}
 
 	} else {
-		$lang = wpm_get_user_language();
+		$lang = apply_filters('wpm_get_language_from_url', wpm_get_user_language());
 	}
 
 	return $lang;

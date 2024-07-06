@@ -543,6 +543,27 @@ class WPM_Setup {
 				}
 			}
 		}
+		
+		/**
+		 * Create new object of active theme
+		 * @since 2.4.10
+		 * */
+		if(!function_exists('wp_get_theme')){
+			require_once ABSPATH . 'wp-includes/theme.php';
+		}
+
+		$active_theme = wp_get_theme();
+		$active_theme_name = '';
+		if(!empty($active_theme) && is_object($active_theme)){
+			$active_theme_name = $active_theme->get('Name');
+		}
+
+		if ( is_array( $integrations ) && array_key_exists($active_theme_name, $integrations)) {
+			$integration = apply_filters( "wpm_{$active_theme_name}_integration", $integrations[ $active_theme_name ] );
+			if(class_exists($integration)){
+				new $integration();
+			}
+		}
 	}
 
 	/**
