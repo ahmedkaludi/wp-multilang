@@ -11,10 +11,7 @@ registerBlockType( 'wpm/language-switcher', {
 	title: "Language Switcher",
 	icon: "translation",
 	keywords: ['Lang', 'Language Switcher', 'Switcher', 'Language', 'Translate'],
-	supports: {
-              multiple: false
-    },
-    parent: [ 'core/navigation', 'core/post-content' ],
+    parent: [ 'core/navigation', 'core/post-content', 'core/group' ],
     attributes: {
         switchType: {
             type: 'string',

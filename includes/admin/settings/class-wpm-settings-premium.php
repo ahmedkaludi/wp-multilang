@@ -49,26 +49,35 @@ class WPM_Settings_Premium extends WPM_Settings_Page {
 
 		$section_note = array( 'title' => '', 'type' => 'section_note', 'desc' => __('If you <strong>can’t find your compatibility</strong> with <strong>WP Multilang</strong>, then we’ll make the integration. <a href="https://wp-multilang.com/contact-us/">Contact Us</a>', 'wp-multilang'));
 
-		$compat_Settings = array(
-				'title'   => __( 'Elementor', 'wp-multilang' ),
-				'class'   => 'wpm_free_compatibilities',
-				'id'      => 'wpm_elementor_compatibility_free',
-				'default' => 'no',
-				'type'    => 'checkbox',
+		$compat_Settings['compat'] = array(
+				array(
+					'title'   => __( 'Elementor', 'wp-multilang' ),
+					'class'   => 'wpm_free_compatibilities',
+					'id'      => 'wpm_elementor_compatibility_free',
+					'default' => 'no',
+					'type'    => 'checkbox',
+				),
+				array(
+					'title'   => __( 'Divi Builder', 'wp-multilang' ),
+					'class'   => 'wpm_free_compatibilities',
+					'id'      => 'wpm_divi_compatibility_free',
+					'default' => 'no',
+					'type'    => 'checkbox',
+				)
 			);
 		if(defined('WP_MULTILANG_PRO_VERSION')){
 			$compat_Settings = apply_filters('wpm_premium_settings_pro', array());
 			$section_note = array();
 		}
 
-		$settings = apply_filters( 'wpm_' . $this->id . '_settings', array(
-
-			array( 'title' => __( 'Compatibility', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'premium_features' ),
-			$compat_Settings,
-			array( 'type' => 'sectionend', 'id' => 'premium_features' ),
-			$section_note
-
-		) );
+		$setting_array[] = array( 'title' => __( 'Compatibility', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'premium_features' );
+		foreach ($compat_Settings['compat'] as $cs_key => $cs_value) {
+			$setting_array[] = $cs_value;
+		}
+		$setting_array[] = array( 'type' => 'sectionend', 'id' => 'premium_features' );
+		$setting_array[] = $section_note;
+		
+		$settings = apply_filters( 'wpm_' . $this->id . '_settings', $setting_array );
 
 		return apply_filters( 'wpm_get_settings_' . $this->id, $settings );
 	}

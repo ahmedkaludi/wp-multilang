@@ -21,6 +21,7 @@ class WPM_Yoast_Seo {
 	 * WPM_Yoast_Seo constructor.
 	 */
 	public function __construct() {
+		add_filter( 'wpseo_canonical', array($this, 'seo_canonical_translation'), 10, 1 );
 		add_filter( 'wpm_option_wpseo_titles_config', array( $this, 'set_posts_config' ) );
 		add_filter( 'wpseo_title', array( $this, 'translate_title' ) );
 		remove_filter( 'update_post_metadata', array( 'WPSEO_Meta', 'remove_meta_if_default' ) );
@@ -50,6 +51,17 @@ class WPM_Yoast_Seo {
 				add_filter( 'wpseo_frontend_presenters', array( $this, 'add_wpseo_frontend_presenters' ) );
 			}			
 		}
+	}
+
+	/**
+	 * Translate canonical URL
+	 * @since 2.4.10
+	 * @param $canonical  String
+	 * @return $canonical String
+	 * */
+	public function seo_canonical_translation( $canonical ) {
+		
+		return wpm_translate_url($canonical);
 	}
 
 	/**

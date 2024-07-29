@@ -4,8 +4,8 @@ Contributors: magazine3
 Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
-Tested up to: 6.5
-Stable tag: 2.4.9
+Tested up to: 6.6
+Stable tag: 2.4.10
 Requires PHP: 5.6.20
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -46,7 +46,8 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 
 == WP Multilang compatible with plugins ==
 
-* Elementor ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs)
+* Elementor ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-build-a-multilingual-site-with-elementor-using-wp-multilang/)
+* Divi Builder ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs/)
 * ACF, ACF Pro
 * WooCommerce
 * WooCommerce Customizer
@@ -228,6 +229,12 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.10 =
+- feature Added compatibility with Divi #72
+- fixed issue with canonical and href URL as per the language. #85
+- fixed issue with Language switcher block in site editor #86
+- fixed Compatibility with WordPress 6.6 and updated readme.txt
+
 = 2.4.9 =
 - feature WordPress full site editing support #46
 - fixed Conflicts with the Newsletter plugin #61
@@ -302,9 +309,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fix SiteOrigin Builder compatibility
 - fix fatal error when a plugin is disabled
 - fix translate REST requests in admin
-
-= 2.2.5 =
-- fixed Gutenberg compatibility
-- fixed translation WC coupons
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
