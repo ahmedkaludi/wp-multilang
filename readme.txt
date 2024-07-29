@@ -4,7 +4,7 @@ Contributors: magazine3
 Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
-Tested up to: 6.5
+Tested up to: 6.6
 Stable tag: 2.4.9
 Requires PHP: 5.6.20
 License: GPLv3
