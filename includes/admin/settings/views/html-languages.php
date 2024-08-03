@@ -62,7 +62,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<tr>
 									<td class="row-title"><?php esc_attr_e( 'Locale *', 'wp-multilang' ); ?></td>
 									<td>
-										<input type="text" name="wpm_languages[<?php echo esc_attr( $i ); ?>][locale]" value="<?php esc_attr_e( $language['locale'] ); ?>" title="<?php esc_attr_e( 'Locale *', 'wp-multilang' ); ?>" placeholder="<?php esc_attr_e( 'Locale *', 'wp-multilang' ); ?>" required>
+										<input type="text" name="wpm_languages[<?php echo esc_attr( $i ); ?>][locale]" value="<?php echo esc_attr( $language['locale'] ); ?>" title="<?php esc_attr_e( 'Locale *', 'wp-multilang' ); ?>" placeholder="<?php esc_attr_e( 'Locale *', 'wp-multilang' ); ?>" required>
 									</td>
 								</tr>
 								<tr>
@@ -82,13 +82,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<tr>
 									<td class="row-title"><?php esc_attr_e( 'Date Format' ); ?></td>
 									<td>
-										<input type="text" name="wpm_languages[<?php echo esc_attr( $i ); ?>][date]" value="<?php esc_attr_e( $language['date'] ); ?>" title="<?php esc_attr_e( 'Date Format' ); ?>" placeholder="<?php esc_attr_e( get_option( 'date_format' ) ); ?>">
+										<input type="text" name="wpm_languages[<?php echo esc_attr( $i ); ?>][date]" value="<?php echo esc_attr( $language['date'] ); ?>" title="<?php esc_attr_e( 'Date Format' ); ?>" placeholder="<?php echo esc_attr( get_option( 'date_format' ) ); ?>">
 									</td>
 								</tr>
 								<tr>
 									<td class="row-title"><?php esc_attr_e( 'Time Format' ); ?></td>
 									<td>
-										<input type="text" name="wpm_languages[<?php echo esc_attr( $i ); ?>][time]" value="<?php esc_attr_e( $language['time'] ); ?>" title="<?php esc_attr_e( 'Time Format' ); ?>" placeholder="<?php esc_attr_e( get_option( 'time_format' ) ); ?>">
+										<input type="text" name="wpm_languages[<?php echo esc_attr( $i ); ?>][time]" value="<?php echo esc_attr( $language['time'] ); ?>" title="<?php esc_attr_e( 'Time Format' ); ?>" placeholder="<?php echo esc_attr( get_option( 'time_format' ) ); ?>">
 									</td>
 								</tr>
 								<tr>
@@ -97,7 +97,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 										<select class="wpm-flags" name="wpm_languages[<?php echo esc_attr( $i ); ?>][flag]" title="<?php esc_attr_e( 'Flag', 'wp-multilang' ); ?>">
 											<option value=""><?php esc_attr_e( '&mdash; Select &mdash;' ); ?></option>
 											<?php foreach ( $flags as $flag ) { ?>
-												<option value="<?php esc_attr_e( $flag ); ?>" data-flag="<?php echo esc_url( wpm_get_flag_url( $flag ) ); ?>" <?php selected( $language['flag'], $flag ); ?>><?php esc_attr_e( pathinfo( $flag, PATHINFO_FILENAME ) ); ?></option>
+												<option value="<?php echo esc_attr( $flag ); ?>" data-flag="<?php echo esc_url( wpm_get_flag_url( $flag ) ); ?>" <?php selected( $language['flag'], $flag ); ?>><?php echo esc_attr( pathinfo( $flag, PATHINFO_FILENAME ) ); ?></option>
 											<?php } ?>
 										</select>
 									</td>
@@ -172,13 +172,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<tr>
 							<td class="row-title"><?php esc_attr_e( 'Date Format' ); ?></td>
 							<td>
-								<input type="text" name="wpm_languages[{{ data.count }}][date]" value="" title="<?php esc_attr_e( 'Date Format' ); ?>" placeholder="<?php esc_attr_e( get_option( 'date_format' ) ); ?>">
+								<input type="text" name="wpm_languages[{{ data.count }}][date]" value="" title="<?php esc_attr_e( 'Date Format' ); ?>" placeholder="<?php echo esc_attr( get_option( 'date_format' ) ); ?>">
 							</td>
 						</tr>
 						<tr>
 							<td class="row-title"><?php esc_attr_e( 'Time Format' ); ?></td>
 							<td>
-								<input type="text" name="wpm_languages[{{ data.count }}][time]" value="" title="<?php esc_attr_e( 'Time Format' ); ?>" placeholder="<?php esc_attr_e( get_option( 'time_format' ) ); ?>">
+								<input type="text" name="wpm_languages[{{ data.count }}][time]" value="" title="<?php esc_attr_e( 'Time Format' ); ?>" placeholder="<?php echo esc_attr( get_option( 'time_format' ) ); ?>">
 							</td>
 						</tr>
 						<tr>
@@ -187,7 +187,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<select class="wpm-flags" name="wpm_languages[{{ data.count }}][flag]" title="<?php esc_attr_e( 'Flag', 'wp-multilang' ); ?>">
 									<option value=""><?php esc_attr_e( '&mdash; Select &mdash;' ); ?></option>
 									<?php foreach ( $flags as $flag ) { ?>
-										<option value="<?php esc_attr_e( $flag ); ?>" data-flag="<?php echo esc_url( wpm_get_flag_url( $flag ) ); ?>"><?php esc_attr_e( pathinfo( $flag, PATHINFO_FILENAME ) ); ?></option>
+										<option value="<?php echo esc_attr( $flag ); ?>" data-flag="<?php echo esc_url( wpm_get_flag_url( $flag ) ); ?>"><?php echo esc_attr( pathinfo( $flag, PATHINFO_FILENAME ) ); ?></option>
 									<?php } ?>
 								</select>
 							</td>

@@ -287,6 +287,7 @@ class WPM_AJAX {
 			delete_option( 'qtranslate_term_name' );
 		}
 
+		/* translators: %d: This will get the number of term counts. */
 		wp_send_json( sprintf( __( '%d terms were imported successfully.', 'wp-multilang' ), $term_count ) );
 	}
 

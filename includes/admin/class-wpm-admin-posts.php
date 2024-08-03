@@ -115,7 +115,8 @@ class WPM_Admin_Posts {
 			}
 
 			if ( ! empty( $output ) ) {
-				echo implode( ' ', $output );
+				$implode_output = implode( ' ', $output );
+				echo wp_kses( $implode_output, wp_kses_allowed_html('post') );
 			}
 		}
 	}

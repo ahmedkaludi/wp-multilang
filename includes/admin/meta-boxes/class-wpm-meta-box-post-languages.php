@@ -33,7 +33,7 @@ class WPM_Meta_Box_Post_Languages {
 		$languages = wpm_get_languages();
 		$i         = 0;
 		?>
-		<h4><?php _e( 'Show post only in:', 'wp-multilang' ); ?></h4>
+		<h4><?php esc_html_e( 'Show post only in:', 'wp-multilang' ); ?></h4>
 		<ul class="languagechecklist">
 			<?php foreach ( $languages as $code => $language ) { ?>
 				<li>

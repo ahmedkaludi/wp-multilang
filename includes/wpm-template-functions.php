@@ -454,6 +454,7 @@ function wpm_get_flags() {
  * @return string
  */
 function wpm_show_notice( $echo = true ) {
+	/* translators: %s: notice message */
 	$notise = '<div class="notice notice-info inline"><p>' . sprintf( esc_attr__( 'For multilingual string, use syntax like %s.', 'wp-multilang' ), '<code>[:en]Text on english[:de]Text auf Deutsch[:]</code>' ) . '</p></div>';
 	if ( $echo ) {
 		echo $notise;

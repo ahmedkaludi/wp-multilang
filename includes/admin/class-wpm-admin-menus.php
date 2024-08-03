@@ -175,18 +175,18 @@ class WPM_Admin_Menus {
 				<ul id="wpm-languages-checklist" class="categorychecklist form-no-clear">
 					<li>
 						<label class="menu-item-title">
-							<input type="checkbox" class="menu-item-checkbox" name="menu-item[<?php esc_attr_e( $_nav_menu_placeholder ); ?>][menu-item-object-id]" value="<?php esc_attr_e( $_nav_menu_placeholder ); ?>" /> <?php esc_html_e( 'Languages', 'wp-multilang' ); ?>
+							<input type="checkbox" class="menu-item-checkbox" name="menu-item[<?php echo esc_attr( $_nav_menu_placeholder ); ?>][menu-item-object-id]" value="<?php echo esc_attr( $_nav_menu_placeholder ); ?>" /> <?php esc_html_e( 'Languages', 'wp-multilang' ); ?>
 						</label>
-						<input type="hidden" class="menu-item-type" name="menu-item[<?php esc_attr_e( $_nav_menu_placeholder ); ?>][menu-item-type]" value="custom" />
-						<input type="hidden" class="menu-item-title" name="menu-item[<?php esc_attr_e( $_nav_menu_placeholder ); ?>][menu-item-title]" value="<?php esc_html_e( 'Languages', 'wp-multilang' ); ?>" />
-						<input type="hidden" class="menu-item-url" name="menu-item[<?php esc_attr_e( $_nav_menu_placeholder ); ?>][menu-item-url]" value="#wpm-languages" />
-						<input type="hidden" class="menu-item-classes" name="menu-item[<?php esc_attr_e( $_nav_menu_placeholder ); ?>][menu-item-classes]" value="wpm-languages" />
+						<input type="hidden" class="menu-item-type" name="menu-item[<?php echo esc_attr( $_nav_menu_placeholder ); ?>][menu-item-type]" value="custom" />
+						<input type="hidden" class="menu-item-title" name="menu-item[<?php echo esc_attr( $_nav_menu_placeholder ); ?>][menu-item-title]" value="<?php esc_html_e( 'Languages', 'wp-multilang' ); ?>" />
+						<input type="hidden" class="menu-item-url" name="menu-item[<?php echo esc_attr( $_nav_menu_placeholder ); ?>][menu-item-url]" value="#wpm-languages" />
+						<input type="hidden" class="menu-item-classes" name="menu-item[<?php echo esc_attr( $_nav_menu_placeholder ); ?>][menu-item-classes]" value="wpm-languages" />
 					</li>
 				</ul>
 			</div>
 			<p class="button-controls">
 				<span class="add-to-menu">
-					<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e( 'Add to menu' ); ?>" name="add-post-type-menu-item" id="submit-posttype-wpm-languages">
+					<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php echo esc_attr( 'Add to menu' ); ?>" name="add-post-type-menu-item" id="submit-posttype-wpm-languages">
 					<span class="spinner"></span>
 				</span>
 			</p>
@@ -220,10 +220,10 @@ class WPM_Admin_Menus {
 		);
 		?>
 		<p class="description description-wide <?php echo esc_attr( $class ); ?>">
-			<label for="<?php esc_attr_e( $id ); ?>"><?php esc_html_e( 'Languages menu item type', 'wp-multilang' ); ?></label>
-			<select class="widefat" id="<?php esc_attr_e( $id ); ?>" name="<?php esc_attr_e( $name ); ?>">
+			<label for="<?php echo esc_attr( $id ); ?>"><?php esc_html_e( 'Languages menu item type', 'wp-multilang' ); ?></label>
+			<select class="widefat" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>">
 				<?php foreach ( $type_options as $val => $name ) { ?>
-					<option value="<?php esc_attr_e( $val ); ?>"<?php selected( $val, $value ) ?>><?php esc_html_e( $name ); ?></option>
+					<option value="<?php echo esc_attr( $val ); ?>"<?php selected( $val, $value ) ?>><?php echo esc_html( $name ); ?></option>
 				<?php } ?>
 			</select>
 		</p>
@@ -242,10 +242,10 @@ class WPM_Admin_Menus {
 		);
 		?>
 		<p class="description description-wide <?php echo esc_attr( $class ); ?>">
-			<label for="<?php esc_attr_e( $id ); ?>"><?php esc_html_e( 'Show', 'wp-multilang' ); ?></label>
-			<select class="widefat" id="<?php esc_attr_e( $id ); ?>" name="<?php esc_attr_e( $name ); ?>">
+			<label for="<?php echo esc_attr( $id ); ?>"><?php esc_html_e( 'Show', 'wp-multilang' ); ?></label>
+			<select class="widefat" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>">
 				<?php foreach ( $show_options as $val => $name ) { ?>
-					<option value="<?php esc_attr_e( $val ); ?>"<?php selected( $val, $value ) ?>><?php esc_html_e( $name ); ?></option>
+					<option value="<?php echo esc_attr( $val ); ?>"<?php selected( $val, $value ) ?>><?php echo esc_html( $name ); ?></option>
 				<?php } ?>
 			</select>
 		</p>

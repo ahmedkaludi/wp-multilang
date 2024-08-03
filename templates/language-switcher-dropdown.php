@@ -1,12 +1,12 @@
 <?php /** @var $show string */ ?>
-<ul class="wpm-language-switcher wpm-switcher-<?php esc_attr_e( $type ); ?>">
+<ul class="wpm-language-switcher wpm-switcher-<?php echo esc_attr( $type ); ?>">
 	<li class="wpm-item-language-main wpm-item-language-<?php echo esc_attr( $lang ); ?>">
 				<span>
 					<?php if ( ( ( 'flag' === $show ) || ( 'both' === $show ) ) && ( $languages[ $lang ] ['flag'] ) ) { ?>
-						<img src="<?php echo esc_url( wpm_get_flag_url( $languages[ $lang ]['flag'] ) ); ?>" alt="<?php esc_attr_e( $languages[ $lang ]['name'] ); ?>">
+						<img src="<?php echo esc_url( wpm_get_flag_url( $languages[ $lang ]['flag'] ) ); ?>" alt="<?php echo esc_attr( $languages[ $lang ]['name'] ); ?>">
 					<?php } ?>
 					<?php if ( ( 'name' === $show ) || ( 'both' === $show ) ) { ?>
-						<span><?php esc_html_e( $languages[ $lang ]['name'] ); ?></span>
+						<span><?php echo esc_html( $languages[ $lang ]['name'] ); ?></span>
 					<?php } ?>
 				</span>
 		<ul class="wpm-language-dropdown">

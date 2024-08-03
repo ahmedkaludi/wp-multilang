@@ -115,7 +115,7 @@ class WPM_Settings_Additional extends WPM_Settings_Page {
 								$active++;
 							}
 							?>
-							<option value="<?php esc_attr_e( $localization ); ?>" <?php disabled( ( 'en_US' == $localization ) || $used ); ?>><?php esc_attr_e( $available_translations[ $localization ]['native_name'] ); ?></option>
+							<option value="<?php echo esc_attr( $localization ); ?>" <?php disabled( ( 'en_US' == $localization ) || $used ); ?>><?php echo esc_html( $available_translations[ $localization ]['native_name'] ); ?></option>
 						<?php } ?>
 					</select>
 					<button type="button" id="delete_localization" class="button js-wpm-action" <?php disabled( 0 == $active ); ?>><?php esc_attr_e( 'Delete localization', 'wp-multilang' ); ?></button>

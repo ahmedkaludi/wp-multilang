@@ -76,6 +76,7 @@ function wpm_activation_admin_notices() {
 		
 		// Do not display link to settings UI if we are already in the UI.
 		$screen = get_current_screen();
+		/* translators: %s: This will get the settings admin url link */
 		$wpm_ui_link_text = ( strpos( $screen->id, 'wpm' ) === false ) ? sprintf( __( '<a href="%s">Add your languages & Customize your settings &rarr;</a>', 'wp-multilang' ), admin_url( 'admin.php?page=wpm-settings' ) ) : '';
 		
 		echo '<div class="updated notice is-dismissible"><p>' . __( 'Thank you for installing <strong>WP Multilang!</strong> ', 'wp-multilang' ) . $wpm_is_ready . $wpm_ui_link_text . '</p></div>';

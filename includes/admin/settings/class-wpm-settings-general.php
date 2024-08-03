@@ -51,6 +51,7 @@ class WPM_Settings_General extends WPM_Settings_Page {
 			array(
 				'title' => __( 'General options', 'wp-multilang' ),
 				'type'  => 'title',
+				/* translators: %s: url */
 				'desc'  => sprintf( __( 'Read <a href="%s" target="_blank">Google guidelines</a> before.', 'wp-multilang' ), esc_url( 'https://support.google.com/webmasters/answer/182192?hl=' . wpm_get_user_language() ) ),
 				'id'    => 'general_options'
 			),

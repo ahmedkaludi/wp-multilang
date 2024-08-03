@@ -151,6 +151,7 @@ class WPM_Menus {
 
 		}// End if().
 
+		/* translators: %d: This will get menu item id */
 		$menu_item->title = '' === $menu_item->title ? sprintf( __( '#%d (no title)' ), $menu_item->ID ) : $menu_item->title;
 
 		return $menu_item;
