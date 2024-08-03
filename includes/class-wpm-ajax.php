@@ -451,7 +451,7 @@ class WPM_AJAX {
 		            
 		    $response = wp_remote_post( $api_url, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
 		            $response = wp_remote_retrieve_body( $response );                    
-		    echo $response;
+		    echo esc_html( $response );
 
         }else{
                 echo esc_html__('Email id required', 'wp-multilang');                        

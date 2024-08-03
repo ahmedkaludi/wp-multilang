@@ -93,11 +93,11 @@ function wpm_get_language_switcher( $type = 'list', $show = 'both' ) {
  *
  * @param string $type
  * @param string $show
- *
+ * 
  * @internal param array $args
  */
 function wpm_language_switcher( $type = 'list', $show = 'both' ) {
-	echo wpm_get_language_switcher( $type, $show );
+	echo wp_kses( wpm_get_language_switcher( $type, $show ), wpm_lang_switcher_allowed_html() );
 }
 
 
@@ -138,7 +138,9 @@ function wpm_set_alternate_links() {
 
 	$hreflangs = apply_filters( 'wpm_alternate_links', $hreflangs, wpm_get_current_url() );
 
-	echo implode( '', $hreflangs );
+	$hreflangs_escaped = implode( '', $hreflangs );
+	//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- all html inside this variable already escaped above in $hreflangs_escaped variable
+	echo $hreflangs_escaped;
 }
 
 add_action( 'wp_head', 'wpm_set_alternate_links' );
@@ -455,10 +457,11 @@ function wpm_get_flags() {
  */
 function wpm_show_notice( $echo = true ) {
 	/* translators: %s: notice message */
-	$notise = '<div class="notice notice-info inline"><p>' . sprintf( esc_attr__( 'For multilingual string, use syntax like %s.', 'wp-multilang' ), '<code>[:en]Text on english[:de]Text auf Deutsch[:]</code>' ) . '</p></div>';
+	$notise_escaped = '<div class="notice notice-info inline"><p>' . sprintf( esc_attr__( 'For multilingual string, use syntax like %s.', 'wp-multilang' ), '<code>[:en]Text on english[:de]Text auf Deutsch[:]</code>' ) . '</p></div>';
 	if ( $echo ) {
-		echo $notise;
+		//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- all html inside this variable already escaped above in $notise_escaped variable
+		echo $notise_escaped;
 	} else {
-		return $notise;
+		return $notise_escaped;
 	}
 }

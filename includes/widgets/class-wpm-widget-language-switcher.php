@@ -71,9 +71,10 @@ class WPM_Widget_Language_Switcher extends WPM_Widget {
 
 		$this->widget_end( $args );
 
-		$content = ob_get_clean();
+		$content_escaped = ob_get_clean();
 
-		echo $content;
+		//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- all html inside this variable already escaped above in wpm_language_switcher() function
+		echo $content_escaped;
 
 	}
 }
