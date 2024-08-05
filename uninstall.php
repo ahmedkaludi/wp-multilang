@@ -35,6 +35,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 		}
 
 		$fields  = wpm_filter_post_config_fields( array_keys( $post_config ) );
+		//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.QuotedSimplePlaceholder
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT ID, " . implode( ', ', $fields ) . " FROM {$wpdb->posts} WHERE post_type = '%s';", esc_sql( $post_type ) ) );
 
 		foreach ( $results as $result ) {
@@ -62,6 +63,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 			continue;
 		}
 
+		//phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedSimplePlaceholder
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT t.term_id, `name`, description FROM {$wpdb->terms} t LEFT JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id WHERE tt.taxonomy = '%s';", esc_sql( $taxonomy ) ) );
 
 		foreach ( $results as $result ) {

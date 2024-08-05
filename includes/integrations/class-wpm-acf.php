@@ -47,6 +47,7 @@ class WPM_Acf {
 	 */
 	public function add_config( $config ) {
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! isset( $_GET['page'] ) ) {
 			$config = array(
 				'post_content' => null,

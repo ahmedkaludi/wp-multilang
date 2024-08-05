@@ -530,6 +530,7 @@ class WPM_Admin_Settings {
 	 */
 	public static function save_fields( $options, $data = null ) {
 		if ( null === $data ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$data = $_POST;
 		}
 

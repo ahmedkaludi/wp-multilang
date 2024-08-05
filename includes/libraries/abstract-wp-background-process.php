@@ -145,7 +145,7 @@ abstract class WP_Background_Process extends WP_Async_Request {
 	 * @return string
 	 */
 	protected function generate_key( $length = 64 ) {
-		$unique  = md5( microtime() . rand() );
+		$unique  = md5( microtime() . wp_rand() );
 		$prepend = $this->identifier . '_batch_';
 
 		return substr( $prepend . $unique, 0, $length );
@@ -196,11 +196,8 @@ abstract class WP_Background_Process extends WP_Async_Request {
 
 		$key = $wpdb->esc_like( $this->identifier . '_batch_' ) . '%';
 
-		$count = $wpdb->get_var( $wpdb->prepare( "
-		SELECT COUNT(*)
-		FROM {$table}
-		WHERE {$column} LIKE %s
-	", $key ) );
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->options} WHERE {$column} LIKE %s", $key ) );
 
 		return ( $count > 0 ) ? false : true;
 	}
@@ -271,13 +268,8 @@ abstract class WP_Background_Process extends WP_Async_Request {
 
 		$key = $wpdb->esc_like( $this->identifier . '_batch_' ) . '%';
 
-		$query = $wpdb->get_row( $wpdb->prepare( "
-		SELECT *
-		FROM {$table}
-		WHERE {$column} LIKE %s
-		ORDER BY {$key_column} ASC
-		LIMIT 1
-		", $key ) );
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$query = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE {$column} LIKE %s ORDER BY {$key_column} ASC LIMIT 1", $key ) );
 
 		$batch       = new \stdClass();
 		$batch->key  = $query->$column;

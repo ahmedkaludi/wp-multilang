@@ -173,6 +173,7 @@ class WPM_Masterslider {
 	public function add_language_switcher( $config ) {
 		$screen    = get_current_screen();
 		$screen_id = $screen ? $screen->id : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( $screen_id === 'toplevel_page_masterslider' && isset( $_GET['slider_id'] ) ) {
 			$config[] = 'toplevel_page_masterslider';
 		}

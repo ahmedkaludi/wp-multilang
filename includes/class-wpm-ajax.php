@@ -42,6 +42,7 @@ class WPM_AJAX {
 	 * Set WPM AJAX constant and headers.
 	 */
 	public static function define_ajax() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( ! empty( $_GET['wpm-ajax'] ) ) {
 			if ( ! wp_doing_ajax() ) {
 				define( 'DOING_AJAX', true );
@@ -75,7 +76,9 @@ class WPM_AJAX {
 	public static function do_wpm_ajax() {
 		global $wp_query;
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( ! empty( $_GET['wpm-ajax'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 			$wp_query->set( 'wpm-ajax', sanitize_text_field( $_GET['wpm-ajax'] ) );
 		}
 
@@ -132,6 +135,7 @@ class WPM_AJAX {
 		unset( $options[ $language ] );
 
 		global $wpdb;
+		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Reason: using WP bulit in function updates the option of current language which does not work for our plugin in this case
 		$wpdb->update( $wpdb->options, array( 'option_value' => maybe_serialize( $options ) ), array( 'option_name' => 'wpm_languages' ) );
 
 		die();
@@ -343,11 +347,11 @@ class WPM_AJAX {
 
 		        if($sent){
 
-		             echo json_encode(array('status'=>'t'));  
+		             echo wp_json_encode(array('status'=>'t'));  
 
 		        }else{
 
-		            echo json_encode(array('status'=>'f'));            
+		            echo wp_json_encode(array('status'=>'f'));            
 
 		        }
 		        
@@ -367,7 +371,9 @@ class WPM_AJAX {
 			wp_die( -1 );
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Security measurament is done below in this function with nonce key wpm_feedback_nonce.
 		if( isset( $_POST['data'] ) ) {
+	        // phpcs:ignore WordPress.Security.NonceVerification.Missing
 	        parse_str( $_POST['data'], $data );
 	    }
 

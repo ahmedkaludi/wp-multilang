@@ -218,8 +218,10 @@ class WPM_WooCommerce {
 		$action = '';
 
 		// Action to perform: add, edit, delete or none
+		//phpcs:ignore WordPress.Security.NonceVerification.Missing -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( ! empty( $_POST['add_new_attribute'] ) ) {
 			$action = 'add';
+		//phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used
 		} elseif ( ! empty( $_POST['save_attribute'] ) && ! empty( $_GET['edit'] ) ) {
 			$action = 'edit';
 		}
@@ -314,14 +316,8 @@ class WPM_WooCommerce {
 
 		$meta_sql = get_meta_sql( $meta_query, 'comment', $wpdb->comments, 'comment_ID' );
 
-		$count = $wpdb->get_var( $wpdb->prepare("
-			SELECT COUNT( DISTINCT({$wpdb->comments}.comment_ID) ) FROM {$wpdb->comments}
-			{$meta_sql['join']}
-			WHERE comment_parent = 0
-			AND comment_post_ID = %d
-			AND comment_approved = '1'
-			{$meta_sql['where']}
-		", $product->get_id() ) );
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT( DISTINCT({$wpdb->comments}.comment_ID) ) FROM {$wpdb->comments} {$meta_sql['join']} WHERE comment_parent = 0 AND comment_post_ID = %d AND comment_approved = '1' {$meta_sql['where']}", $product->get_id() ) );
 
 		$count_array[ $lang ] = $count;
 		wp_cache_add( $product->get_id(), $count_array, 'wpm_comment_count' );

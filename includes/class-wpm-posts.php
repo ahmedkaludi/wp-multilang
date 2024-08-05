@@ -167,6 +167,7 @@ class WPM_Posts extends WPM_Object {
 				return $data;
 			}
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 			if ( isset( $_GET['action'] ) && 'untrash' === $_GET['action'] ) {
 				return $data;
 			}
@@ -197,6 +198,7 @@ class WPM_Posts extends WPM_Object {
 		if ( 'nav_menu_item' === $data['post_type'] ) {
 			$screen = get_current_screen();
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- this is a dependent function and its all security measurament is done wherever it has been used.
 			if ( 'POST' === $_SERVER['REQUEST_METHOD'] && 'update' === $_POST['action'] && ( $screen && 'nav-menus' === $screen->id ) ) {
 				// hack to get wp to create a post object when too many properties are empty
 				if ( '' === $data['post_title'] && '' === $data['post_content'] ) {
@@ -238,7 +240,7 @@ class WPM_Posts extends WPM_Object {
 	 * @return string
 	 */
 	public function translate_attachment_link( $link ) {
-		$text            = strip_tags( $link );
+		$text            = wp_strip_all_tags( $link );
 		$translated_text = wpm_translate_string( $text );
 
 		return str_replace( $text, $translated_text, $link );

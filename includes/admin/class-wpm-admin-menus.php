@@ -128,20 +128,28 @@ class WPM_Admin_Menus {
 		WPM_Admin_Settings::get_settings_pages();
 
 		// Get current tab/section
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$current_tab     = empty( $_GET['tab'] ) ? 'general' : sanitize_title( $_GET['tab'] );
+		
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$current_section = empty( $_REQUEST['section'] ) ? '' : sanitize_title( $_REQUEST['section'] );
 
 		// Save settings if data has been posted
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.NonceVerification.Missing
 		if ( ! empty( $_POST ) ) {
 			WPM_Admin_Settings::save();
 		}
 
 		// Add any posted messages
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['wpm_error'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			WPM_Admin_Settings::add_error( stripslashes( $_GET['wpm_error'] ) );
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['wpm_message'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			WPM_Admin_Settings::add_message( stripslashes( $_GET['wpm_message'] ) );
 		}
 	}

@@ -176,6 +176,7 @@ class WPM_Admin_Notices {
 	public static function update_notice() {
 		if ( version_compare( get_option( 'wpm_db_version' ), WPM_VERSION, '<' ) ) {
 			$updater = new WPM_Background_Updater();
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			if ( ! empty( $_GET['do_update_wpm'] ) || $updater->is_updating() ) {
 				include 'views/html-notice-updating.php';
 			} else {

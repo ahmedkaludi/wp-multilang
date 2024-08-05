@@ -102,6 +102,7 @@ class WPM_Admin_Meta_Boxes {
 		}
 
 		// Comment languages.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( 'comment' === $screen_id && isset( $_GET['c'] ) ) {
 			add_meta_box( 'wpm-comment-languages', __( 'Languages', 'wp-multilang' ), __NAMESPACE__ . '\Meta_Boxes\WPM_Meta_Box_Comment_Languages::output', 'comment', 'normal' );
 		}

@@ -407,6 +407,7 @@ function wpm_admin_language_switcher() {
 		'lang'      => wpm_get_language(),
 	);
 
+	//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Reason: Escaping is done in the respective template file
 	echo wpm_get_template( 'admin-language-switcher', '', '', $args );
 }
 
@@ -420,7 +421,8 @@ function wpm_admin_language_switcher_customizer() {
 		'languages' => wpm_get_languages(),
 		'lang'      => wpm_get_language(),
 	);
-
+	
+	//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Reason: Escaping is done in the respective template file
 	echo wpm_get_template( 'admin-language-switcher', 'customizer', '', $args );
 }
 

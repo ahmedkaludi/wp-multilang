@@ -53,7 +53,7 @@ class WPM_Better_Search {
 		}
 
 		$content = wpm_translate_string( $content );
-		$output  = strip_tags( strip_shortcodes( $content ) );
+		$output  = wp_strip_all_tags( strip_shortcodes( $content ) );
 
 		if ( $excerpt_length > 0 ) {
 			$output = wp_trim_words( $output, $excerpt_length );

@@ -33,6 +33,7 @@ function wpm_translate_url( $url, $language = '' ) {
 	$options       = wpm_get_lang_option();
 
 	if ( $language ) {
+		//phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ( ( $language === $user_language ) && ( ! is_admin() || is_front_ajax() ) && ! isset( $_GET['lang'] ) ) || ! isset( $options[ $language ] ) ) {
 			return $url;
 		}

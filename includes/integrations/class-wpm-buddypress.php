@@ -57,6 +57,7 @@ class WPM_BuddyPress {
 
 		if ( bp_is_email_customizer() ) {
 			add_filter( 'wpm_customizer_url', function () {
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				return rawurldecode( wpm_clean( $_GET['url'] ) );
 			} );
 		}

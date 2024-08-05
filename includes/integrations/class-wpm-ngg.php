@@ -40,9 +40,11 @@ class WPM_NGG {
 			$data   = array();
 
 			foreach ( $fields as $key => $field ) {
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing -- this is a dependent function and its all security measurament is done wherever it has been used.
 				$data[ $key ] = $_POST[ $key ];
 			}
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- this is a dependent function and its all security measurament is done wherever it has been used.
 			if ( $album = \C_Album_Mapper::get_instance()->find( wpm_clean( $_POST['act_album'] ) ) ) {
 				foreach ( $data as $key => $value ) {
 					if ( ! wpm_is_ml_string( $value ) ) {
@@ -155,6 +157,7 @@ class WPM_NGG {
 				$html_tags = array();
 
 				if ( '_page_nggallery-manage-album' === $admin_page ) {
+					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- this is a dependent function and its all security measurament is done wherever it has been used.
 					if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['act_album'] ) ) {
 						$html_tags = array(
 							'value' => array(
@@ -166,6 +169,7 @@ class WPM_NGG {
 				}
 
 				if ( '_page_nggallery-manage-gallery' === $admin_page ) {
+					// phpcs:ignore WordPress.Security.NonceVerification.Missing -- this is a dependent function and its all security measurament is done wherever it has been used.
 					if ( 'POST' === $_SERVER['REQUEST_METHOD'] && ( isset( $_POST['page'] ) && 'manage-images' === $_POST['page'] ) && isset( $_POST['updatepictures'] ) ) {
 						$html_tags = array(
 							'value' => array(

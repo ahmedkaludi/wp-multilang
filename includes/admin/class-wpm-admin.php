@@ -63,7 +63,8 @@ class WPM_Admin {
 	 */
 	public function set_edit_lang() {
 		$user_id = get_current_user_id();
-
+		
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['edit_lang'] ) || ! get_user_meta( $user_id, 'edit_lang', true ) ) {
 			update_user_meta( $user_id, 'edit_lang', wpm_get_language() );
 		}

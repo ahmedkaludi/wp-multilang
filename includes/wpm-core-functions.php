@@ -162,6 +162,7 @@ function wpm_setcookie( $name, $value, $expire = 0, $secure = false ) {
 		}
 	} elseif ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 		headers_sent( $file, $line );
+		//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		trigger_error( "{$name} cookie cannot be set - headers already sent by {$file} on line {$line}", E_USER_NOTICE );
 	}
 }
@@ -391,6 +392,7 @@ function wpm_maybe_define_constant( $name, $value ) {
  * @return mixed value sanitized by wpm_clean
  */
 function wpm_get_post_data_by_key( $key, $default = '' ) {
+	//phpcs:ignore WordPress.Security.NonceVerification.Missing
 	return wpm_clean( wpm_get_var( $_POST[ $key ], $default ) );
 }
 
@@ -427,6 +429,7 @@ function wpm_delete_expired_transients() {
 		AND a.option_name NOT LIKE %s
 		AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
 		AND b.option_value < %d";
+	//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	$rows = $wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 
 	$sql = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
@@ -434,6 +437,7 @@ function wpm_delete_expired_transients() {
 		AND a.option_name NOT LIKE %s
 		AND b.option_name = CONCAT( '_site_transient_timeout_', SUBSTRING( a.option_name, 17 ) )
 		AND b.option_value < %d";
+	//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	$rows2 = $wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_site_transient_' ) . '%', $wpdb->esc_like( '_site_transient_timeout_' ) . '%', time() ) );
 
 	return absint( $rows + $rows2 );
@@ -476,12 +480,8 @@ function wpm_get_page_by_title( $page_title, $output = OBJECT, $post_type = 'pag
 	if ( is_array( $post_type ) ) {
 		$post_type = esc_sql( $post_type );
 		$post_type_in_string = "'" . implode( "','", $post_type ) . "'";
-		$sql = $wpdb->prepare( "
-			SELECT ID, post_title
-			FROM $wpdb->posts
-			WHERE post_title LIKE %s
-			AND post_type IN ($post_type_in_string)
-		", $like );
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$sql = $wpdb->prepare( "SELECT ID, post_title FROM $wpdb->posts WHERE post_title LIKE %s AND post_type IN ($post_type_in_string)", $like );
 	} else {
 		$sql = $wpdb->prepare( "
 			SELECT ID, post_title
@@ -491,6 +491,7 @@ function wpm_get_page_by_title( $page_title, $output = OBJECT, $post_type = 'pag
 		", $like, $post_type );
 	}
 
+	//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	$page = $wpdb->get_var( $sql );
 
 	if ( $page ) {
