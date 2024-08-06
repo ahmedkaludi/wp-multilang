@@ -410,7 +410,13 @@ function wpm_translate_term( $term, $taxonomy, $lang = '' ) {
 function wpm_untranslate_post( $post ) {
 	if ( $post instanceof WP_Post ) {
 		global $wpdb;
-		$orig_post = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE ID = %d;", $post->ID ) );
+		$cache_key 	= 'wpm_posts_by_id_key';
+		$orig_post 		= wp_cache_get($cache_key);
+		if( false === $orig_post ){
+			//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$orig_post = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE ID = %d;", $post->ID ) );
+			wp_cache_set( $cache_key, $orig_post );
+		}
 		foreach ( get_object_vars( $post ) as $key => $content ) {
 			switch ( $key ) {
 				case 'post_title':

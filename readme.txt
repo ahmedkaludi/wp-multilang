@@ -7,7 +7,7 @@ Requires at least: 4.7
 Tested up to: 6.6
 Stable tag: 2.4.10
 Requires PHP: 5.6.20
-License: GPLv3
+License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Multilingual plugin for WordPress. Go Multilingual in minutes with full WordPress support. Translate your site easily with this localization plugin.

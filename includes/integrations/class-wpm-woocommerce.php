@@ -149,6 +149,7 @@ class WPM_WooCommerce {
 	 */
 	public function remove_filter( $query_args ) {
 
+		//phpcs:ignore 	WordPressVIPMinimum.Performance.WPQueryParams.SuppressFilters_suppress_filters --Reason This is not a global code, this works only on some woocoomerce hooks.
 		$query_args['suppress_filters'] = true;
 
 		return $query_args;

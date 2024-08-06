@@ -140,6 +140,7 @@ function wpm_print_js() {
 		 *
 		 * @param string $js JavaScript code.
 		 */
+		//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $js;
 
 		unset( $wpm_queued_js );
@@ -429,7 +430,7 @@ function wpm_delete_expired_transients() {
 		AND a.option_name NOT LIKE %s
 		AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
 		AND b.option_value < %d";
-	//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	$rows = $wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 
 	$sql = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
@@ -437,7 +438,7 @@ function wpm_delete_expired_transients() {
 		AND a.option_name NOT LIKE %s
 		AND b.option_name = CONCAT( '_site_transient_timeout_', SUBSTRING( a.option_name, 17 ) )
 		AND b.option_value < %d";
-	//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching 
 	$rows2 = $wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_site_transient_' ) . '%', $wpdb->esc_like( '_site_transient_timeout_' ) . '%', time() ) );
 
 	return absint( $rows + $rows2 );
@@ -491,8 +492,13 @@ function wpm_get_page_by_title( $page_title, $output = OBJECT, $post_type = 'pag
 		", $like, $post_type );
 	}
 
-	//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-	$page = $wpdb->get_var( $sql );
+	$cache_key 	= 'wpm_page_title_key';
+	$page 		= wp_cache_get($cache_key);
+	if(false === $page ){
+		//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$page = $wpdb->get_var( $sql );
+		wp_cache_set( $cache_key, $page );
+	}	
 
 	if ( $page ) {
 		return get_post( $page, $output );

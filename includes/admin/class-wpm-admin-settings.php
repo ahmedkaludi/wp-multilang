@@ -239,7 +239,9 @@ class WPM_Admin_Settings {
 						echo '<h2>' . esc_html( $value['title'] ) . '</h2>';
 					}
 					if ( ! empty( $value['desc'] ) ) {
-						echo wpautop( wptexturize( wp_kses_post( $value['desc'] ) ) );
+						$description_escaped = wpautop( wptexturize( wp_kses_post( $value['desc'] ) ) );
+						//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason Already escaped above
+						echo $description_escaped;
 					}
 					echo '<table class="form-table">' . "\n\n";
 					if ( ! empty( $value['id'] ) ) {
@@ -268,9 +270,12 @@ class WPM_Admin_Settings {
 					?><tr valign="top">
 						<th scope="row" class="titledesc">
 							<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?></label>
-							<?php echo $tooltip_html; ?>
+							<?php 
+								//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason Already escaped above
+								echo $tooltip_html; 
+							?>
 						</th>
-						<td class="forminp forminp-<?php echo sanitize_title( $value['type'] ) ?>">
+						<td class="forminp forminp-<?php echo esc_attr( $value['type'] ) ?>">
 							<input
 								name="<?php echo esc_attr( $value['id'] ); ?>"
 								id="<?php echo esc_attr( $value['id'] ); ?>"
@@ -285,7 +290,10 @@ class WPM_Admin_Settings {
 									echo $implode_cs_escaped; 
 								?>
 								/> 
-								<?php echo esc_html( $description ); ?>
+								<?php 
+								//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason already escaped in get_field_description() function
+								echo $description ; 
+								?>
 						</td>
 					</tr><?php
 					break;
@@ -298,10 +306,16 @@ class WPM_Admin_Settings {
 					?><tr valign="top">
 						<th scope="row" class="titledesc">
 							<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?></label>
-							<?php echo $tooltip_html; ?>
+							<?php 
+								//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason Already escaped above
+								echo $tooltip_html; 
+							?>
 						</th>
-						<td class="forminp forminp-<?php echo sanitize_title( $value['type'] ) ?>">
-							<?php echo esc_html( $description ); ?>
+						<td class="forminp forminp-<?php echo esc_attr( $value['type'] ) ?>">
+							<?php 
+								//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason already escaped in get_field_description() function
+								echo $description; 
+							?>
 							<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Reason: Escaping is done just above ?>
 							<textarea name="<?php echo esc_attr( $value['id'] ); ?>" id="<?php echo esc_attr( $value['id'] ); ?>" style="<?php echo esc_attr( $value['css'] ); ?>" class="<?php echo esc_attr( $value['class'] ); ?>" placeholder="<?php echo esc_attr( $value['placeholder'] ); ?>" <?php echo implode( ' ', $custom_attributes ); ?>>
 							<?php echo esc_textarea( $option_value );  ?>
@@ -319,9 +333,12 @@ class WPM_Admin_Settings {
 					?><tr valign="top">
 						<th scope="row" class="titledesc">
 							<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?></label>
-							<?php echo $tooltip_html; ?>
+							<?php 
+								//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason Already escaped above
+								echo $tooltip_html; 
+							?>
 						</th>
-						<td class="forminp forminp-<?php echo sanitize_title( $value['type'] ) ?>">
+						<td class="forminp forminp-<?php echo esc_attr( $value['type'] ) ?>">
 							<select
 								name="<?php echo esc_attr( $value['id'] ); ?><?php echo ( 'multiselect' === $value['type'] ) ? '[]' : ''; ?>"
 								id="<?php echo esc_attr( $value['id'] ); ?>"
@@ -348,7 +365,11 @@ class WPM_Admin_Settings {
 										<?php
 									}
 								?>
-							</select> <?php echo esc_html( $description ); ?>
+							</select> 
+							<?php 
+								//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason already escaped in get_field_description() function
+								echo $description; 
+							?>
 						</td>
 					</tr><?php
 					break;
@@ -361,11 +382,17 @@ class WPM_Admin_Settings {
 					?><tr valign="top">
 						<th scope="row" class="titledesc">
 							<label for="<?php echo esc_attr( $value['id'] ); ?>"><?php echo esc_html( $value['title'] ); ?></label>
-							<?php echo $tooltip_html; ?>
+							<?php 
+								//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason Already escaped above
+								echo $tooltip_html; 
+							?>
 						</th>
-						<td class="forminp forminp-<?php echo sanitize_title( $value['type'] ) ?>">
+						<td class="forminp forminp-<?php echo esc_attr( $value['type'] ) ?>">
 							<fieldset>
-								<?php echo esc_html( $description ); ?>
+								<?php 
+									//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason already escaped in get_field_description() function
+									echo $description; 
+								?>
 								<ul>
 								<?php
 									foreach ( $value['options'] as $key => $val ) {
@@ -447,9 +474,15 @@ class WPM_Admin_Settings {
 									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Reason: Escaping is done just above
 									echo implode( ' ', $custom_attributes ); 
 								?>
-							/> <?php echo esc_html( $description ); ?>
-						</label> <?php echo $tooltip_html; ?>
-					<?php
+							/> 
+							<?php 
+								//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason already escaped in get_field_description() function
+								echo $description; 
+							?>
+						</label> 
+						<?php 
+							//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason Already escaped above
+							echo $tooltip_html; 
 
 					if ( ! isset( $value['checkboxgroup'] ) || 'end' === $value['checkboxgroup'] ) {
 									?>
@@ -466,7 +499,9 @@ class WPM_Admin_Settings {
 
 				case 'section_note':
 					if ( ! empty( $value['desc'] ) ) {
-						echo wpautop( wptexturize( wp_kses_post( $value['desc'] ) ) );
+						$description_escaped = wpautop( wptexturize( wp_kses_post( $value['desc'] ) ) );
+						//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason Already escaped above
+						echo $description_escaped;
 					}
 				break;	
 

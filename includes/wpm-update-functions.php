@@ -146,17 +146,31 @@ function wpm_update_214_change_syntax() {
 		return $value;
 	};
 
-	$results = $wpdb->get_results( "SELECT ID, post_title FROM {$wpdb->posts} WHERE post_title LIKE '%{:__}%' OR post_title LIKE '%<!--:__-->%';" );
+	$cache_key 	= 'wpm_post_title_cache_key';
+	$results 	= wp_cache_get( $cache_key );
+	if ( false === $results ) {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery --Reason since we are getting the all translated data using wordpress core function will get only translated language data.
+		$results = $wpdb->get_results( "SELECT ID, post_title FROM {$wpdb->posts} WHERE post_title LIKE '%{:__}%' OR post_title LIKE '%<!--:__-->%';" );
+		wp_cache_set( $cache_key, $results );
+	}
 
 	foreach ( $results as $result ) {
 		$post_title = $adjust_syntax( $result->post_title );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$wpdb->update( $wpdb->posts, array( 'post_title' => $post_title ), array( 'ID' => $result->ID ) );
 	}
 
-	$results = $wpdb->get_results( "SELECT term_id, `name` FROM {$wpdb->terms} WHERE `name` LIKE '%{:__}%' OR `name` LIKE '%<!--:__-->%';" );
+	$cache_key 	= 'wpm_term_name_cache_key';
+	$results 	= wp_cache_get( $cache_key );
+	if ( false === $results ) {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery --Reason since we are getting the all translated data using wordpress core function will get only translated language data.
+		$results = $wpdb->get_results( "SELECT term_id, `name` FROM {$wpdb->terms} WHERE `name` LIKE '%{:__}%' OR `name` LIKE '%<!--:__-->%';" );
+		wp_cache_set( $cache_key, $results );
+	}
 
 	foreach ( $results as $result ) {
 		$name = $adjust_syntax( $result->name );
+		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->update( $wpdb->terms, array( 'name' => $name ), array( 'term_id' => $result->term_id ) );
 	}
 }

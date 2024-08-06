@@ -196,8 +196,13 @@ abstract class WP_Background_Process extends WP_Async_Request {
 
 		$key = $wpdb->esc_like( $this->identifier . '_batch_' ) . '%';
 
-		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->options} WHERE {$column} LIKE %s", $key ) );
+		$cache_key 	= 'wpm_options_'.$column.'_key';
+		$count 		= wp_cache_get($cache_key);	
+		if(false === $count){
+			//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery --Reason Cannot query by column name which is dynamic
+			$count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->options} WHERE {$column} LIKE %s", $key ) );
+			wp_cache_set( $cache_key, $count );
+		}
 
 		return ( $count > 0 ) ? false : true;
 	}
@@ -268,8 +273,13 @@ abstract class WP_Background_Process extends WP_Async_Request {
 
 		$key = $wpdb->esc_like( $this->identifier . '_batch_' ) . '%';
 
-		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$query = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE {$column} LIKE %s ORDER BY {$key_column} ASC LIMIT 1", $key ) );
+		$cache_key 	= 'wpm_options_batch_'.$column.'_key';
+		$query 		= wp_cache_get($cache_key);	
+		if(false === $count){
+			//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery --Reason Cannot query by column name which is dynamic
+			$query = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE {$column} LIKE %s ORDER BY {$key_column} ASC LIMIT 1", $key ) );
+			wp_cache_set( $cache_key, $query );
+		}
 
 		$batch       = new \stdClass();
 		$batch->key  = $query->$column;
