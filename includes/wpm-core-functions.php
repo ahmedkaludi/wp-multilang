@@ -133,7 +133,7 @@ function wpm_print_js() {
 		$wpm_queued_js = preg_replace( '/&#(x)?0*(?(1)27|39);?/i', "'", $wpm_queued_js );
 		$wpm_queued_js = str_replace( "\r", '', $wpm_queued_js );
 
-		$js = "<!-- WPM JavaScript -->\n<script type=\"text/javascript\">\njQuery(function($) { $wpm_queued_js });\n</script>\n";
+		$js_escaped = "<!-- WPM JavaScript -->\n<script type=\"text/javascript\">\njQuery(function($) { $wpm_queued_js });\n</script>\n";
 
 		/**
 		 * game_portal_queued_js filter.
@@ -141,7 +141,7 @@ function wpm_print_js() {
 		 * @param string $js JavaScript code.
 		 */
 		//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo $js;
+		echo $js_escaped;
 
 		unset( $wpm_queued_js );
 	}
