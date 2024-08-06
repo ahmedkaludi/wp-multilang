@@ -125,8 +125,10 @@ class WPM_Taxonomies extends WPM_Object {
 			);
 
 			if ( isset( $args['meta_query'] ) ) {
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				$args['meta_query'] = wp_parse_args( $args['meta_query'], $lang_meta_query );
 			} else {
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				$args['meta_query'] = $lang_meta_query;
 			}
 		}

@@ -104,6 +104,7 @@ abstract class WPM_Object {
 		if ( $meta_values ) {
 
 			foreach ( $meta_values as $meta_field ) {
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				$meta_field['meta_value'] = maybe_unserialize( $meta_field['meta_value'] );
 				if ( wpm_is_ml_value( $meta_field['meta_value'] ) ) {
 					$value = wpm_translate_value( $meta_field['meta_value'] );
@@ -218,6 +219,7 @@ abstract class WPM_Object {
 
 		$meta_value = maybe_serialize( $meta_value );
 		$data       = compact( 'meta_value' );
+		//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 		$where      = array( $column => $object_id, 'meta_key' => $meta_key );
 
 		if ( ! empty( $prev_value ) ) {
@@ -229,6 +231,7 @@ abstract class WPM_Object {
 			}
 
 			$prev_value          = maybe_serialize( $prev_value );
+			//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			$where['meta_value'] = $prev_value;
 		}
 
@@ -386,10 +389,12 @@ abstract class WPM_Object {
 		 */
 		do_action( "add_{$this->object_type}_meta", $object_id, $meta_key, $_meta_value );
 
-		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 		$result = $wpdb->insert( $table, array(
 			$column      => $object_id,
+			//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 			'meta_key'   => $meta_key,
+			//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'meta_value' => $meta_value,
 		) );
 

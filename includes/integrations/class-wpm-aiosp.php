@@ -125,10 +125,12 @@ class WPM_AIOSP {
 			$meta_value = wpm_set_new_value( $this->meta_fields[ $meta_key ], $meta_value );
 			$meta_value = maybe_serialize( $meta_value );
 
-			//phpcs:ignore 	WordPress.DB.DirectDatabaseQuery.DirectQuery
+			//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$result = $wpdb->insert( $wpdb->postmeta, array(
 				'post_id'    => $object_id,
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				'meta_key'   => $meta_key,
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => $meta_value,
 			) );
 

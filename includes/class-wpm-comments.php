@@ -80,6 +80,7 @@ class WPM_Comments extends WPM_Object {
 				$meta_query = wp_parse_args( $query->query_vars['meta_query'], $meta_query );
 			}
 
+			//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query->query_vars['meta_query'] = $meta_query;
 		}
 
