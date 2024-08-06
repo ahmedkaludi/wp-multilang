@@ -349,6 +349,7 @@ class WPM_Yoast_Seo {
 		$yoast_table_name = $wpdb->prefix . 'yoast_indexable'; 
 
 		// Check if yoast_indexable table exists
+		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $yoast_table_name ) );
 
 		if ($table_exists) {
@@ -359,11 +360,12 @@ class WPM_Yoast_Seo {
 				$meta_key_array = array('_yoast_wpseo_title', '_yoast_wpseo_metadesc', '_yoast_wpseo_opengraph-title','_yoast_wpseo_opengraph-description', '_yoast_wpseo_twitter-title', '_yoast_wpseo_twitter-description', '_yoast_wpseo_focuskw', '_yoast_wpseo_schema_page_type', '_yoast_wpseo_schema_article_type', '_yoast_wpseo_opengraph-image', '_yoast_wpseo_opengraph-image-id', '_yoast_wpseo_twitter-image', '_yoast_wpseo_twitter-image-id');
 
 				// Get _yoast_wpseo_metadesc and _yoast_wpseo_title values from table
-				//phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedDynamicPlaceholderGeneration,WordPress.DB.PreparedSQL.NotPrepared 
+				//phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedDynamicPlaceholderGeneration,WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason: Making use of built in functions fetched data of current language 
 				$post_meta_result = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND (meta_key IN('".implode("','", $meta_key_array)."') )", $post_id ));
 				if(!empty($post_meta_result) && is_array($post_meta_result) && count($post_meta_result) > 0){
 
 					// Fetch post data from yoast_indexable table
+					//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 					$result = $wpdb->get_row($wpdb->prepare("SELECT object_id, title, description FROM {$wpdb->prefix}yoast_indexable WHERE object_id = %d", $post_id));
 					if(!empty($result) && is_object($result)){
 						if(isset($result->object_id)){
@@ -408,6 +410,7 @@ class WPM_Yoast_Seo {
 							
 							if(!empty($update_array_values)){
 								// Update the title and description field values of yoast_indexable table
+								//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 								$wpdb->update($yoast_table_name, $update_array_values, array('object_id' => $post_id));
 							}
 						}
@@ -429,6 +432,7 @@ class WPM_Yoast_Seo {
 		$yoast_table_name = $wpdb->prefix . 'yoast_indexable'; 
 
 		// Check if yoast_indexable table exists
+		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason: As per requirement, We have to use the direct query.
 		$table_exists = $wpdb->get_var( $wpdb->prepare("SHOW TABLES LIKE %s", $yoast_table_name) );
 
 		if ($table_exists) {
@@ -436,6 +440,7 @@ class WPM_Yoast_Seo {
 
 			// Get _yoast_wpseo_metadesc and _yoast_wpseo_title values from options table
 			$option_name = 'wpseo_taxonomy_meta';
+			//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$option_result = $wpdb->get_row($wpdb->prepare("SELECT option_value FROM {$wpdb->prefix}yoast_indexable WHERE option_name = %s", $option_name ));
 
 			if(is_object($option_result) && isset($option_result->option_value)){
@@ -483,6 +488,7 @@ class WPM_Yoast_Seo {
 								}
 
 								// Update the title and description field values of yoast_indexable table
+								//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 								$wpdb->update($yoast_table_name, $update_array_values, array('object_id' => $term_id));
 							}
 						}
@@ -629,7 +635,7 @@ class WPM_Yoast_Seo {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'yoast_indexable'; 
 
-		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason: As per requirement, We have to use the direct query.
 		$result = $wpdb->get_row($wpdb->prepare("SELECT {$field_name} FROM {$wpdb->prefix}yoast_indexable WHERE object_id = %d", $object_id ));
 		return $result;
 	}

@@ -85,6 +85,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 		switch ( $key ) {
 
 			case 'post_fields':
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				$wpdb->delete( $wpdb->postmeta, array( 'meta_key' => '_languages' ) );
 
 				$results = $wpdb->get_results( "SELECT meta_id, meta_value FROM {$wpdb->postmeta} WHERE meta_value LIKE '%![:__!]%' ESCAPE '!' OR meta_value LIKE '%{:__}%' OR meta_value LIKE '%<!--:__-->%';" );
@@ -109,6 +110,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 				break;
 
 			case 'term_fields':
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				$wpdb->delete( $wpdb->termmeta, array( 'meta_key' => '_languages' ) );
 
 				$results = $wpdb->get_results( "SELECT meta_id, meta_value FROM {$wpdb->termmeta} WHERE meta_value LIKE '%![:__!]%' ESCAPE '!' OR meta_value LIKE '%{:__}%' OR meta_value LIKE '%<!--:__-->%';" );
@@ -134,6 +136,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 				break;
 
 			case 'comment_fields':
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				$wpdb->delete( $wpdb->commentmeta, array( 'meta_key' => '_languages' ) );
 
 				$results = $wpdb->get_results( "SELECT meta_id, meta_value FROM {$wpdb->commentmeta} WHERE meta_value LIKE '%s' OR meta_value LIKE '%![:__!]%' ESCAPE '!' OR meta_value LIKE '%{:__}%' OR meta_value LIKE '%<!--:__-->%';" );

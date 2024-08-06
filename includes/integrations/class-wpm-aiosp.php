@@ -92,6 +92,7 @@ class WPM_AIOSP {
 		if ( isset( $this->meta_fields[ $meta_key ] ) ) {
 			global $wpdb;
 
+			//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$old_value = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s AND post_id = %d;", $meta_key, $object_id ) );
 
 			if ( $old_value ) {
@@ -124,6 +125,7 @@ class WPM_AIOSP {
 			$meta_value = wpm_set_new_value( $this->meta_fields[ $meta_key ], $meta_value );
 			$meta_value = maybe_serialize( $meta_value );
 
+			//phpcs:ignore 	WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$result = $wpdb->insert( $wpdb->postmeta, array(
 				'post_id'    => $object_id,
 				'meta_key'   => $meta_key,
@@ -176,7 +178,7 @@ class WPM_AIOSP {
 				$meta_key_array = array('_aioseo_title', '_aioseo_description', '_aioseo_twitter_title', '_aioseo_twitter_description', '_aioseo_og_title', '_aioseo_og_description');
 
 				// Get _aioseo_description and _aioseo_title values from table
-				//phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedDynamicPlaceholderGeneration,WordPress.DB.PreparedSQL.NotPrepared
+				//phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedDynamicPlaceholderGeneration, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				$post_meta_result = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND (meta_key IN('".implode("','", $meta_key_array)."') )", $post_id ));
 
 				if(is_array($post_meta_result) && count($post_meta_result) > 0){

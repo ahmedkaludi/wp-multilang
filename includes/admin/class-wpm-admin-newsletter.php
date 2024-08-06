@@ -38,7 +38,7 @@ class WPM_Admin_Newsletter {
 
                 $script_data = apply_filters('wpm_localize_filter',$script_data,'wpm_localize_data');
 
-                wp_register_script( 'wpm-newsletter-script', wpm_asset_path( 'scripts/wpm-newsletter-script' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION );
+                wp_register_script( 'wpm-newsletter-script', wpm_asset_path( 'scripts/wpm-newsletter-script' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
                 wp_localize_script( 'wpm-newsletter-script', 'wpm_localize_data', $script_data );
                 wp_enqueue_script( 'wpm-newsletter-script' );
         }

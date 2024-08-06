@@ -98,7 +98,8 @@ class WPM_Admin_Gutenberg_Block {
                         $block['handler'],
                         $block['path'],
                         array( 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-edit-widgets' ), 
-                        WPM_VERSION                                
+                        WPM_VERSION,
+                        true                                
                     );
 
                 } else {
@@ -107,7 +108,8 @@ class WPM_Admin_Gutenberg_Block {
                         $block['handler'],
                         $block['path'],
                         array( 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-editor' ),
-                        WPM_VERSION                                 
+                        WPM_VERSION,
+                        true                                 
                     );
                     
                 }

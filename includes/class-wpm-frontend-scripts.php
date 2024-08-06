@@ -213,7 +213,7 @@ class WPM_Frontend_Scripts {
 		$filename = '/assets/blocks/language-switcher/js/switcher-block' . $suffix . '.js';
         $css_style_path = wpm()->plugin_url().$filename;
 
-        wp_register_script( 'wpm-switcher-block-script', $css_style_path, array('jquery'), WPM_VERSION );
+        wp_register_script( 'wpm-switcher-block-script', $css_style_path, array('jquery'), WPM_VERSION, true );
         wp_localize_script( 'wpm-switcher-block-script', 'wpm_localize_data', $script_data );
         wp_enqueue_script( 'wpm-switcher-block-script' );
 	}

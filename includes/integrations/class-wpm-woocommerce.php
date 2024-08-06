@@ -316,7 +316,7 @@ class WPM_WooCommerce {
 
 		$meta_sql = get_meta_sql( $meta_query, 'comment', $wpdb->comments, 'comment_ID' );
 
-		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$count = $wpdb->get_var( $wpdb->prepare("SELECT COUNT( DISTINCT({$wpdb->comments}.comment_ID) ) FROM {$wpdb->comments} {$meta_sql['join']} WHERE comment_parent = 0 AND comment_post_ID = %d AND comment_approved = '1' {$meta_sql['where']}", $product->get_id() ) );
 
 		$count_array[ $lang ] = $count;

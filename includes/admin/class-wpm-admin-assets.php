@@ -52,16 +52,16 @@ class WPM_Admin_Assets {
 		$suffix    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		// Register scripts
-		wp_register_script( 'select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js', array( 'jquery' ), null );
+		wp_register_script( 'select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js', array( 'jquery' ), '4.0.5', true );
 		wp_register_script( 'wpm_languages', wpm_asset_path( 'scripts/languages' . $suffix . '.js' ), array(
 			'wp-util',
 			'jquery-ui-sortable',
 			'select2',
-		), WPM_VERSION );
+		), WPM_VERSION, true );
 
-		wp_register_script( 'wpm_language_switcher', wpm_asset_path( 'scripts/language-switcher' . $suffix . '.js' ), array( 'wp-util' ), WPM_VERSION );
-		wp_register_script( 'wpm_language_switcher_customizer', wpm_asset_path( 'scripts/customizer' . $suffix . '.js' ), array( 'wp-util' ), WPM_VERSION );
-		wp_register_script( 'wpm_translator', wpm_asset_path( 'scripts/translator' . $suffix . '.js' ), array(), WPM_VERSION );
+		wp_register_script( 'wpm_language_switcher', wpm_asset_path( 'scripts/language-switcher' . $suffix . '.js' ), array( 'wp-util' ), WPM_VERSION, true );
+		wp_register_script( 'wpm_language_switcher_customizer', wpm_asset_path( 'scripts/customizer' . $suffix . '.js' ), array( 'wp-util' ), WPM_VERSION, true );
+		wp_register_script( 'wpm_translator', wpm_asset_path( 'scripts/translator' . $suffix . '.js' ), array(), WPM_VERSION, true );
 
 		$translator_params = array(
 			'languages'                 => array_keys( wpm_get_languages() ),
@@ -70,9 +70,9 @@ class WPM_Admin_Assets {
 			'show_untranslated_strings' => get_option( 'wpm_show_untranslated_strings', 'yes' ),
 		);
 		wp_localize_script( 'wpm_translator', 'wpm_translator_params', $translator_params );
-		wp_register_script( 'wpm_additional_settings', wpm_asset_path( 'scripts/additional-settings' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION );
-		wp_register_script( 'wpm_support_settings', wpm_asset_path( 'scripts/support-settings' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION );
-		wp_register_script( 'wpm_premium_settings', wpm_asset_path( 'scripts/premium-settings' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION );
+		wp_register_script( 'wpm_additional_settings', wpm_asset_path( 'scripts/additional-settings' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
+		wp_register_script( 'wpm_support_settings', wpm_asset_path( 'scripts/support-settings' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
+		wp_register_script( 'wpm_premium_settings', wpm_asset_path( 'scripts/premium-settings' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
 
 		$script = "
 			(function( $ ) {

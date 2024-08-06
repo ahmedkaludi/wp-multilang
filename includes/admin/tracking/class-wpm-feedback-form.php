@@ -100,7 +100,7 @@ class WPM_Deactivate_Feedback_Form{
             'ajax_url'                   => admin_url( 'admin-ajax.php' ),
             'feedback_nonce'             => wp_create_nonce( 'feedback-localization' ),
         );
-        wp_register_script( 'wpm-feedback-script', wpm_asset_path( 'scripts/wpm-feedback-script' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION );
+        wp_register_script( 'wpm-feedback-script', wpm_asset_path( 'scripts/wpm-feedback-script' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
         wp_localize_script( 'wpm-feedback-script', 'wpm_feedback_params', $main_params );
         wp_enqueue_script( 'wpm-feedback-script' );
 
