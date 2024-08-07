@@ -23,7 +23,7 @@ class WPM_Settings_Support extends WPM_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id    = 'support';
-		$this->label = __( 'Help & Support', 'wp-multilang' );
+		$this->label = esc_html__( 'Help & Support', 'wp-multilang' );
 
 		parent::__construct();
 	}

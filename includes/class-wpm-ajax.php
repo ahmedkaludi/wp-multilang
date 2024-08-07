@@ -196,56 +196,7 @@ class WPM_AJAX {
 			wp_delete_file( $file );
 		}
 
-		wp_send_json_success( __( 'Localization deleted', 'wp-multilang' ) );
-	}
-
-	/**
-	 * Set default language for object
-	 *
-	 * @param $object
-	 * @param $object_config
-	 *
-	 * @return mixed
-	 */
-	private static function set_default_language_for_object( $object, $object_config ) {
-
-		$lang = wpm_get_default_language();
-
-		foreach ( get_object_vars( $object ) as $key => $content ) {
-			if ( ! isset( $object_config[ $key ] ) ) {
-				continue;
-			}
-
-			switch ( $key ) {
-				case 'attr_title':
-				case 'post_title':
-				case 'name':
-				case 'title':
-					$object->$key = wpm_set_new_value( $content, wpm_translate_string( $content, $lang ), $object_config[ $key ], $lang );
-					break;
-				case 'post_excerpt':
-				case 'description':
-				case 'post_content':
-					if ( is_serialized_string( $content ) ) {
-						$content      = unserialize( $content );
-						$object->$key = serialize( wpm_set_new_value( $content, wpm_translate_value( $content, $lang ), $object_config[ $key ], $lang ) );
-						break;
-					}
-
-					if ( isJSON( $content ) ) {
-						$content      = json_decode( $content, true );
-						$object->$key = wp_json_encode( wpm_set_new_value( $content, wpm_translate_value( $content, $lang ), $object_config[ $key ], $lang ) );
-						break;
-					}
-
-					if ( ! wpm_is_ml_string( $content ) ) {
-						$object->$key = wpm_set_new_value( $content, wpm_translate_string( $content, $lang ), $object_config[ $key ], $lang );
-						break;
-					}
-			}
-		}
-
-		return $object;
+		wp_send_json_success( esc_html__( 'Localization deleted', 'wp-multilang' ) );
 	}
 
 	/**
@@ -440,9 +391,9 @@ class WPM_AJAX {
            wp_die( -1 );  
         }
                         
-    	$name    = isset($_POST['name'])?sanitize_text_field($_POST['name']):'';
-        $email   = isset($_POST['email'])?sanitize_text_field($_POST['email']):'';
-        $website = isset($_POST['website'])?sanitize_text_field($_POST['website']):'';
+    	$name    = isset( $_POST['name'] ) ? sanitize_text_field( $_POST['name'] ) : '';
+        $email   = isset( $_POST['email'] ) ? sanitize_email( $_POST['email'] ) : '';
+        $website = isset( $_POST['website'] ) ? sanitize_text_field( $_POST['website'] ) : '';
         
         if($email){
                 
@@ -456,7 +407,7 @@ class WPM_AJAX {
 		            );
 		            
 		    $response = wp_remote_post( $api_url, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-		            $response = wp_remote_retrieve_body( $response );                    
+		    $response = wp_remote_retrieve_body( $response );                    
 		    echo esc_html( $response );
 
         }else{

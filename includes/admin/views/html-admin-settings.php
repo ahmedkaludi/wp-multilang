@@ -97,7 +97,8 @@ function wpm_newsletter_form(){
 									<span class="wpm_newsletter_hide" style="box-shadow: unset;cursor: pointer;margin-left: 10px;">
 									<?php esc_html_e( 'No thanks', 'wp-multilang' ); ?>
 									</span>
-									<small style="display:block; margin-top:8px;"><?php esc_html_e( 'We\'ll share our <code>root</code> password before we share your email with anyone else.', 'wp-multilang' ); ?></small>
+									<small style="display:block; margin-top:8px;">
+										<?php echo esc_html__( 'We\'ll share our', 'wp-multilang' ); ?><code> <?php echo esc_html__ ('root', 'wp-multilang'); ?></code> <?php echo esc_html__('password before we share your email with anyone else.', 'wp-multilang' ); ?></small>
 									
 								</fieldset>
 							</form>

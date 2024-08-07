@@ -67,7 +67,7 @@ class WPM_Admin_Newsletter {
                         $object['current_user_email'] = $current_user->user_email;                
                         $object['current_user_name']  = $current_user->display_name;        
 			$object['displayID']          = '#menu-settings';                        
-                        $object['button1']            = esc_html__('No Thanks');
+                        $object['button1']            = esc_html__('No Thanks', 'wp-multilang');
                         $object['button2']            = false;
                         $object['function_name']      = '';                        
 		}

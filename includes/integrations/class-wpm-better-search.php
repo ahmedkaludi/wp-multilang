@@ -44,7 +44,7 @@ class WPM_Better_Search {
 	 * @return string
 	 */
 	public function translate_excerpt( $output, $id, $excerpt_length, $use_excerpt ) {
-		$content = $excerpt = '';
+		$content = '';
 		if ( $use_excerpt ) {
 			$content = get_post( $id )->post_excerpt;
 		}

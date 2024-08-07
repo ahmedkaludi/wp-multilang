@@ -68,7 +68,7 @@ class WPM_Admin_Settings {
 		global $current_tab;
 
 		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'wpm-settings' ) ) {
-			wp_die( 'Action failed. Please refresh the page and retry.' );
+			wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'wp-multilang' ) );
 		}
 
 		// Trigger actions
@@ -128,7 +128,7 @@ class WPM_Admin_Settings {
 		wp_enqueue_script( 'wpm_settings', wpm_asset_path( 'scripts/settings' . $suffix . '.js' ), array( 'jquery' ), wpm()->version, true );
 
 		wp_localize_script( 'wpm_settings', 'wpm_settings_params', array(
-			'nav_warning' => __( 'The changes you made will be lost if you navigate away from this page.', 'wp-multilang' ),
+			'nav_warning' => esc_html__( 'The changes you made will be lost if you navigate away from this page.', 'wp-multilang' ),
 			'wpm_admin_settings_nonce'    => wp_create_nonce( 'wpm_admin_settings_nonce' )
 		) );
 

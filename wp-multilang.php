@@ -74,12 +74,21 @@ function wpm_activation_admin_notices() {
 		
 		// Do not display link to settings UI if we are already in the UI.
 		$screen = get_current_screen();
-		/* translators: %s: This will get the settings admin url link */
-		$wpm_ui_link_text_escaped = ( strpos( $screen->id, 'wpm' ) === false ) ? sprintf( __( '<a href="%s">Add your languages & Customize your settings &rarr;</a>', 'wp-multilang' ), admin_url( 'admin.php?page=wpm-settings' ) ) : '';
-		
-		//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- all html inside this variable already escaped above in $wpm_ui_link_text_escaped variable
-		echo '<div class="updated notice is-dismissible"><p>' . esc_html__( 'Thank you for installing <strong>WP Multilang!</strong> ', 'wp-multilang' ) . $wpm_ui_link_text_escaped . '</p></div>';
-		
+		?>
+		<div class="updated notice is-dismissible">
+			<p>
+				<?php echo esc_html__( 'Thank you for installing', 'wp-multilang' ); ?> 
+				<strong>WP Multilang!</strong>
+				<?php
+				if( strpos( $screen->id, 'wpm' ) === false ) {
+				?>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpm-settings' ) ); ?>"><?php echo esc_html__( 'Add your languages & Customize your settings &rarr;', 'wp-multilang');?> </a>
+				<?php
+				}
+				?>
+			</p>
+		</div>';
+		<?php
 		// Delete transient
 		delete_transient( 'wpm_admin_notice_activation' );
 	}

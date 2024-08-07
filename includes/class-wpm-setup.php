@@ -405,12 +405,12 @@ class WPM_Setup {
 		if ( ! isset( $_GET['lang'] ) ) {
 			if ( self::get_option( 'use_prefix', 'no' ) === 'yes' ) {
 				if ( ! $url_lang ) {
-					wp_redirect( home_url( $this->get_original_request_uri() ) );
+					wp_safe_redirect( home_url( $this->get_original_request_uri() ) );
 					exit;
 				}
 			} else {
 				if ( $url_lang && $user_language === $default_language ) {
-					wp_redirect( home_url( preg_replace( '!^/' . $url_lang . '(/|$)!i', '/', $this->get_original_request_uri() ) ) );
+					wp_safe_redirect( home_url( preg_replace( '!^/' . $url_lang . '(/|$)!i', '/', $this->get_original_request_uri() ) ) );
 					exit;
 				}
 			}
@@ -418,7 +418,7 @@ class WPM_Setup {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( isset( $_GET['lang'] ) && ! empty( $_GET['lang'] ) && $url_lang ) {
-			wp_redirect( $this->get_original_home_url() . $this->get_site_request_uri() );
+			wp_safe_redirect( $this->get_original_home_url() . $this->get_site_request_uri() );
 			exit;
 		}
 	}
@@ -647,7 +647,7 @@ class WPM_Setup {
 					$browser_language = $this->get_browser_language();
 
 					if ( $browser_language && ( $browser_language !== $user_language ) ) {
-						wp_redirect( wpm_translate_current_url( $browser_language ) );
+						wp_safe_redirect( wpm_translate_current_url( $browser_language ) );
 						exit;
 					}
 				}

@@ -271,36 +271,59 @@ class WPM_Posts extends WPM_Object {
 	 * Translate global style post content for full site editor
 	 * @since 2.4.9
 	 * */
-	public function wpm_rest_post_dispatch($result, $server, $request){
-		if(!empty($result->data) && is_array($result->data)){
-			if(isset($result->data['settings']) && $result->data['styles']){
-				if(!empty($result->data['id'])){
+	public function wpm_rest_post_dispatch( $result, $server, $request ) {
+		if( ! empty( $result->data ) && is_array( $result->data ) ) {
+
+			if( isset( $result->data['settings'] ) && $result->data['styles'] ) {
+
+				if( ! empty( $result->data['id'] ) ) {
+
 					$style_id = $result->data['id'];
-					if($style_id > 0){
-						$get_style = get_post($style_id);
-						if(!empty($get_style) && is_object($get_style)){
-							if(!empty($get_style->post_content)){
-								if($get_style->post_type == 'wp_global_styles'){
-									$translate_object = wpm_translate_object($get_style);
-									$raw_config = json_decode($translate_object->post_content, true);
+
+					if( $style_id > 0 ) {
+
+						$get_style = get_post( $style_id );
+
+						if( ! empty( $get_style ) && is_object( $get_style ) ) {
+
+							if( ! empty( $get_style->post_content ) ) {
+
+								if( $get_style->post_type == 'wp_global_styles' ) {
+
+									$translate_object = wpm_translate_object( $get_style );
+									$raw_config = json_decode( $translate_object->post_content, true );
 									$is_global_styles_user_theme_json = isset( $raw_config['isGlobalStylesUserThemeJSON'] ) && true === $raw_config['isGlobalStylesUserThemeJSON'];
+
 									if ( $is_global_styles_user_theme_json ) {
+
 										$config = ( new \WP_Theme_JSON( $raw_config, 'custom' ) )->get_raw_data();
-										if(!empty($config['settings'])){
+										if( ! empty( $config['settings'] ) ) {
+
 											$result->data['settings'] = $config['settings'];
 										}
 
-										if(!empty($config['styles'])){
+										if( ! empty( $config['styles'] ) ) {
+
 											$result->data['styles'] = $config['styles'];
+
 										}
+
 									}
+
 								}
+
 							}
+
 						}
+
 					}
+
 				}
+
 			}
+
 		}
+		
 		return $result;
 	}
 }

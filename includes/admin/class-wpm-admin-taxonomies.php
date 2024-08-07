@@ -63,7 +63,7 @@ class WPM_Admin_Taxonomies {
 			$columns = array();
 		}
 
-		return wpm_array_insert_after( $columns, 'name', array( 'languages' => __( 'Languages', 'wp-multilang' ) ) );
+		return wpm_array_insert_after( $columns, 'name', array( 'languages' => esc_html__( 'Languages', 'wp-multilang' ) ) );
 	}
 
 

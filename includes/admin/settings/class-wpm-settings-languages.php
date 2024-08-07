@@ -24,7 +24,7 @@ class WPM_Settings_Languages extends WPM_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id    = 'languages';
-		$this->label = __( 'Languages', 'wp-multilang' );
+		$this->label = esc_html__( 'Languages', 'wp-multilang' );
 
 		parent::__construct();
 
@@ -40,10 +40,10 @@ class WPM_Settings_Languages extends WPM_Settings_Page {
 
 		$settings = apply_filters( 'wpm_' . $this->id . '_settings', array(
 
-			array( 'title' => __( 'Languages', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'languages_options' ),
+			array( 'title' => esc_html__( 'Languages', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'languages_options' ),
 
 			array(
-				'title' => __( 'Installed languages', 'wp-multilang' ),
+				'title' => esc_html__( 'Installed languages', 'wp-multilang' ),
 				'id'    => 'wpm_languages',
 				'type'  => 'languages',
 			),
@@ -67,7 +67,7 @@ class WPM_Settings_Languages extends WPM_Settings_Page {
 			'flags_dir'                 => wpm_get_flags_dir(),
 			'ajax_url'                  => admin_url( 'admin-ajax.php' ),
 			'delete_lang_nonce'         => wp_create_nonce( 'delete-lang' ),
-			'confirm_question'          => __( 'Are you sure you want to delete this language?', 'wp-multilang' ),
+			'confirm_question'          => esc_html__( 'Are you sure you want to delete this language?', 'wp-multilang' ),
 		);
 		wp_localize_script( 'wpm_languages', 'wpm_languages_params', $main_params );
 

@@ -23,7 +23,7 @@ class WPM_Settings_Upgrade_Pro extends WPM_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id    = 'upgradetopro';
-		$this->label = __( 'Upgrade to Pro', 'wp-multilang' );
+		$this->label = esc_html__( 'Upgrade to Pro', 'wp-multilang' );
 
 		parent::__construct();
 	}

@@ -96,12 +96,12 @@ class WPM_Admin {
 				);
 				wpm_enqueue_js( "
 					$('a.wpm-rating-link').click( function() {
-						$.post('" . wpm()->ajax_url() . "', {action: 'wpm_rated'});
+						$.post('" . esc_js( wpm()->ajax_url() ) . "', {action: 'wpm_rated'});
 						$(this).parent().text($(this).data('rated'));
 					});
 				" );
 			} else {
-				$footer_text = __( 'Thank you for translating with WP Multilang.', 'wp-multilang' );
+				$footer_text = esc_html__( 'Thank you for translating with WP Multilang.', 'wp-multilang' );
 			}
 		}
 

@@ -90,7 +90,7 @@ class WPM_Menus {
 						$menu_item->_invalid = true;
 					}
 
-					$menu_item->type_label = __( 'Post Type Archive' );
+					$menu_item->type_label = esc_html__( 'Post Type Archive', 'wp-multilang' );
 					$menu_item->url        = get_post_type_archive_link( $menu_item->object );
 
 				} elseif ( 'taxonomy' === $menu_item->type ) {
@@ -113,7 +113,7 @@ class WPM_Menus {
 
 				} else {
 
-					$menu_item->type_label = __( 'Custom Link' );
+					$menu_item->type_label = esc_html__( 'Custom Link', 'wp-multilang' );
 					$menu_item->title      = $menu_item->post_title;
 				}// End if().
 

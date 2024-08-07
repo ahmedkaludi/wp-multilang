@@ -24,7 +24,7 @@ class WPM_Settings_General extends WPM_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id    = 'general';
-		$this->label = __( 'General', 'wp-multilang' );
+		$this->label = esc_html__( 'General', 'wp-multilang' );
 
 		parent::__construct();
 
@@ -49,7 +49,7 @@ class WPM_Settings_General extends WPM_Settings_Page {
 		$settings = apply_filters( 'wpm_general_settings', array(
 
 			array(
-				'title' => __( 'General options', 'wp-multilang' ),
+				'title' => esc_html__( 'General options', 'wp-multilang' ),
 				'type'  => 'title',
 				/* translators: %s: url */
 				'desc'  => sprintf( __( 'Read <a href="%s" target="_blank">Google guidelines</a> before.', 'wp-multilang' ), esc_url( 'https://support.google.com/webmasters/answer/182192?hl=' . wpm_get_user_language() ) ),
@@ -57,8 +57,8 @@ class WPM_Settings_General extends WPM_Settings_Page {
 			),
 
 			array(
-				'title'    => __( 'Site Language', 'wp-multilang' ),
-				'desc'     => __( 'Set default site language.', 'wp-multilang' ),
+				'title'    => esc_html__( 'Site Language', 'wp-multilang' ),
+				'desc'     => esc_html__( 'Set default site language.', 'wp-multilang' ),
 				'id'       => 'wpm_site_language',
 				'default'  => wpm_get_default_language(),
 				'type'     => 'select',
@@ -68,24 +68,24 @@ class WPM_Settings_General extends WPM_Settings_Page {
 			),
 
 			array(
-				'title'   => __( 'Show untranslated', 'wp-multilang' ),
-				'desc'    => __( 'Show untranslated strings on language by default.', 'wp-multilang' ),
+				'title'   => esc_html__( 'Show untranslated', 'wp-multilang' ),
+				'desc'    => esc_html__( 'Show untranslated strings on language by default.', 'wp-multilang' ),
 				'id'      => 'wpm_show_untranslated_strings',
 				'default' => 'yes',
 				'type'    => 'checkbox',
 			),
 
 			array(
-				'title'   => __( 'Browser redirect', 'wp-multilang' ),
-				'desc'    => __( 'Use redirect to user browser language in first time.', 'wp-multilang' ),
+				'title'   => esc_html__( 'Browser redirect', 'wp-multilang' ),
+				'desc'    => esc_html__( 'Use redirect to user browser language in first time.', 'wp-multilang' ),
 				'id'      => 'wpm_use_redirect',
 				'default' => 'no',
 				'type'    => 'checkbox',
 			),
 
 			array(
-				'title'   => __( 'Use prefix', 'wp-multilang' ),
-				'desc'    => __( 'Use prefix for language by default.', 'wp-multilang' ),
+				'title'   => esc_html__( 'Use prefix', 'wp-multilang' ),
+				'desc'    => esc_html__( 'Use prefix for language by default.', 'wp-multilang' ),
 				'id'      => 'wpm_use_prefix',
 				'default' => 'no',
 				'type'    => 'checkbox',
@@ -109,15 +109,15 @@ class WPM_Settings_General extends WPM_Settings_Page {
 
 		if ( ! is_multisite() || ( is_main_site() ) ) {
 			$settings[] = array(
-				'title' => __( 'Uninstalling', 'wp-multilang' ),
+				'title' => esc_html__( 'Uninstalling', 'wp-multilang' ),
 				'type'  => 'title',
 				'desc'  => '',
 				'id'    => 'uninstall_options',
 			);
 
 			$settings[] = array(
-				'title'   => __( 'Delete translations', 'wp-multilang' ),
-				'desc'    => __( 'Delete translations when uninstalling plugin (some translations may not be deleted and you must delete them manually).', 'wp-multilang' ),
+				'title'   => esc_html__( 'Delete translations', 'wp-multilang' ),
+				'desc'    => esc_html__( 'Delete translations when uninstalling plugin (some translations may not be deleted and you must delete them manually).', 'wp-multilang' ),
 				'id'      => 'wpm_uninstall_translations',
 				'default' => 'no',
 				'type'    => 'checkbox',

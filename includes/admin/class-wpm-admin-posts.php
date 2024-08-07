@@ -77,7 +77,7 @@ class WPM_Admin_Posts {
 			return $columns;
 		}
 
-		$language = array( 'languages' => __( 'Languages', 'wp-multilang' ) );
+		$language = array( 'languages' => esc_html__( 'Languages', 'wp-multilang' ) );
 
 		if ( isset( $columns['title'] ) ) {
 			return wpm_array_insert_after( $columns, 'title', $language );

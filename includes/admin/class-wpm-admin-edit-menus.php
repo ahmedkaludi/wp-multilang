@@ -35,7 +35,7 @@ class WPM_Admin_Edit_Menus {
 	 * @return array
 	 */
 	public function nav_menu_manage_columns( $columns ) {
-		$columns['languages'] = __( 'Languages', 'wp-multilang' );
+		$columns['languages'] = esc_html__( 'Languages', 'wp-multilang' );
 
 		return $columns;
 	}
@@ -115,7 +115,7 @@ class WPM_Admin_Edit_Menus {
 		<p class="description description-wide <?php echo esc_attr( $class ) ?>">
 			<?php esc_html_e( 'Show item only in:', 'wp-multilang' ); ?><br>
 			<?php foreach ( $languages as $code => $language ) { if ( ! $language['enable'] ) continue; ?>
-			<label><input type="checkbox" name="<?php echo esc_attr( $name ); ?>[<?php echo esc_attr( $i ); ?>]" id="<?php echo esc_attr($id) . '-' . esc_attr($code); ?>" value="<?php echo esc_attr( $code ); ?>"<?php checked( in_array( $code, $value ) ); ?>><?php echo esc_attr( $language['name'] ); ?></label><br>
+			<label><input type="checkbox" name="<?php echo esc_attr( $name ); ?>[<?php echo esc_attr( $i ); ?>]" id="<?php echo esc_attr($id) . '-' . esc_attr($code); ?>" value="<?php echo esc_attr( $code ); ?>"<?php checked( in_array( $code, $value ) ); ?>><?php echo esc_html( $language['name'] ); ?></label><br>
 			<?php $i++; } ?>
 		</p>
 		<?php

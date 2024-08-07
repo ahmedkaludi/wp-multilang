@@ -23,7 +23,7 @@ class WPM_Settings_Additional extends WPM_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id    = 'additional';
-		$this->label = __( 'Additional', 'wp-multilang' );
+		$this->label = esc_html__( 'Additional', 'wp-multilang' );
 
 		parent::__construct();
 
@@ -43,16 +43,16 @@ class WPM_Settings_Additional extends WPM_Settings_Page {
 
 		$settings = apply_filters( 'wpm_' . $this->id . '_settings', array(
 
-			array( 'title' => __( 'Actions', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'additional_options' ),
+			array( 'title' => esc_html__( 'Actions', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'additional_options' ),
 
 			array(
-				'title' => __( 'Installed localizations', 'wp-multilang' ),
+				'title' => esc_html__( 'Installed localizations', 'wp-multilang' ),
 				'id'    => 'wpm_installed_localizations',
 				'type'  => 'localizations',
 			),
 
 			array(
-				'title' => __( 'qTranslate import', 'wp-multilang' ),
+				'title' => esc_html__( 'qTranslate import', 'wp-multilang' ),
 				'id'    => 'wpm_qtx_import',
 				'type'  => 'qtx_import',
 			),
@@ -74,7 +74,7 @@ class WPM_Settings_Additional extends WPM_Settings_Page {
 			'ajax_url'                   => admin_url( 'admin-ajax.php' ),
 			'delete_localization_nonce'  => wp_create_nonce( 'delete-localization' ),
 			'qtx_import_nonce'           => wp_create_nonce( 'qtx-import' ),
-			'confirm_question'           => __( 'Are you sure you want to delete this localization?', 'wp-multilang' ),
+			'confirm_question'           => esc_html__( 'Are you sure you want to delete this localization?', 'wp-multilang' ),
 		);
 		wp_localize_script( 'wpm_additional_settings', 'wpm_additional_settings_params', $main_params );
 		wp_enqueue_script( 'wpm_additional_settings' );
@@ -118,7 +118,7 @@ class WPM_Settings_Additional extends WPM_Settings_Page {
 							<option value="<?php echo esc_attr( $localization ); ?>" <?php disabled( ( 'en_US' == $localization ) || $used ); ?>><?php echo esc_html( $available_translations[ $localization ]['native_name'] ); ?></option>
 						<?php } ?>
 					</select>
-					<button type="button" id="delete_localization" class="button js-wpm-action" <?php disabled( 0 == $active ); ?>><?php esc_attr_e( 'Delete localization', 'wp-multilang' ); ?></button>
+					<button type="button" id="delete_localization" class="button js-wpm-action" <?php disabled( 0 == $active ); ?>><?php esc_html_e( 'Delete localization', 'wp-multilang' ); ?></button>
 				</p>
 				<p class="description"><?php esc_html_e( 'Delete unused not built-in language pack', 'wp-multilang' ); ?></p>
 			</td>
@@ -146,7 +146,7 @@ class WPM_Settings_Additional extends WPM_Settings_Page {
 			</th>
 			<td class="forminp">
 				<p>
-					<button type="button" id="qtx_import" class="button js-wpm-action" <?php disabled( $disabled ); ?>><?php esc_attr_e( 'Import', 'wp-multilang' ); ?></button>
+					<button type="button" id="qtx_import" class="button js-wpm-action" <?php disabled( $disabled ); ?>><?php esc_html_e( 'Import', 'wp-multilang' ); ?></button>
 				</p>
 				<p class="description"><?php esc_html_e( 'Import names for terms from qTranslate.', 'wp-multilang' ); ?></p>
 			</td>

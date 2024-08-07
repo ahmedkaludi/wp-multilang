@@ -38,7 +38,7 @@ class WPM_Admin_Assets {
 
 		// Register admin styles
 		wp_enqueue_style( 'wpm_language_switcher', wpm_asset_path( 'styles/admin/admin' . $suffix . '.css' ), array(), WPM_VERSION );
-		wp_register_style( 'select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css', array(), '4.0.5' );
+		wp_register_style( 'select2', wpm_asset_path( 'styles/admin/select2-4.0.5.min.css' ), array(), '4.0.5' );
 	}
 
 
@@ -51,8 +51,8 @@ class WPM_Admin_Assets {
 		$screen_id = $screen ? $screen->id : '';
 		$suffix    = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		// Register scripts
-		wp_register_script( 'select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js', array( 'jquery' ), '4.0.5', true );
+		// Register scripts 
+		wp_register_script( 'select2', wpm_asset_path( 'scripts/select2.4.0.5.min.js' ), array( 'jquery' ), '4.0.5', true );
 		wp_register_script( 'wpm_languages', wpm_asset_path( 'scripts/languages' . $suffix . '.js' ), array(
 			'wp-util',
 			'jquery-ui-sortable',

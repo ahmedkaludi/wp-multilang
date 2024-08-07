@@ -194,7 +194,7 @@ class WPM_Admin_Menus {
 			</div>
 			<p class="button-controls">
 				<span class="add-to-menu">
-					<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php echo esc_attr( 'Add to menu' ); ?>" name="add-post-type-menu-item" id="submit-posttype-wpm-languages">
+					<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php echo esc_html__( 'Add to menu', 'wp-multilang' ); ?>" name="add-post-type-menu-item" id="submit-posttype-wpm-languages">
 					<span class="spinner"></span>
 				</span>
 			</p>
@@ -222,9 +222,9 @@ class WPM_Admin_Menus {
 		$class = sprintf( 'field-%s', $_key );
 
 		$type_options = array(
-			'inline'   => __( 'Inline', 'wp-multilang' ),
-			'single'   => __( 'Single', 'wp-multilang' ),
-			'dropdown' => __( 'Dropdown', 'wp-multilang' ),
+			'inline'   => esc_html__( 'Inline', 'wp-multilang' ),
+			'single'   => esc_html__( 'Single', 'wp-multilang' ),
+			'dropdown' => esc_html__( 'Dropdown', 'wp-multilang' ),
 		);
 		?>
 		<p class="description description-wide <?php echo esc_attr( $class ); ?>">
@@ -244,9 +244,9 @@ class WPM_Admin_Menus {
 		$class = sprintf( 'field-%s', $_key );
 
 		$show_options = array(
-			'both' => __( 'Both', 'wp-multilang' ),
-			'flag' => __( 'Flag', 'wp-multilang' ),
-			'name' => __( 'Name', 'wp-multilang' ),
+			'both' => esc_html__( 'Both', 'wp-multilang' ),
+			'flag' => esc_html__( 'Flag', 'wp-multilang' ),
+			'name' => esc_html__( 'Name', 'wp-multilang' ),
 		);
 		?>
 		<p class="description description-wide <?php echo esc_attr( $class ); ?>">
@@ -278,7 +278,14 @@ class WPM_Admin_Menus {
 			return;
 		}
 
-		update_post_meta( $menu_item_db_id, '_menu_item_languages_type', $_POST['languages_type'][ $menu_item_db_id ] );
-		update_post_meta( $menu_item_db_id, '_menu_item_languages_show', $_POST['languages_show'][ $menu_item_db_id ] );
+		if( isset( $_POST['languages_type'] ) && isset( $_POST['languages_type'][ $menu_item_db_id ] ) ) {
+			$languages_type = sanitize_text_field( wp_unslash( $_POST['languages_type'][ $menu_item_db_id ] ) );
+			update_post_meta( $menu_item_db_id, '_menu_item_languages_type', $languages_type );
+		}
+
+		if( isset( $_POST['languages_show'] ) && isset( $_POST['languages_show'][ $menu_item_db_id ] ) ) {
+			$languages_show = sanitize_text_field( wp_unslash( $_POST['languages_show'][ $menu_item_db_id ] ) );
+			update_post_meta( $menu_item_db_id, '_menu_item_languages_show', $languages_show );
+		}
 	}
 }
