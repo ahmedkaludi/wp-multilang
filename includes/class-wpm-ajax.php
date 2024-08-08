@@ -400,15 +400,13 @@ class WPM_AJAX {
             $api_url = 'http://magazine3.company/wp-json/api/central/email/subscribe';
 
 		    $api_params = array(
-		        'name'    => $name,
-		        'email'   => $email,
-		        'website' => $website,
-		        'type'    => 'wpmultilang'
-		            );
+					'name'    => $name,
+					'email'   => $email,
+					'website' => $website,
+					'type'    => 'wpmultilang',
+		        );
 		            
-		    $response = wp_remote_post( $api_url, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-		    $response = wp_remote_retrieve_body( $response );                    
-		    echo esc_html( $response );
+		    wp_remote_post( $api_url, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );		    
 
         }else{
                 echo esc_html__('Email id required', 'wp-multilang');                        
