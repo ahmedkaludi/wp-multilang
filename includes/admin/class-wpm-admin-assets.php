@@ -242,7 +242,7 @@ class WPM_Admin_Assets {
                                 wpm_change_switcher_margin();
                             }
                         }
-                        window.setTimeout(wpm_add_language_switcher_deferred, $interval);
+                        window.setTimeout(wpm_add_language_switcher_deferred, ".esc_js( $interval ).");
 
                         wpm_site_editor_lang_switcher_deferred = function() {
                             var SiteToolBar = $('.edit-site-layout__header-container .edit-site-site-hub__site-view-link');

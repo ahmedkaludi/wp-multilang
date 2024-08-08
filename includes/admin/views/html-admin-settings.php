@@ -45,10 +45,12 @@ if ( ! $tab_exists ) {
 		?>
 		<p class="submit">
 			<?php if ( empty( $GLOBALS['hide_save_button'] ) ) : ?>
-				<?php 
-				echo '<style>.submit{float:left;}</style>';
-				submit_button(); 
+				<div style="float: left;">
+					<?php submit_button(); ?>
+				</div>
+				<?php
 				if(!defined('WP_MULTILANG_PRO_VERSION')){
+
 					echo '<a class="button wpm-upgrade-pro-btn" style="background: #0099E7;color: #fff; border-color: #0099E7; font-weight: 500; margin: 30px 0px 0px 25px;" href="https://wp-multilang.com/pricing/" target="_blank">'.esc_html__( 'Upgrade to PRO', 'wp-multilang').'</a>';
 				}
 				?>
