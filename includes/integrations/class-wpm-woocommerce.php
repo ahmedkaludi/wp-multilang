@@ -67,6 +67,7 @@ class WPM_WooCommerce {
 		if ( is_admin() ) {
 			add_filter( 'wpm_taxonomies_config', array( $this, 'add_attribute_taxonomies' ) );
 		}
+		add_filter( 'rest_post_dispatch', array( $this, 'wpm_translate_filter_attribute_widget' ), 10, 3);
 	}
 
 
@@ -396,5 +397,35 @@ class WPM_WooCommerce {
 		}
 
 		return $object_fields_config;
+	}
+	
+	/**
+	 * Translate filter attribute widget name
+	 * @param 	$result 	WP_HTTP_Response
+	 * @param 	$server 	WP_REST_Server
+	 * @param 	$request 	WP_REST_Request
+	 * @return  $result 	WP_HTTP_Response
+	 * @since 2.4.11
+	 * */
+	public function wpm_translate_filter_attribute_widget( $result, $server, $request ){
+		
+		if( ! empty( $result->data ) && is_array( $result->data ) ) {
+
+			foreach ($result->data as $r_key => $attribute) {
+
+				if( ! empty( $attribute ) && is_array( $attribute ) ) {
+
+					// Check if current response is of product attribute or not
+					if( ! empty( $attribute['name'] ) && is_string( $attribute['name'] ) ){
+						$result->data[ $r_key ]['name'] 	=	wpm_translate_string( $attribute['name'] );	
+					}
+
+				}
+
+			}
+
+		}
+
+		return $result;
 	}
 }
