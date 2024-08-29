@@ -270,7 +270,7 @@ class WPM_Install {
 			foreach ( $installed_languages as $locale ) {
 				$code = ''; $name = '';
 				$flag = explode( '_', strtolower( $locale ) );
-				if(is_array($available_translations[ $locale ])){
+				if( ! empty( $available_translations[ $locale ] ) && is_array($available_translations[ $locale ])){
 					if(isset($available_translations[ $locale ]['iso']) && is_array($available_translations[ $locale ]['iso'])){
 						$code = sanitize_title( current( $available_translations[ $locale ]['iso'] ) );
 					}

@@ -98,10 +98,15 @@ class WPM_Admin_Menus {
 			}
 
 			if ( $add ) {
+				$native_name 		=	'';
+				if( ! empty( $available_translations[$locale]['native_name'] ) ) {
+					$native_name 	=	$available_translations[$locale]['native_name'];	
+				}
+
 				$wp_admin_bar->add_menu( array(
 					'parent' => 'wpm-language-switcher',
 					'id'     => 'wpm-language-' . $code,
-					'title'  => '<span class="ab-icon">' . '<img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" />' . '</span>' . '<span class="ab-label">' . $available_translations[$locale]['native_name'] . '</span>',
+					'title'  => '<span class="ab-icon">' . '<img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" />' . '</span>' . '<span class="ab-label">' . esc_html( $native_name ) . '</span>',
 					'href'   => wpm_translate_current_url( $code ),
 				) );
 			}
