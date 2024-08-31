@@ -49,6 +49,7 @@ $class_map_array =  array(
     'WPM\\Includes\\Integrations\\WPM_WooCommerce' => $baseDir . '/includes/integrations/class-wpm-woocommerce.php',
     'WPM\\Includes\\Integrations\\WPM_Yoast_Seo' => $baseDir . '/includes/integrations/class-wpm-yoast-seo.php',
     'WPM\\Includes\\Integrations\\WPM_Yoast_Seo_Presenters' => $baseDir . '/includes/integrations/class-wpm-yoast-seo-presenters.php',
+    'WPM\\Includes\\Integrations\\WPM_Bylaw_Plus' => $baseDir . '/includes/integrations/class-wpm-bylaw-plus.php',
     'WPM\\Includes\\Libraries\\WPM_Walker_Nav_Menu_Edit' => $baseDir . '/includes/libraries/class-wpm-walker-nav-menu-edit.php',
     'WPM\\Includes\\Libraries\\WP_Async_Request' => $baseDir . '/includes/libraries/abstract-wp-async-request.php',
     'WPM\\Includes\\Libraries\\WP_Background_Process' => $baseDir . '/includes/libraries/abstract-wp-background-process.php',

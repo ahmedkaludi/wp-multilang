@@ -60,6 +60,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Integrations\\WPM_WooCommerce' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-woocommerce.php',
         'WPM\\Includes\\Integrations\\WPM_Yoast_Seo' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-yoast-seo.php',
         'WPM\\Includes\\Integrations\\WPM_Yoast_Seo_Presenters' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-yoast-seo-presenters.php',
+        'WPM\\Includes\\Integrations\\WPM_Bylaw_Plus' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-bylaw-plus.php',
         'WPM\\Includes\\Libraries\\WPM_Walker_Nav_Menu_Edit' => __DIR__ . '/../..' . '/includes/libraries/class-wpm-walker-nav-menu-edit.php',
         'WPM\\Includes\\Libraries\\WP_Async_Request' => __DIR__ . '/../..' . '/includes/libraries/abstract-wp-async-request.php',
         'WPM\\Includes\\Libraries\\WP_Background_Process' => __DIR__ . '/../..' . '/includes/libraries/abstract-wp-background-process.php',
