@@ -204,6 +204,41 @@ function wpm_value_to_ml_array( $value ) {
  *
  * @return string
  */
+function wpm_ml_get_language_string($string,$source){
+	if(preg_match('/\[:'.$source.'\](.*?)\[:/si',$string,$matches)){
+		if(isset($matches[1])){
+			$string = $matches[1];
+		}
+	}
+	return $string;
+}
+function wpm_ml_check_language_string($string,$source){
+	$is_exist = false;
+	if(preg_match('/\[:'.$source.'\](.*?)\[:/si',$string)){
+		$is_exist = true;
+	}
+	return $is_exist;
+}
+function wpm_ml_auto_translate_content($string,$source,$target){
+	if($string==""){
+		return $string;
+	}
+	$string = str_replace('<!-- wp:paragraph -->','',$string);
+	$string = str_replace('<!-- /wp:paragraph -->','',$string);
+	$url = 'http://65.20.104.220/translate/';
+	$response = wp_remote_post( $url, array(
+		'body'=>array(
+			'q'    => $string,
+			'source' =>$source,
+			'target' =>$target
+		)
+	) );
+	if(isset($response['body'])){
+		$resp = $response['body'];
+		return $resp;
+	}
+	return $string;
+}
 function wpm_ml_array_to_string( $strings ) {
 
 	$string = '';
@@ -221,11 +256,17 @@ function wpm_ml_array_to_string( $strings ) {
 			$string .= '[:' . $key . ']' . trim( $value );
 		}
 	}
-
+	
+	/* foreach ($languages as $key => $value) {
+		if(isset($strings[$key]) && $strings[$key]=="" && isset($strings['en']) && $strings['en']!=""){
+			$trans_content =  trim( $strings['en'] );
+			$trans_content = wpm_ml_auto_translate_content($trans_content,'en',$key);
+			$string .= '[:' . $key . ']' . $trans_content;
+		}
+	} */
 	if ( $string ) {
 		$string .= '[:]';
 	}
-
 	return $string;
 }
 
