@@ -48,6 +48,7 @@ class WPM_Admin_Settings {
 
 			$settings[] = new Settings\WPM_Settings_General();
 			$settings[] = new Settings\WPM_Settings_Languages();
+			$settings[] = new Settings\WPM_Settings_Auto_Translate();
 			$settings[] = new Settings\WPM_Settings_Additional();
 			$settings[] = new Settings\WPM_Settings_Premium();
 			$settings[] = new Settings\WPM_Settings_Support();
@@ -134,7 +135,7 @@ class WPM_Admin_Settings {
 
 		// Get tabs for the settings page
 		$tabs = apply_filters( 'wpm_settings_tabs_array', array() );
-
+		
 		include __DIR__ . '/views/html-admin-settings.php';
 	}
 

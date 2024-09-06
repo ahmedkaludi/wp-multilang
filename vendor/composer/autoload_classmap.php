@@ -16,6 +16,7 @@ $class_map_array =  array(
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Support' => $baseDir . '/includes/admin/settings/class-wpm-settings-support.php',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Premium' => $baseDir . '/includes/admin/settings/class-wpm-settings-premium.php',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Upgrade_Pro' => $baseDir . '/includes/admin/settings/class-wpm-settings-upgradepro.php',
+    'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Auto_Translate' => $baseDir . '/includes/admin/settings/class-wpm-settings-auto-translate.php',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Page' => $baseDir . '/includes/admin/settings/class-wpm-settings-page.php',
     'WPM\\Includes\\Admin\\WPM_Admin' => $baseDir . '/includes/admin/class-wpm-admin.php',
     'WPM\\Includes\\Admin\\WPM_Admin_Assets' => $baseDir . '/includes/admin/class-wpm-admin-assets.php',
