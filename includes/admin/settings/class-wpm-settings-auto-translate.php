@@ -29,8 +29,6 @@ class WPM_Settings_Auto_Translate extends WPM_Settings_Page {
 		parent::__construct();
 
 		add_action( 'wpm_admin_field_autotranslate', array( $this, 'get_autotranslate' ) );
-		$GLOBALS['hide_save_button'] = true;
-		
 	}
 
 	/**
@@ -79,7 +77,7 @@ class WPM_Settings_Auto_Translate extends WPM_Settings_Page {
  */
 		$languages = get_option( 'wpm_languages', array() );
 		$flags     = wpm_get_flags();
-
+		$GLOBALS['hide_save_button'] = true;
 		include_once __DIR__ . '/views/html-auto-translate.php';
 	}
 

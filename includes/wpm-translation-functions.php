@@ -223,6 +223,10 @@ function wpm_ml_auto_translate_content($string,$source,$target){
 	if($string==""){
 		return $string;
 	}
+	$is_classic = true;
+	if(preg_match('/wp:paragraph/i',$string)){
+		$is_classic = false;
+	}
 	$string = str_replace('<!-- wp:paragraph -->','',$string);
 	$string = str_replace('<!-- /wp:paragraph -->','',$string);
 	$url = 'http://65.20.104.220/translate/';
@@ -235,6 +239,9 @@ function wpm_ml_auto_translate_content($string,$source,$target){
 	) );
 	if(isset($response['body'])){
 		$resp = $response['body'];
+		if($is_classic==false){
+			$resp = '<!-- wp:paragraph -->'.$resp.'<!-- /wp:paragraph -->';
+		}
 		return $resp;
 	}
 	return $string;

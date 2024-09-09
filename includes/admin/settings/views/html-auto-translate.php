@@ -12,20 +12,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 <h2 style="border-bottom:1px solid #d7d7d7;padding-bottom:10px"><?php echo esc_html( $value['title'] ); ?></h2>
 <ul>
 <?php 
+    $published_post_count = 0;
+    $total_pages = 0;
+    $total_product = 0;
     $total_post_arr = wp_count_posts('post');
-    $published_post_count = $total_post_arr->publish;
-    if($published_post_count==""){
-        $published_post_count = 0;
+    if(isset($total_post_arr->publish)){
+        $published_post_count = $total_post_arr->publish;
+        if($published_post_count==""){
+            $published_post_count = 0;
+        }
     }
     $count_pages = wp_count_posts('page'); 
-    $total_pages = $count_pages->publish; 
-    if($total_pages==""){
-        $total_pages = 0;
+    if(isset($count_pages->publish)){
+        $total_pages = $count_pages->publish; 
+        if($total_pages==""){
+            $total_pages = 0;
+        }
     }
     $count_product = wp_count_posts('product'); 
-    $total_product = $count_product->publish;
-    if($total_product==""){
-        $total_product = 0;
+    if(isset($count_product->publish)){
+        $total_product = $count_product->publish;
+        if($total_product==""){
+            $total_product = 0;
+        }
     }
     $total_record = $published_post_count + $total_pages + $total_product;
 ?>

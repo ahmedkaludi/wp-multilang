@@ -259,10 +259,10 @@ class WPM_AJAX {
 			foreach ($posts as $key => $value) {
 				$post_title = $value->post_title;
 				$post_content = $value->post_content;
-				$post_title = str_replace('<!-- wp:paragraph -->','',$post_title);
+				/* $post_title = str_replace('<!-- wp:paragraph -->','',$post_title);
 				$post_title = str_replace('<!-- /wp:paragraph -->','',$post_title);
 				$post_content = str_replace('<!-- wp:paragraph -->','',$post_content);
-				$post_content = str_replace('<!-- /wp:paragraph -->','',$post_content);
+				$post_content = str_replace('<!-- /wp:paragraph -->','',$post_content); */
 				for ($i=0; $i < count($target_languages); $i++) { 
 					$target = $target_languages[$i];
 					$is_title_exist = wpm_ml_check_language_string($post_title,$target);
