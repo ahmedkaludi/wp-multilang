@@ -229,14 +229,11 @@ function wpm_ml_auto_translate_content($string,$source,$target){
 		$is_classic = false;
 		$opening_match = $matches[1];
 	}
-	$closing_match = '';
-	if(preg_match_all('/<!-- \/wp:(.*)/i',$string,$matches)){
-		$closing_match = $matches[1];
-	}
+	
 	if($is_classic==false){
-		$string = preg_replace('/<!--\s+\/wp:/i','</wpmautowp',$string);
-		$string = preg_replace('/<!--\s+wp:/i','<wpmautowp',$string);
-		$string = preg_replace('/\s+-->/i','wpmautowp>',$string);
+		$string = preg_replace('/<!--\s\/wp:/i','</wpmautowp',$string);
+		$string = preg_replace('/<!--\swp:/i','<wpmautowp',$string);
+		$string = preg_replace('/\s-->/i','wpmautowp>',$string);
 	}
 	$url = 'http://65.20.104.220/translate/';
 	$response = wp_remote_post( $url, array(
@@ -251,9 +248,11 @@ function wpm_ml_auto_translate_content($string,$source,$target){
 		if($is_classic==false){
 			$resp = preg_replace('/<\/wpmautowp/i','<!-- /wp:',$resp);
 			$resp = preg_replace('/<wpmautowp/i','<!-- wp:',$resp);
-			$resp = preg_replace('/wpmautowp>/i',' -->',$resp);
 			$resp = preg_replace('/wpmautowp=\"\">/i',' -->',$resp);
-			$resp = preg_replace('/<!-- \/wp:image>/i','<!-- /wp:image -->',$resp);
+			$resp = preg_replace('/<\/wpmautowp(.*?)>/i','<!-- /wp:$1 -->',$resp);
+			$resp = preg_replace('/wpmautowp>/i',' -->',$resp);
+			$resp = preg_replace('/<!--\s\/wp:(.*?)>/i','<!-- /wp:$1 -->',$resp);
+			$resp = str_replace('-- --','--',$resp);
 		}
 		return $resp;
 	}
