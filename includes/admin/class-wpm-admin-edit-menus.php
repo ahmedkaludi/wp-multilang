@@ -61,7 +61,7 @@ class WPM_Admin_Edit_Menus {
 
 		// Sanitize
 		if ( ! empty( $_POST[ $key ][ $menu_item_db_id ] ) ) {
-			// Do some checks here...
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized --Reason: Sanitization is done in wpm_clean() function 
 			$value = wpm_clean( $_POST[ $key ][ $menu_item_db_id ] );
 		} else {
 			$value = null;

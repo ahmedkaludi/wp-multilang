@@ -299,4 +299,12 @@
     color: #fff;
 }
 
+.wpm-cursor-pointer:hover {
+    cursor: pointer;
+}
+
+.wpm-free-translation-cb{
+  margin-right: 15px !important;
+}
+
 /*# sourceMappingURL=admin.css.map */
