@@ -197,67 +197,6 @@ function wpm_value_to_ml_array( $value ) {
 	return wpm_string_to_ml_array( $value );
 }
 
-/**
- * Transform multilingual array to multilingual string
- *
- * @param $strings
- *
- * @return string
- */
-function wpm_ml_get_language_string($string,$source){
-	if(preg_match('/\[:'.$source.'\](.*?)\[:/si',$string,$matches)){
-		if(isset($matches[1])){
-			$string = $matches[1];
-		}
-	}
-	return $string;
-}
-function wpm_ml_check_language_string($string,$source){
-	$is_exist = false;
-	if(preg_match('/\[:'.$source.'\](.*?)\[:/si',$string)){
-		$is_exist = true;
-	}
-	return $is_exist;
-}
-function wpm_ml_auto_translate_content($string,$source,$target){
-	if($string==""){
-		return $string;
-	}
-	$is_classic = true;
-	$opening_match = '';
-	if(preg_match_all('/<!-- wp:(.*) -->/i',$string,$matches)){
-		$is_classic = false;
-		$opening_match = $matches[1];
-	}
-	
-	if($is_classic==false){
-		$string = preg_replace('/<!--\s\/wp:/i','</wpmautowp',$string);
-		$string = preg_replace('/<!--\swp:/i','<wpmautowp',$string);
-		$string = preg_replace('/\s-->/i','wpmautowp>',$string);
-	}
-	$url = 'http://65.20.104.220/translate/';
-	$response = wp_remote_post( $url, array(
-		'body'=>array(
-			'q'    => $string,
-			'source' =>$source,
-			'target' =>$target
-		)
-	) );
-	if(isset($response['body'])){
-		$resp = $response['body'];
-		if($is_classic==false){
-			$resp = preg_replace('/<\/wpmautowp/i','<!-- /wp:',$resp);
-			$resp = preg_replace('/<wpmautowp/i','<!-- wp:',$resp);
-			$resp = preg_replace('/wpmautowp=\"\">/i',' -->',$resp);
-			$resp = preg_replace('/<\/wpmautowp(.*?)>/i','<!-- /wp:$1 -->',$resp);
-			$resp = preg_replace('/wpmautowp>/i',' -->',$resp);
-			$resp = preg_replace('/<!--\s\/wp:(.*?)>/i','<!-- /wp:$1 -->',$resp);
-			$resp = str_replace('-- --','--',$resp);
-		}
-		return $resp;
-	}
-	return $string;
-}
 function wpm_ml_array_to_string( $strings ) {
 
 	$string = '';
