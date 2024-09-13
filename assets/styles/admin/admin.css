@@ -266,4 +266,37 @@
   font-weight: 500;
 }
 
+#wpm-auto-translation-free-note{
+    padding: 12px 10px 15px 10px !important;
+    background-color: #fff;
+    width: 470px;
+    margin-top: 20px;
+    border-radius: 7px;
+    color: #000;
+    text-align: center;
+    border: 1px solid #0099E7;
+    font-size: 16px;
+}
+
+.wpm-premium-btn{
+    text-decoration: none;
+    margin-left: 13px;
+    color: #fff !important;
+    font-weight: 500;
+    padding: 7px 20px 9px 20px;
+    background: #0099E7;
+    border-radius: 40px;
+    font-size: 15px;
+}
+
+.wpm-premium-btn:focus{
+    outline: none !important;
+    box-shadow: none !important;
+    color: #fff;
+}
+
+.wpm-premium-btn:hover{
+    color: #fff;
+}
+
 /*# sourceMappingURL=admin.css.map */
