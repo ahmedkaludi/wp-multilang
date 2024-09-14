@@ -24,6 +24,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Support full site editor for block based themes
 * Support block based widgets
 * Support different feature image for each language
+* Auto Translation ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs/)
 
 == Features of the plugin WP Multilang ==
 
@@ -48,7 +49,6 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 
 * Elementor ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-build-a-multilingual-site-with-elementor-using-wp-multilang/)
 * Divi Builder ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs/)
-* Auto Translation ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs/)
 * ACF, ACF Pro
 * WooCommerce
 * WooCommerce Customizer
