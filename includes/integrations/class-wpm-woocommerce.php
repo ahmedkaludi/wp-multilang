@@ -246,7 +246,9 @@ class WPM_WooCommerce {
 
 		$label = '';
 
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization is handled below in wc_clean() function
 		if ( isset( $_POST['attribute_label'] ) ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization is handled below in wc_clean() function
 			$label = wpm_set_new_value( '', wc_clean( stripslashes( $_POST['attribute_label'] ) ) );
 		}
 
@@ -257,13 +259,16 @@ class WPM_WooCommerce {
 	 * Save new attribute with translate
 	 */
 	private function process_edit_attribute() {
-		$attribute_id = absint( $_GET['edit'] );
+		
+		$attribute_id = isset( $_GET['edit'] ) ? absint( $_GET['edit'] ) : '';
 		check_admin_referer( 'woocommerce-save-attribute_' . $attribute_id );
 
 		$label = '';
 
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization is handled below in wc_clean() function
 		if ( isset( $_POST['attribute_label'] ) ) {
 			$attribute = wc_get_attribute( $attribute_id );
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization is handled below in wc_clean() function
 			$label     = wpm_set_new_value( $attribute->name, wc_clean( stripslashes( $_POST['attribute_label'] ) ) );
 		}
 

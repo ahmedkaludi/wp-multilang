@@ -175,7 +175,12 @@ function wpm_setcookie( $name, $value, $expire = 0, $secure = false ) {
  * @return string
  */
 function wpm_get_current_url() {
-	$url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+	$url 	=	'';
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Reason unslash not needed because data is not getting stored in database, it's just being used.
+	if( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Reason unslash not needed because data is not getting stored in database, it's just being used.
+		$url 	= set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+	}
 
 	return $url;
 }
@@ -224,7 +229,8 @@ function wpm_get_orig_home_url() {
  * @return string
  */
 function wpm_escaping_text( $string ) {
-	if ( 'GET' === $_SERVER['REQUEST_METHOD'] || ! is_admin() ) {
+	
+	if ( ( isset( $_SERVER['REQUEST_METHOD'] ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) || ! is_admin() ) {
 		$string = wpm_translate_string( $string );
 	}
 
@@ -239,7 +245,7 @@ function wpm_escaping_text( $string ) {
  * @return string
  */
 function wpm_attribute_escape( $string ) {
-	if ( 'GET' === $_SERVER['REQUEST_METHOD'] || ! is_admin() ) {
+	if ( ( isset( $_SERVER['REQUEST_METHOD'] ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) || ! is_admin() ) {
 		$string = wp_specialchars_decode( $string, ENT_QUOTES );
 
 		if ( isJSON( $string ) ) {

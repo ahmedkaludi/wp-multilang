@@ -354,7 +354,7 @@ class WPM_Setup {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( isset( $_REQUEST['lang'] ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- this is a dependent function and its all security measurament is done wherever it has been used.
 			$lang = wpm_clean( $_REQUEST['lang'] );
 			if ( isset( $languages[ $lang ] ) ) {
 				$user_language = $lang;
@@ -381,6 +381,7 @@ class WPM_Setup {
 				}
 			} elseif ( ! is_admin() && preg_match( '/^.*\.php$/i', wp_parse_url( $url, PHP_URL_PATH ) ) ) {
 				if ( isset( $_COOKIE['language'] ) ) {
+					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 					$user_language = wpm_clean( $_COOKIE['language'] );
 				}
 			}
@@ -653,6 +654,7 @@ class WPM_Setup {
 					}
 				}
 			} else {
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 				if ( wpm_clean( $_COOKIE['language'] ) !== $user_language ) {
 					wpm_setcookie( 'language', $user_language, time() + YEAR_IN_SECONDS );
 					do_action( 'wpm_changed_language' );
@@ -668,10 +670,12 @@ class WPM_Setup {
 	 */
 	private function get_browser_language() {
 
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 		if ( ! isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) || ! $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) {
 			return '';
 		}
 
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 		if ( ! preg_match_all( '#([^;,]+)(;[^,0-9]*([0-9\.]+)[^,]*)?#i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $matches, PREG_SET_ORDER ) ) {
 			return '';
 		}

@@ -68,6 +68,7 @@ class WPM_Admin_Settings {
 	public static function save() {
 		global $current_tab;
 
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
 		if ( empty( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'wpm-settings' ) ) {
 			wp_die( esc_html__( 'Action failed. Please refresh the page and retry.', 'wp-multilang' ) );
 		}

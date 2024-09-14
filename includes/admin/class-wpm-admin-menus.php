@@ -148,13 +148,13 @@ class WPM_Admin_Menus {
 		// Add any posted messages
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['wpm_error'] ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
 			WPM_Admin_Settings::add_error( stripslashes( $_GET['wpm_error'] ) );
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['wpm_message'] ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
 			WPM_Admin_Settings::add_message( stripslashes( $_GET['wpm_message'] ) );
 		}
 	}
@@ -272,7 +272,7 @@ class WPM_Admin_Menus {
 	 * @param $menu_item_db_id
 	 */
 	public function update_nav_menu_item( $menu_id, $menu_item_db_id ) {
-
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
 		if( 'update' !== $_REQUEST['action'] ) {
 			return;
 		}

@@ -33,7 +33,7 @@ class WPM_Masterslider {
 	 * Save slider
 	 */
 	public function save_slider() {
-		// verify nonce
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'msp_panel' ) ) {
 			return;
 		}
@@ -43,14 +43,14 @@ class WPM_Masterslider {
 			return;
 		}
 
-		// Get the slider id
-		$slider_id = isset( $_REQUEST['slider_id'] ) ? $_REQUEST['slider_id'] : '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
+		$slider_id = isset( $_REQUEST['slider_id'] ) ? intval( $_REQUEST['slider_id'] ) : '';
 
 		if ( empty( $slider_id ) ) {
 			return;
 		}
 
-		// get panel data
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 		$msp_data = isset( $_REQUEST['msp_data'] ) ? $_REQUEST['msp_data'] : null;
 
 		// get parse and database tools

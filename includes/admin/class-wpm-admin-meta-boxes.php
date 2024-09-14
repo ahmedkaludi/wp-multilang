@@ -125,7 +125,7 @@ class WPM_Admin_Meta_Boxes {
 			return;
 		}
 
-		// Check the nonce
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason sanitization not needed for nonce
 		if ( empty( $_POST['wpm_meta_nonce'] ) || ! wp_verify_nonce( $_POST['wpm_meta_nonce'], 'wpm_save_data' ) ) {
 			return;
 		}

@@ -57,8 +57,8 @@ class WPM_Admin_Newsletter {
                         
                 global $current_user;                
 		$tour     = array ();
-                // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-                $tab      = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : '';                   
+                // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used. -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
+                $tab      = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : '';                   
                 
                 if (!array_key_exists($tab, $tour)) {                
 			                                           			            	

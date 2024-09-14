@@ -199,7 +199,7 @@ class WPM_Posts extends WPM_Object {
 			$screen = get_current_screen();
 
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- this is a dependent function and its all security measurament is done wherever it has been used.
-			if ( 'POST' === $_SERVER['REQUEST_METHOD'] && 'update' === $_POST['action'] && ( $screen && 'nav-menus' === $screen->id ) ) {
+			if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['action'] ) && 'update' === $_POST['action'] && ( $screen && 'nav-menus' === $screen->id ) ) {
 				// hack to get wp to create a post object when too many properties are empty
 				if ( '' === $data['post_title'] && '' === $data['post_content'] ) {
 					$data['post_content'] = ' ';

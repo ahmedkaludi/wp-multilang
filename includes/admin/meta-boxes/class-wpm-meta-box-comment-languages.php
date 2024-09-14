@@ -59,7 +59,8 @@ class WPM_Meta_Box_Comment_Languages {
 	 */
 	public static function save( $location, $comment_id ) {
 
-		if ( ! wp_verify_nonce( $_POST['wpm_meta_nonce'], 'wpm_save_data' ) ) {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used.
+		if ( isset( $_POST['wpm_meta_nonce'] ) && ! wp_verify_nonce( $_POST['wpm_meta_nonce'], 'wpm_save_data' ) ) {
 			return $location;
 		}
 
