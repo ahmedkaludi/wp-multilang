@@ -51,7 +51,13 @@ class WPM_Settings_Auto_Translate extends WPM_Settings_Page {
 
 		$settings = apply_filters( 'wpm_' . $this->id . '_settings', array(
 
-			array( 'title' => __( 'Auto Translate', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'autotranslate_options' ),
+			array( 
+				'title' => __( 'Auto Translate', 'wp-multilang' ), 
+				'type' => 'title', 
+				/* translators: %s: url */
+				'desc'  => sprintf( __( 'Read <a href="%s" target="_blank">Auto Translate Docs</a>', 'wp-multilang' ), esc_url( 'https://wp-multilang.com/pricing/#pricings' ) ),
+				'id' => 'autotranslate_options', 
+			),
 
 			array(
 				'title' => __( 'List Of Languages', 'wp-multilang' ),
@@ -59,7 +65,10 @@ class WPM_Settings_Auto_Translate extends WPM_Settings_Page {
 				'type'  => 'autotranslate',
 			),
 
-			array( 'type' => 'sectionend', 'id' => 'autotranslate_options' ),
+			array( 
+				'type' => 'sectionend', 
+				'id' => 'autotranslate_options', 
+			),
 
 		) );
 

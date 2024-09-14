@@ -399,8 +399,9 @@ function wpm_maybe_define_constant( $name, $value ) {
  * @return mixed value sanitized by wpm_clean
  */
 function wpm_get_post_data_by_key( $key, $default = '' ) {
-	//phpcs:ignore WordPress.Security.NonceVerification.Missing
-	return wpm_clean( wpm_get_var( $_POST[ $key ], $default ) );
+	//phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized --Reason: Sanitization is handled below in wpm_clean() function
+	$post_val 	=	isset( $_POST[ $key ] ) ? $_POST[ $key ] : null;
+	return wpm_clean( wpm_get_var( $post_val, $default ) );
 }
 
 /**

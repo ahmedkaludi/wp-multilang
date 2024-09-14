@@ -95,23 +95,21 @@ if ( ! defined( 'ABSPATH' ) ) {
         </ul>
     </div>
 
-    <?php if( defined( 'WP_MULTILANG_PRO_VERSION' ) ) { ?>
-	    <div id="wpmpro-translation-success-message" style="display:none">
-	        <h2 style="color:green"><?php echo esc_html__( 'Translation Successful', 'wp-multilang' ); ?></h2>
-	    </div>
+    <div id="wpmpro-translation-success-message" style="display:none">
+        <h2 style="color:green"><?php echo esc_html__( 'Translation Successful', 'wp-multilang' ); ?></h2>
+    </div>
 
-	    <div style="height:10px;background:#ebebeb;border-radius: 5px;margin-bottom:10px;text-align:center;display:none" id="wpmpro-parent-progress-bar">
-	        <div style="height:10px;background:green;border-radius: 5px;width:0%" id="wpmpro-child-progress-bar">
-	            
-	        </div>
-	        <b style="font-size:14px;text-transform:uppercase" id="wpmpro-progress_count">0%</b>
-	    </div>
+    <div style="height:10px;background:#ebebeb;border-radius: 5px;margin-bottom:10px;text-align:center;display:none" id="wpmpro-parent-progress-bar">
+        <div style="height:10px;background:green;border-radius: 5px;width:0%" id="wpmpro-child-progress-bar">
+            
+        </div>
+        <b style="font-size:14px;text-transform:uppercase" id="wpmpro-progress_count">0%</b>
+    </div>
 
-	    <div>
-	        <button class="button button-primary" id="wpmpro-translate" style="display:block" type="button"><?php echo esc_html__('Start Translation', 'wp-multilang') ?></button>
-	        <button class="button button-primary" id="wpmpro-translate-hide" style="display:none" type="button"><?php echo esc_html__('Translating...', 'wp-multilang') ?></button>
-	    </div>
-	<?php } ?>
+    <div>
+        <button class="button button-primary" id="wpmpro-translate" style="display:block" type="button"><?php echo esc_html__('Start Translation', 'wp-multilang') ?></button>
+        <button class="button button-primary" id="wpmpro-translate-hide" style="display:none" type="button"><?php echo esc_html__('Translating...', 'wp-multilang') ?></button>
+    </div>
 
 </div>
 

@@ -4,7 +4,7 @@
  * */
 jQuery(document).ready(function($){
 	
-	let proBtn = '<span class="wpm-upgrade-to-pro-note" style="margin-left: 50px;"> This Compatibility requires the <a href="https://wp-multilang.com/pricing/" target="__blank">Premium Version</span>';
+	let proBtn = '<span class="wpm-upgrade-to-pro-note" style="margin-left: 50px;"> This Compatibility requires the <a href="https://wp-multilang.com/pricing/#pricings" target="__blank">Premium Version</span>';
 
 	$(document).on('change', '.wpm-free-translation-cb', function(e){
 		e.preventDefault();
@@ -13,6 +13,12 @@ jQuery(document).ready(function($){
 		}else{
 			$('.wpm-upgrade-to-pro-note').remove();
 		}
+	});
+
+	$(document).on('click', '#wpmpro-translate', function(e){
+		$(this).css('display', 'inline');
+		$('.wpm-upgrade-to-pro-note').remove();
+		$(this).after(proBtn);	
 	});
 
 });
