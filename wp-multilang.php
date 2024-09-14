@@ -10,7 +10,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wp-multilang
  * Domain Path:       /languages
- * Version:           2.4.10
+ * Version:           2.4.11
  * Copyright:         © 2017-2019 Valentyn Riaboshtan
  *
  * @package  WPM
@@ -71,15 +71,24 @@ function wpm_activation_admin_notices() {
 
     // Admin notice on plugin activation
 	if ( get_transient( 'wpm_admin_notice_activation' ) ) {
-	
-		$wpm_is_ready = '';
 		
 		// Do not display link to settings UI if we are already in the UI.
 		$screen = get_current_screen();
-		$wpm_ui_link_text = ( strpos( $screen->id, 'wpm' ) === false ) ? sprintf( __( '<a href="%s">Add your languages & Customize your settings &rarr;</a>', 'wp-multilang' ), admin_url( 'admin.php?page=wpm-settings' ) ) : '';
-		
-		echo '<div class="updated notice is-dismissible"><p>' . __( 'Thank you for installing <strong>WP Multilang!</strong> ', 'wp-multilang' ) . $wpm_is_ready . $wpm_ui_link_text . '</p></div>';
-		
+		?>
+		<div class="updated notice is-dismissible">
+			<p>
+				<?php echo esc_html__( 'Thank you for installing', 'wp-multilang' ); ?> 
+				<strong>WP Multilang!</strong>
+				<?php
+				if( strpos( $screen->id, 'wpm' ) === false ) {
+				?>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpm-settings' ) ); ?>"><?php echo esc_html__( 'Add your languages & Customize your settings &rarr;', 'wp-multilang');?> </a>
+				<?php
+				}
+				?>
+			</p>
+		</div>';
+		<?php
 		// Delete transient
 		delete_transient( 'wpm_admin_notice_activation' );
 	}

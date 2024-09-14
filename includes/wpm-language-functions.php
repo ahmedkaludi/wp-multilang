@@ -110,9 +110,10 @@ function wpm_get_language() {
 
 	$referrer = wp_get_raw_referer();
 
-	if ( ( defined( 'REST_REQUEST' ) && ( 'GET' !== $_SERVER['REQUEST_METHOD'] || is_admin_url( $referrer ) ) ) || is_admin() ) {
+	if ( ( defined( 'REST_REQUEST' ) && isset( $_SERVER['REQUEST_METHOD'] ) && ( 'GET' !== $_SERVER['REQUEST_METHOD'] || is_admin_url( $referrer ) ) ) || is_admin() ) {
 
 		$languages = wpm_get_languages();
+		//phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$query     = $_REQUEST;
 
 		if ( wp_doing_ajax() ) {

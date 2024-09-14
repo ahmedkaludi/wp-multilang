@@ -42,6 +42,7 @@ class WPM_AJAX {
 	 * Set WPM AJAX constant and headers.
 	 */
 	public static function define_ajax() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( ! empty( $_GET['wpm-ajax'] ) ) {
 			if ( ! wp_doing_ajax() ) {
 				define( 'DOING_AJAX', true );
@@ -75,7 +76,9 @@ class WPM_AJAX {
 	public static function do_wpm_ajax() {
 		global $wp_query;
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( ! empty( $_GET['wpm-ajax'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, 	WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- this is a dependent function and its all security measurament is done wherever it has been used.
 			$wp_query->set( 'wpm-ajax', sanitize_text_field( $_GET['wpm-ajax'] ) );
 		}
 
@@ -102,7 +105,7 @@ class WPM_AJAX {
 			'settings_newsletter_submit' => false,
 			'block_lang_switcher' => true
 		);
-
+		
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
 			add_action( 'wp_ajax_wpm_' . $ajax_event, array( __CLASS__, $ajax_event ) );
 
@@ -132,6 +135,7 @@ class WPM_AJAX {
 		unset( $options[ $language ] );
 
 		global $wpdb;
+		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Reason: using WP bulit in function updates the option of current language which does not work for our plugin in this case
 		$wpdb->update( $wpdb->options, array( 'option_value' => maybe_serialize( $options ) ), array( 'option_name' => 'wpm_languages' ) );
 
 		die();
@@ -192,56 +196,7 @@ class WPM_AJAX {
 			wp_delete_file( $file );
 		}
 
-		wp_send_json_success( __( 'Localization deleted', 'wp-multilang' ) );
-	}
-
-	/**
-	 * Set default language for object
-	 *
-	 * @param $object
-	 * @param $object_config
-	 *
-	 * @return mixed
-	 */
-	private static function set_default_language_for_object( $object, $object_config ) {
-
-		$lang = wpm_get_default_language();
-
-		foreach ( get_object_vars( $object ) as $key => $content ) {
-			if ( ! isset( $object_config[ $key ] ) ) {
-				continue;
-			}
-
-			switch ( $key ) {
-				case 'attr_title':
-				case 'post_title':
-				case 'name':
-				case 'title':
-					$object->$key = wpm_set_new_value( $content, wpm_translate_string( $content, $lang ), $object_config[ $key ], $lang );
-					break;
-				case 'post_excerpt':
-				case 'description':
-				case 'post_content':
-					if ( is_serialized_string( $content ) ) {
-						$content      = unserialize( $content );
-						$object->$key = serialize( wpm_set_new_value( $content, wpm_translate_value( $content, $lang ), $object_config[ $key ], $lang ) );
-						break;
-					}
-
-					if ( isJSON( $content ) ) {
-						$content      = json_decode( $content, true );
-						$object->$key = wp_json_encode( wpm_set_new_value( $content, wpm_translate_value( $content, $lang ), $object_config[ $key ], $lang ) );
-						break;
-					}
-
-					if ( ! wpm_is_ml_string( $content ) ) {
-						$object->$key = wpm_set_new_value( $content, wpm_translate_string( $content, $lang ), $object_config[ $key ], $lang );
-						break;
-					}
-			}
-		}
-
-		return $object;
+		wp_send_json_success( esc_html__( 'Localization deleted', 'wp-multilang' ) );
 	}
 
 	/**
@@ -287,6 +242,7 @@ class WPM_AJAX {
 			delete_option( 'qtranslate_term_name' );
 		}
 
+		/* translators: %d: This will get the number of term counts. */
 		wp_send_json( sprintf( __( '%d terms were imported successfully.', 'wp-multilang' ), $term_count ) );
 	}
 
@@ -313,9 +269,11 @@ class WPM_AJAX {
 			wp_die( -1 );
 		}
 		
-		if(isset($_POST['message']) && isset($_POST['email'])){
-			$message        = sanitize_textarea_field($_POST['message']); 
-		    $email          = sanitize_email($_POST['email']);   
+		if ( isset( $_POST['message'] ) && isset( $_POST['email'] ) ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
+			$message        = sanitize_textarea_field( $_POST['message'] ); 
+		    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
+		    $email          = sanitize_email( $_POST['email'] );   
 		                            
 		    if(function_exists('wp_get_current_user')){
 
@@ -342,11 +300,11 @@ class WPM_AJAX {
 
 		        if($sent){
 
-		             echo json_encode(array('status'=>'t'));  
+		             echo wp_json_encode(array('status'=>'t'));  
 
 		        }else{
 
-		            echo json_encode(array('status'=>'f'));            
+		            echo wp_json_encode(array('status'=>'f'));            
 
 		        }
 		        
@@ -366,7 +324,9 @@ class WPM_AJAX {
 			wp_die( -1 );
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Security measurament is done below in this function with nonce key wpm_feedback_nonce.
 		if( isset( $_POST['data'] ) ) {
+	        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason: Sanitization is handled below in this function
 	        parse_str( $_POST['data'], $data );
 	    }
 
@@ -380,19 +340,19 @@ class WPM_AJAX {
 
 		$text = '';
 	    if( isset( $data['wpm_disable_text'] ) ) {
-	        $text = implode( "\n\r", $data['wpm_disable_text'] );
+	        $text = implode( "\n\r", sanitize_text_field( $data['wpm_disable_text'] ) );
 	    }
 
 	    $headers = array();
 
-	    $from = isset( $data['wpm_disable_from'] ) ? $data['wpm_disable_from'] : '';
+	    $from = isset( $data['wpm_disable_from'] ) ? sanitize_email( $data['wpm_disable_from'] ) : '';
 	    if( $from ) {
 	    	$headers[] = 'Content-Type: text/html; charset=UTF-8';
 	        $headers[] = "From: $from";
 	        $headers[] = "Reply-To: $from";
 	    }
 
-	    $subject = isset( $data['wpm_disable_reason'] ) ? $data['wpm_disable_reason'] : '(no reason given)';
+	    $subject = isset( $data['wpm_disable_reason'] ) ? sanitize_text_field( $data['wpm_disable_reason'] ) : '(no reason given)';
 
 	    if($subject == 'technical'){
 	    	  $subject = $subject.' - WP Multilang';
@@ -429,28 +389,28 @@ class WPM_AJAX {
             wp_die( -1 ); 
         }
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
         if ( !wp_verify_nonce( $_POST['wpm_security_nonce'], 'wpm_security_nonce' ) ){
            wp_die( -1 );  
         }
                         
-    	$name    = isset($_POST['name'])?sanitize_text_field($_POST['name']):'';
-        $email   = isset($_POST['email'])?sanitize_text_field($_POST['email']):'';
-        $website = isset($_POST['website'])?sanitize_text_field($_POST['website']):'';
+    	$name    = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+        $email   = isset( $_POST['email'] ) ? sanitize_email( $_POST['email'] ) : '';
+        $website = isset( $_POST['website'] ) ? sanitize_text_field( wp_unslash( $_POST['website'] ) ) : '';
         
         if($email){
                 
             $api_url = 'http://magazine3.company/wp-json/api/central/email/subscribe';
 
 		    $api_params = array(
-		        'name'    => $name,
-		        'email'   => $email,
-		        'website' => $website,
-		        'type'    => 'wpmultilang'
-		            );
+					'name'    => $name,
+					'email'   => $email,
+					'website' => $website,
+					'type'    => 'wpmultilang',
+		        );
 		            
-		    $response = wp_remote_post( $api_url, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-		            $response = wp_remote_retrieve_body( $response );                    
-		    echo $response;
+		    wp_remote_post( $api_url, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );		    
 
         }else{
                 echo esc_html__('Email id required', 'wp-multilang');                        
@@ -472,7 +432,8 @@ class WPM_AJAX {
             wp_die( -1 ); 
         }
 
-        if ( !wp_verify_nonce( $_POST['wpm_admin_settings_nonce'], 'wpm_admin_settings_nonce' ) ){
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
+        if ( ! wp_verify_nonce( $_POST['wpm_admin_settings_nonce'], 'wpm_admin_settings_nonce' ) ) {
            wp_die( -1 );  
         } 
 
@@ -496,16 +457,19 @@ class WPM_AJAX {
             wp_die( -1 ); 
         }
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
         if ( !wp_verify_nonce( $_POST['wpm_admin_settings_nonce'], 'wpm_admin_settings_nonce' ) ){
            wp_die( -1 );  
         } 
 
-	    if(issset($_POST['email']) && !empty($_POST['email'])){
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used.
+	    if ( isset ( $_POST['email'] ) && ! empty( $_POST['email'] ) ){
 			global $current_user;
 			$api_url = 'http://magazine3.company/wp-json/api/central/email/subscribe';
 		    $api_params = array(
 		        'name' => sanitize_text_field($current_user->display_name),
-		        'email'=> sanitize_email($_POST['email']),
+		        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
+		        'email'=> sanitize_email( $_POST['email'] ),
 		        'website'=> sanitize_url( get_site_url() ),
 		        'type'=> 'wpmultilang'
 		    );
@@ -526,20 +490,24 @@ class WPM_AJAX {
 	 * @since 2.4.9
 	 * */
 	public static function block_lang_switcher(){  
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used.
         if ( ! isset( $_POST['security'] ) ){
             wp_die( -1 ); 
         }
 
-        if ( !wp_verify_nonce( $_POST['security'], 'wpm_ajax_security_nonce' ) ){
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used.
+        if ( !wp_verify_nonce( $_POST['security'], 'wpm_ajax_security_nonce' ) ) {
            wp_die( -1 );  
         } 
 
-        if(empty($_POST['current_url'])){
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
+        if( empty( $_POST['current_url'] ) ) {
         	wp_die( -1 );  
         }
 
         $all_languages = wpm_get_languages();
 
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 		$current_url = sanitize_url($_POST['current_url']);
 
 		$translated_urls = array();

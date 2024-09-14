@@ -115,7 +115,8 @@ class WPM_Config {
 			$file = apply_filters( "wpm_{$name}_json_file", $file );
 
 			if ( $file && is_readable( $file ) ) {
-				$config = json_decode( file_get_contents( $file ), true );
+				$file_data 	= wpm_local_file_get_contents( $file );
+				$config 	= json_decode( $file_data, true );
 
 				if ( is_array( $config ) && ! empty( $config ) ) {
 					self::$config = wpm_array_merge_recursive( self::$config, $config );

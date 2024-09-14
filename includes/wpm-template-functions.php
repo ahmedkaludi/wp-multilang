@@ -93,11 +93,11 @@ function wpm_get_language_switcher( $type = 'list', $show = 'both' ) {
  *
  * @param string $type
  * @param string $show
- *
+ * 
  * @internal param array $args
  */
 function wpm_language_switcher( $type = 'list', $show = 'both' ) {
-	echo wpm_get_language_switcher( $type, $show );
+	echo wp_kses( wpm_get_language_switcher( $type, $show ), wpm_lang_switcher_allowed_html() );
 }
 
 
@@ -138,7 +138,9 @@ function wpm_set_alternate_links() {
 
 	$hreflangs = apply_filters( 'wpm_alternate_links', $hreflangs, wpm_get_current_url() );
 
-	echo implode( '', $hreflangs );
+	$hreflangs_escaped = implode( '', $hreflangs );
+	//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- all html inside this variable already escaped above in $hreflangs_escaped variable
+	echo $hreflangs_escaped;
 }
 
 add_action( 'wp_head', 'wpm_set_alternate_links' );
@@ -236,6 +238,7 @@ function wpm_media_gallery( $html, $attr, $instance ) {
 		'columns'    => 3,
 		'size'       => 'thumbnail',
 		'include'    => '',
+		//phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 		'exclude'    => '',
 		'link'       => ''
 	), $attr, 'gallery' );
@@ -249,7 +252,9 @@ function wpm_media_gallery( $html, $attr, $instance ) {
 		foreach ( $_attachments as $key => $val ) {
 			$attachments[$val->ID] = wpm_translate_post( $_attachments[$key] );
 		}
+	//phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 	} elseif ( ! empty( $atts['exclude'] ) ) {
+		//phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
 		$attachments = get_children( array( 'post_parent' => $id, 'exclude' => $atts['exclude'], 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $atts['order'], 'orderby' => $atts['orderby'] ) );
 	} else {
 		$attachments = get_children( array( 'post_parent' => $id, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => $atts['order'], 'orderby' => $atts['orderby'] ) );
@@ -405,6 +410,7 @@ function wpm_admin_language_switcher() {
 		'lang'      => wpm_get_language(),
 	);
 
+	//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Reason: Escaping is done in the respective template file
 	echo wpm_get_template( 'admin-language-switcher', '', '', $args );
 }
 
@@ -419,6 +425,7 @@ function wpm_admin_language_switcher_customizer() {
 		'lang'      => wpm_get_language(),
 	);
 
+	//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Reason: Escaping is done in the respective template file
 	echo wpm_get_template( 'admin-language-switcher', 'customizer', '', $args );
 }
 
@@ -454,10 +461,14 @@ function wpm_get_flags() {
  * @return string
  */
 function wpm_show_notice( $echo = true ) {
-	$notise = '<div class="notice notice-info inline"><p>' . sprintf( esc_attr__( 'For multilingual string, use syntax like %s.', 'wp-multilang' ), '<code>[:en]Text on english[:de]Text auf Deutsch[:]</code>' ) . '</p></div>';
-	if ( $echo ) {
-		echo $notise;
-	} else {
-		return $notise;
-	}
+	?>
+
+	<div class="notice notice-info inline">
+		<p> 
+			<?php echo esc_html__( 'For multilingual string, use syntax like ', 'wp-multilang' ); ?> 
+			<code>[:en]Text on english[:de]Text auf Deutsch[:]</code>
+		</p>
+	</div>
+
+	<?php
 }

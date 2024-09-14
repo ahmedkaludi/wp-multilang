@@ -22,34 +22,34 @@ class WPM_Widget_Language_Switcher extends WPM_Widget {
 	 */
 	public function __construct() {
 		$this->widget_cssclass    = 'wpm widget_language_switcher';
-		$this->widget_description = __( 'Display language switcher.', 'wp-multilang' );
+		$this->widget_description = esc_html__( 'Display language switcher.', 'wp-multilang' );
 		$this->widget_id          = 'wpm_language_switcher';
-		$this->widget_name        = __( 'Language Switcher', 'wp-multilang' );
+		$this->widget_name        = esc_html__( 'Language Switcher', 'wp-multilang' );
 		$this->settings           = array(
 			'title' => array(
 				'type'  => 'text',
-				'std'   => __( 'Languages', 'wp-multilang' ),
-				'label' => __( 'Title', 'wp-multilang' ),
+				'std'   => esc_html__( 'Languages', 'wp-multilang' ),
+				'label' => esc_html__( 'Title', 'wp-multilang' ),
 			),
 			'show'  => array(
 				'type'    => 'select',
 				'std'     => 'both',
 				'options' => array(
-					'both'     => __( 'Both', 'wp-multilang' ),
-					'flag'     => __( 'Flag', 'wp-multilang' ),
-					'name' => __( 'Name', 'wp-multilang' ),
+					'both'     => esc_html__( 'Both', 'wp-multilang' ),
+					'flag'     => esc_html__( 'Flag', 'wp-multilang' ),
+					'name' => esc_html__( 'Name', 'wp-multilang' ),
 				),
-				'label'   => __( 'Show', 'wp-multilang' ),
+				'label'   => esc_html__( 'Show', 'wp-multilang' ),
 			),
 			'type'  => array(
 				'type'    => 'select',
 				'std'     => 'list',
 				'options' => array(
-					'list'     => __( 'List', 'wp-multilang' ),
-					'dropdown' => __( 'Dropdown', 'wp-multilang' ),
-					'select'   => __( 'Select', 'wp-multilang' ),
+					'list'     => esc_html__( 'List', 'wp-multilang' ),
+					'dropdown' => esc_html__( 'Dropdown', 'wp-multilang' ),
+					'select'   => esc_html__( 'Select', 'wp-multilang' ),
 				),
-				'label'   => __( 'Switcher Type', 'wp-multilang' ),
+				'label'   => esc_html__( 'Switcher Type', 'wp-multilang' ),
 			),
 		);
 		parent::__construct();
@@ -71,9 +71,10 @@ class WPM_Widget_Language_Switcher extends WPM_Widget {
 
 		$this->widget_end( $args );
 
-		$content = ob_get_clean();
+		$content_escaped = ob_get_clean();
 
-		echo $content;
+		//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- all html inside this variable already escaped above in wpm_language_switcher() function
+		echo $content_escaped;
 
 	}
 }

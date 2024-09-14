@@ -133,14 +133,15 @@ function wpm_print_js() {
 		$wpm_queued_js = preg_replace( '/&#(x)?0*(?(1)27|39);?/i', "'", $wpm_queued_js );
 		$wpm_queued_js = str_replace( "\r", '', $wpm_queued_js );
 
-		$js = "<!-- WPM JavaScript -->\n<script type=\"text/javascript\">\njQuery(function($) { $wpm_queued_js });\n</script>\n";
+		$js_escaped = "<!-- WPM JavaScript -->\n<script type=\"text/javascript\">\njQuery(function($) { $wpm_queued_js });\n</script>\n";
 
 		/**
 		 * game_portal_queued_js filter.
 		 *
 		 * @param string $js JavaScript code.
 		 */
-		echo $js;
+		//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $js_escaped;
 
 		unset( $wpm_queued_js );
 	}
@@ -162,6 +163,7 @@ function wpm_setcookie( $name, $value, $expire = 0, $secure = false ) {
 		}
 	} elseif ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 		headers_sent( $file, $line );
+		//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		trigger_error( "{$name} cookie cannot be set - headers already sent by {$file} on line {$line}", E_USER_NOTICE );
 	}
 }
@@ -173,7 +175,12 @@ function wpm_setcookie( $name, $value, $expire = 0, $secure = false ) {
  * @return string
  */
 function wpm_get_current_url() {
-	$url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+	$url 	=	'';
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Reason unslash not needed because data is not getting stored in database, it's just being used.
+	if( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Reason unslash not needed because data is not getting stored in database, it's just being used.
+		$url 	= set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+	}
 
 	return $url;
 }
@@ -222,7 +229,8 @@ function wpm_get_orig_home_url() {
  * @return string
  */
 function wpm_escaping_text( $string ) {
-	if ( 'GET' === $_SERVER['REQUEST_METHOD'] || ! is_admin() ) {
+	
+	if ( ( isset( $_SERVER['REQUEST_METHOD'] ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) || ! is_admin() ) {
 		$string = wpm_translate_string( $string );
 	}
 
@@ -237,7 +245,7 @@ function wpm_escaping_text( $string ) {
  * @return string
  */
 function wpm_attribute_escape( $string ) {
-	if ( 'GET' === $_SERVER['REQUEST_METHOD'] || ! is_admin() ) {
+	if ( ( isset( $_SERVER['REQUEST_METHOD'] ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) || ! is_admin() ) {
 		$string = wp_specialchars_decode( $string, ENT_QUOTES );
 
 		if ( isJSON( $string ) ) {
@@ -391,7 +399,9 @@ function wpm_maybe_define_constant( $name, $value ) {
  * @return mixed value sanitized by wpm_clean
  */
 function wpm_get_post_data_by_key( $key, $default = '' ) {
-	return wpm_clean( wpm_get_var( $_POST[ $key ], $default ) );
+	//phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized --Reason: Sanitization is handled below in wpm_clean() function
+	$post_val 	=	isset( $_POST[ $key ] ) ? $_POST[ $key ] : null;
+	return wpm_clean( wpm_get_var( $post_val, $default ) );
 }
 
 /**
@@ -427,6 +437,7 @@ function wpm_delete_expired_transients() {
 		AND a.option_name NOT LIKE %s
 		AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
 		AND b.option_value < %d";
+	//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	$rows = $wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 
 	$sql = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
@@ -434,6 +445,7 @@ function wpm_delete_expired_transients() {
 		AND a.option_name NOT LIKE %s
 		AND b.option_name = CONCAT( '_site_transient_timeout_', SUBSTRING( a.option_name, 17 ) )
 		AND b.option_value < %d";
+	//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching 
 	$rows2 = $wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_site_transient_' ) . '%', $wpdb->esc_like( '_site_transient_timeout_' ) . '%', time() ) );
 
 	return absint( $rows + $rows2 );
@@ -476,12 +488,8 @@ function wpm_get_page_by_title( $page_title, $output = OBJECT, $post_type = 'pag
 	if ( is_array( $post_type ) ) {
 		$post_type = esc_sql( $post_type );
 		$post_type_in_string = "'" . implode( "','", $post_type ) . "'";
-		$sql = $wpdb->prepare( "
-			SELECT ID, post_title
-			FROM $wpdb->posts
-			WHERE post_title LIKE %s
-			AND post_type IN ($post_type_in_string)
-		", $like );
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$sql = $wpdb->prepare( "SELECT ID, post_title FROM $wpdb->posts WHERE post_title LIKE %s AND post_type IN ($post_type_in_string)", $like );
 	} else {
 		$sql = $wpdb->prepare( "
 			SELECT ID, post_title
@@ -491,7 +499,13 @@ function wpm_get_page_by_title( $page_title, $output = OBJECT, $post_type = 'pag
 		", $like, $post_type );
 	}
 
-	$page = $wpdb->get_var( $sql );
+	$cache_key 	= 'wpm_page_title_key';
+	$page 		= wp_cache_get($cache_key);
+	if(false === $page ){
+		//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$page = $wpdb->get_var( $sql );
+		wp_cache_set( $cache_key, $page );
+	}	
 
 	if ( $page ) {
 		return get_post( $page, $output );

@@ -24,7 +24,7 @@ class WPM_Settings_Premium extends WPM_Settings_Page {
 	 */
 	public function __construct() {
 		$this->id    = 'premium';
-		$this->label = __( 'Compatibility', 'wp-multilang' );
+		$this->label = esc_html__( 'Compatibility', 'wp-multilang' );
 
 		parent::__construct();
 	}
@@ -51,14 +51,14 @@ class WPM_Settings_Premium extends WPM_Settings_Page {
 
 		$compat_Settings['compat'] = array(
 				array(
-					'title'   => __( 'Elementor', 'wp-multilang' ),
+					'title'   => esc_html__( 'Elementor', 'wp-multilang' ),
 					'class'   => 'wpm_free_compatibilities',
 					'id'      => 'wpm_elementor_compatibility_free',
 					'default' => 'no',
 					'type'    => 'checkbox',
 				),
 				array(
-					'title'   => __( 'Divi Builder', 'wp-multilang' ),
+					'title'   => esc_html__( 'Divi Builder', 'wp-multilang' ),
 					'class'   => 'wpm_free_compatibilities',
 					'id'      => 'wpm_divi_compatibility_free',
 					'default' => 'no',
@@ -70,7 +70,7 @@ class WPM_Settings_Premium extends WPM_Settings_Page {
 			$section_note = array();
 		}
 
-		$setting_array[] = array( 'title' => __( 'Compatibility', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'premium_features' );
+		$setting_array[] = array( 'title' => esc_html__( 'Compatibility', 'wp-multilang' ), 'type' => 'title', 'desc' => '', 'id' => 'premium_features' );
 		foreach ($compat_Settings['compat'] as $cs_key => $cs_value) {
 			$setting_array[] = $cs_value;
 		}

@@ -18,7 +18,7 @@ if ( ! $tab_exists ) {
 }
 ?>
 <div class="wrap wpm">
-	<h1><?php echo get_admin_page_title(); ?></h1>
+	<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 	<form method="<?php echo esc_attr( apply_filters( 'wpm_settings_form_method_tab_' . $current_tab, 'post' ) ); ?>" id="mainform" action="" enctype="multipart/form-data">
 		<nav class="nav-tab-wrapper wpm-nav-tab-wrapper">
 			<?php
@@ -45,11 +45,13 @@ if ( ! $tab_exists ) {
 		?>
 		<p class="submit">
 			<?php if ( empty( $GLOBALS['hide_save_button'] ) ) : ?>
-				<?php 
-				echo '<style>.submit{float:left;}</style>';
-				submit_button(); 
+				<div style="float: left;">
+					<?php submit_button(); ?>
+				</div>
+				<?php
 				if(!defined('WP_MULTILANG_PRO_VERSION')){
-					echo '<a class="button wpm-upgrade-pro-btn" style="background: #0099E7;color: #fff; border-color: #0099E7; font-weight: 500; margin: 30px 0px 0px 25px;" href="https://wp-multilang.com/pricing/" target="_blank">'.__( 'Upgrade to PRO', 'wp-multilang').'</a>';
+
+					echo '<a class="button wpm-upgrade-pro-btn" style="background: #0099E7;color: #fff; border-color: #0099E7; font-weight: 500; margin: 30px 0px 0px 25px;" href="https://wp-multilang.com/pricing/" target="_blank">'.esc_html__( 'Upgrade to PRO', 'wp-multilang').'</a>';
 				}
 				?>
 			<?php endif; ?>
@@ -71,11 +73,11 @@ function wpm_newsletter_form(){
 	$hide_form = get_option('wpm_hide_newsletter');
 
 	// Newsletter marker. Set this to false once newsletter subscription is displayed.
-		$superpwa_newsletter = true;
+		$multilang_newsletter = true;
 
-	if ( $superpwa_newsletter === true && $hide_form !== 'yes') { ?>
+	if ( $multilang_newsletter === true && $hide_form !== 'yes') { ?>
 	  <div class="wpm-newsletter-wrapper">
-		<div class="plugin-card plugin-card-wpm-newsletter" style="color: #fff; background: #0099E7 url('<?php echo wpm_asset_path('img/email.png'); ?>') no-repeat right top;">
+		<div class="plugin-card plugin-card-wpm-newsletter" style="color: #fff; background: #0099E7 url('<?php echo esc_attr( wpm_asset_path('img/email.png' ) ); ?>') no-repeat right top;">
 						
 					<div class="plugin-card-top" style="min-height: 135px;">
 					     <span class="dashicons dashicons-dismiss wpm_newsletter_hide" style="float: right;cursor: pointer;"></span>
@@ -97,7 +99,8 @@ function wpm_newsletter_form(){
 									<span class="wpm_newsletter_hide" style="box-shadow: unset;cursor: pointer;margin-left: 10px;">
 									<?php esc_html_e( 'No thanks', 'wp-multilang' ); ?>
 									</span>
-									<small style="display:block; margin-top:8px;"><?php esc_html_e( 'We\'ll share our <code>root</code> password before we share your email with anyone else.', 'wp-multilang' ); ?></small>
+									<small style="display:block; margin-top:8px;">
+										<?php echo esc_html__( 'We\'ll share our', 'wp-multilang' ); ?><code> <?php echo esc_html__ ('root', 'wp-multilang'); ?></code> <?php echo esc_html__('password before we share your email with anyone else.', 'wp-multilang' ); ?></small>
 									
 								</fieldset>
 							</form>
@@ -110,5 +113,5 @@ function wpm_newsletter_form(){
 		</div>
 	<?php }
 			// Set newsletter marker to false
-			  $superpwa_newsletter = false;
+			  $multilang_newsletter = false;
 }

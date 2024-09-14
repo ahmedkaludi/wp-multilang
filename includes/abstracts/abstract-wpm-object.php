@@ -95,6 +95,7 @@ abstract class WPM_Object {
 
 		if ( ! $meta_values ) {
 
+			//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$meta_values = $wpdb->get_results( $wpdb->prepare( "SELECT {$id_column}, meta_value FROM {$wpdb->{$this->object_table}} WHERE meta_key = %s AND {$column} = %d;", $meta_key, $object_id ), ARRAY_A );
 
 			wp_cache_set( $object_id, $meta_values, $this->object_type . '_' . $meta_key . '_wpm_meta' );
@@ -103,6 +104,7 @@ abstract class WPM_Object {
 		if ( $meta_values ) {
 
 			foreach ( $meta_values as $meta_field ) {
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				$meta_field['meta_value'] = maybe_unserialize( $meta_field['meta_value'] );
 				if ( wpm_is_ml_value( $meta_field['meta_value'] ) ) {
 					$value = wpm_translate_value( $meta_field['meta_value'] );
@@ -182,6 +184,7 @@ abstract class WPM_Object {
 
 			if ( wpm_is_ml_value( $meta_value ) ) {
 				$old_value   = array();
+				//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				$old_results = $wpdb->get_results( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->{$this->object_table}} WHERE meta_key = %s AND {$column} = %d;", $meta_key, $object_id ), ARRAY_A );
 				if ( $old_results ) {
 					$old_value[0] = maybe_unserialize( $old_results[0]['meta_value'] );
@@ -197,6 +200,7 @@ abstract class WPM_Object {
 			}
 		}
 
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$meta_ids = $wpdb->get_col( $wpdb->prepare( "SELECT $id_column FROM $table WHERE meta_key = %s AND $column = %d", $meta_key, $object_id ) );
 		if ( empty( $meta_ids ) ) {
 			return add_metadata( $this->object_type, $object_id, $meta_key, $meta_value );
@@ -205,6 +209,7 @@ abstract class WPM_Object {
 		$_meta_value = $meta_value;
 
 		if ( ! wpm_is_ml_value( $meta_value ) ) {
+			//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$old_value  = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->{$this->object_table}} WHERE meta_key = %s AND {$column} = %d LIMIT 1;", $meta_key, $object_id ) );
 			$old_value  = maybe_unserialize( $old_value );
 			$old_value  = apply_filters( "wpm_filter_old_{$meta_key}_meta_value", $old_value, $meta_value, $meta_config );
@@ -214,16 +219,19 @@ abstract class WPM_Object {
 
 		$meta_value = maybe_serialize( $meta_value );
 		$data       = compact( 'meta_value' );
+		//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 		$where      = array( $column => $object_id, 'meta_key' => $meta_key );
 
 		if ( ! empty( $prev_value ) ) {
 
 			if ( ! wpm_is_ml_value( $prev_value ) ) {
 				$like       = '%' . $wpdb->esc_like( esc_sql( $prev_value ) ) . '%';
+				//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				$prev_value = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->{$this->object_table}} WHERE meta_key = %s AND {$column} = %d AND meta_value LIKE %s LIMIT 1", $meta_key, $object_id, $like ) );
 			}
 
 			$prev_value          = maybe_serialize( $prev_value );
+			//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			$where['meta_value'] = $prev_value;
 		}
 
@@ -258,6 +266,7 @@ abstract class WPM_Object {
 			}
 		}
 
+		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$result = $wpdb->update( $table, $data, $where );
 
 		if ( ! $result ) {
@@ -357,6 +366,7 @@ abstract class WPM_Object {
 			$meta_value = wpm_set_new_value( array(), $meta_value, $meta_config );
 		}
 
+		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		if ( $unique && $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $table WHERE meta_key = %s AND $column = %d", $meta_key, $object_id ) )
 		) {
 			return false;
@@ -379,9 +389,12 @@ abstract class WPM_Object {
 		 */
 		do_action( "add_{$this->object_type}_meta", $object_id, $meta_key, $_meta_value );
 
+		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 		$result = $wpdb->insert( $table, array(
 			$column      => $object_id,
+			//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 			'meta_key'   => $meta_key,
+			//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			'meta_value' => $meta_value,
 		) );
 

@@ -21,7 +21,7 @@ final class WP_Multilang {
 	 *
 	 * @var string
 	 */
-	public $version = '2.4.10';
+	public $version = '2.4.11';
 
 	/**
 	 * The single instance of the class.
@@ -58,14 +58,14 @@ final class WP_Multilang {
 	 * Cloning is forbidden.
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'wp-multilang' ), '1.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?', 'wp-multilang' ), '1.0' );
 	}
 
 	/**
 	 * Unserializing instances of this class is forbidden.
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'wp-multilang' ), '1.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cheatin&#8217; huh?', 'wp-multilang' ), '1.0' );
 	}
 
 	/**

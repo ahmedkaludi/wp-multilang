@@ -28,7 +28,8 @@ class WPM_Admin_Qtranslate {
 	public function handle_qtranslate() {
 		//qTranslate must be disabled
 		if ( $qtranslate = $this->detect_qtranslate() ) {
-			WPM_Admin_Notices::add_custom_notice( 'qtranslate_active', sprintf( __( '%s is active. Please deactivate it.', 'wp-multilang' ), $qtranslate ), 'error' );
+			/* translators: %s: notice message */
+			WPM_Admin_Notices::add_custom_notice( 'qtranslate_active', esc_html( sprintf( __( '%s is active. Please deactivate it.', 'wp-multilang' ), $qtranslate ), 'error' ) );
 		}
 	}
 

@@ -35,6 +35,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 		}
 
 		$fields  = wpm_filter_post_config_fields( array_keys( $post_config ) );
+		//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQLPlaceholders.QuotedSimplePlaceholder,WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Reason We are just cleaning the data that has been changed by our plugin
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT ID, " . implode( ', ', $fields ) . " FROM {$wpdb->posts} WHERE post_type = '%s';", esc_sql( $post_type ) ) );
 
 		foreach ( $results as $result ) {
@@ -50,6 +51,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 				$args[ $key ] = $content;
 			}
 
+			//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching --Reason We are just cleaning the data that has been changed by our plugin
 			$wpdb->update( $wpdb->posts, $args, array( 'ID' => $result->ID ) );
 		}
 	}
@@ -62,6 +64,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 			continue;
 		}
 
+		//phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedSimplePlaceholder, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery --Reason We are just cleaning the data that has been changed by our plugin
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT t.term_id, `name`, description FROM {$wpdb->terms} t LEFT JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id WHERE tt.taxonomy = '%s';", esc_sql( $taxonomy ) ) );
 
 		foreach ( $results as $result ) {
@@ -70,12 +73,16 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 			$description = $result->description;
 			$name        = $result->name;
 
+			//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason We are just cleaning the data that has been changed by our plugin
 			$wpdb->update( $wpdb->term_taxonomy, compact( 'description' ), array( 'term_id' => $result->term_id ) );
+			//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason We are just cleaning the data that has been changed by our plugin
 			$wpdb->update( $wpdb->terms, compact( 'name' ), array( 'term_id' => $result->term_id ) );
 		}
 	}
 
+	//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason We are just cleaning the data that has been changed by our plugin
 	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_%';" );
+	//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason We are just cleaning the data that has been changed by our plugin
 	$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_site_transient_%';" );
 
 	foreach ( $config as $key => $item_config ) {
@@ -83,8 +90,10 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 		switch ( $key ) {
 
 			case 'post_fields':
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason We are just cleaning the data that has been changed by our plugin
 				$wpdb->delete( $wpdb->postmeta, array( 'meta_key' => '_languages' ) );
 
+				//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason We are just cleaning the data that has been changed by our plugin
 				$results = $wpdb->get_results( "SELECT meta_id, meta_value FROM {$wpdb->postmeta} WHERE meta_value LIKE '%![:__!]%' ESCAPE '!' OR meta_value LIKE '%{:__}%' OR meta_value LIKE '%<!--:__-->%';" );
 				foreach ( $results as $result ) {
 					$meta_value = $result->meta_value;
@@ -101,14 +110,17 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 						$meta_value = wpm_translate_string( $meta_value, $default_language );
 					}
 
+					//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason We are just cleaning the data that has been changed by our plugin
 					$wpdb->update( $wpdb->postmeta, compact( 'meta_value' ), array( 'meta_id' => $result->meta_id ) );
 				}
 
 				break;
 
 			case 'term_fields':
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 				$wpdb->delete( $wpdb->termmeta, array( 'meta_key' => '_languages' ) );
 
+				//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 				$results = $wpdb->get_results( "SELECT meta_id, meta_value FROM {$wpdb->termmeta} WHERE meta_value LIKE '%![:__!]%' ESCAPE '!' OR meta_value LIKE '%{:__}%' OR meta_value LIKE '%<!--:__-->%';" );
 
 				foreach ( $results as $result ) {
@@ -126,14 +138,17 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 						$meta_value = wpm_translate_string( $meta_value, $default_language );
 					}
 
+					//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 					$wpdb->update( $wpdb->termmeta, compact( 'meta_value' ), array( 'meta_id' => $result->meta_id ) );
 				}
 
 				break;
 
 			case 'comment_fields':
+				//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 				$wpdb->delete( $wpdb->commentmeta, array( 'meta_key' => '_languages' ) );
 
+				//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 				$results = $wpdb->get_results( "SELECT meta_id, meta_value FROM {$wpdb->commentmeta} WHERE meta_value LIKE '%s' OR meta_value LIKE '%![:__!]%' ESCAPE '!' OR meta_value LIKE '%{:__}%' OR meta_value LIKE '%<!--:__-->%';" );
 
 				foreach ( $results as $result ) {
@@ -151,6 +166,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 						$meta_value = wpm_translate_string( $meta_value, $default_language );
 					}
 
+					//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 					$wpdb->update( $wpdb->commentmeta, compact( 'meta_value' ), array( 'meta_id' => $result->meta_id ) );
 				}
 
@@ -158,6 +174,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 
 			case 'user_fields':
 
+				//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 				$results = $wpdb->get_results( "SELECT umeta_id, meta_value FROM {$wpdb->usermeta} WHERE meta_value LIKE '%![:__!]%' ESCAPE '!' OR meta_value LIKE '%{:__}%' OR meta_value LIKE '%<!--:__-->%';" );
 
 				foreach ( $results as $result ) {
@@ -175,6 +192,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 						$meta_value = wpm_translate_string( $meta_value, $default_language );
 					}
 
+					//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 					$wpdb->update( $wpdb->usermeta, compact( 'meta_value' ), array( 'umeta_id' => $result->umeta_id ) );
 				}
 
@@ -182,6 +200,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 
 			case 'options':
 
+				//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 				$results = $wpdb->get_results( "SELECT option_id, option_value FROM {$wpdb->options} WHERE option_value LIKE '%![:__!]%' ESCAPE '!' OR option_value LIKE '%{:__}%' OR option_value LIKE '%<!--:__-->%';" );
 
 				foreach ( $results as $result ) {
@@ -199,6 +218,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 						$option_value = wpm_translate_string( $option_value, $default_language );
 					}
 
+					//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 					$wpdb->update( $wpdb->options, compact( 'option_value' ), array( 'option_id' => $result->option_id ) );
 				}
 
@@ -206,6 +226,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 
 			case 'site_options':
 
+				//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 				$results = $wpdb->get_results( "SELECT meta_id, meta_value FROM {$wpdb->sitemeta} WHERE meta_value LIKE '%![:__!]%' ESCAPE '!' OR meta_value LIKE '%{:__}%' OR meta_value LIKE '%<!--:__-->%';" );
 
 				foreach ( $results as $result ) {
@@ -223,6 +244,7 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 						$meta_value = wpm_translate_string( $meta_value, $default_language );
 					}
 
+					//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 					$wpdb->update( $wpdb->sitemeta, compact( 'meta_value' ), array( 'meta_id' => $result->meta_id ) );
 				}
 
@@ -234,4 +256,5 @@ if ( get_option( 'wpm_uninstall_translations', 'no' ) === 'yes' ) {
 	wp_cache_flush();
 } // End if().
 
+//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
 $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'wpm_%';" );

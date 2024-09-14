@@ -98,10 +98,15 @@ class WPM_Admin_Menus {
 			}
 
 			if ( $add ) {
+				$native_name 		=	'';
+				if( ! empty( $available_translations[$locale]['native_name'] ) ) {
+					$native_name 	=	$available_translations[$locale]['native_name'];	
+				}
+
 				$wp_admin_bar->add_menu( array(
 					'parent' => 'wpm-language-switcher',
 					'id'     => 'wpm-language-' . $code,
-					'title'  => '<span class="ab-icon">' . '<img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" />' . '</span>' . '<span class="ab-label">' . $available_translations[$locale]['native_name'] . '</span>',
+					'title'  => '<span class="ab-icon">' . '<img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" />' . '</span>' . '<span class="ab-label">' . esc_html( $native_name ) . '</span>',
 					'href'   => wpm_translate_current_url( $code ),
 				) );
 			}
@@ -128,20 +133,28 @@ class WPM_Admin_Menus {
 		WPM_Admin_Settings::get_settings_pages();
 
 		// Get current tab/section
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 		$current_tab     = empty( $_GET['tab'] ) ? 'general' : sanitize_title( $_GET['tab'] );
+		
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 		$current_section = empty( $_REQUEST['section'] ) ? '' : sanitize_title( $_REQUEST['section'] );
 
 		// Save settings if data has been posted
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.NonceVerification.Missing
 		if ( ! empty( $_POST ) ) {
 			WPM_Admin_Settings::save();
 		}
 
 		// Add any posted messages
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['wpm_error'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
 			WPM_Admin_Settings::add_error( stripslashes( $_GET['wpm_error'] ) );
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['wpm_message'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
 			WPM_Admin_Settings::add_message( stripslashes( $_GET['wpm_message'] ) );
 		}
 	}
@@ -175,18 +188,18 @@ class WPM_Admin_Menus {
 				<ul id="wpm-languages-checklist" class="categorychecklist form-no-clear">
 					<li>
 						<label class="menu-item-title">
-							<input type="checkbox" class="menu-item-checkbox" name="menu-item[<?php esc_attr_e( $_nav_menu_placeholder ); ?>][menu-item-object-id]" value="<?php esc_attr_e( $_nav_menu_placeholder ); ?>" /> <?php esc_html_e( 'Languages', 'wp-multilang' ); ?>
+							<input type="checkbox" class="menu-item-checkbox" name="menu-item[<?php echo esc_attr( $_nav_menu_placeholder ); ?>][menu-item-object-id]" value="<?php echo esc_attr( $_nav_menu_placeholder ); ?>" /> <?php esc_html_e( 'Languages', 'wp-multilang' ); ?>
 						</label>
-						<input type="hidden" class="menu-item-type" name="menu-item[<?php esc_attr_e( $_nav_menu_placeholder ); ?>][menu-item-type]" value="custom" />
-						<input type="hidden" class="menu-item-title" name="menu-item[<?php esc_attr_e( $_nav_menu_placeholder ); ?>][menu-item-title]" value="<?php esc_html_e( 'Languages', 'wp-multilang' ); ?>" />
-						<input type="hidden" class="menu-item-url" name="menu-item[<?php esc_attr_e( $_nav_menu_placeholder ); ?>][menu-item-url]" value="#wpm-languages" />
-						<input type="hidden" class="menu-item-classes" name="menu-item[<?php esc_attr_e( $_nav_menu_placeholder ); ?>][menu-item-classes]" value="wpm-languages" />
+						<input type="hidden" class="menu-item-type" name="menu-item[<?php echo esc_attr( $_nav_menu_placeholder ); ?>][menu-item-type]" value="custom" />
+						<input type="hidden" class="menu-item-title" name="menu-item[<?php echo esc_attr( $_nav_menu_placeholder ); ?>][menu-item-title]" value="<?php esc_html_e( 'Languages', 'wp-multilang' ); ?>" />
+						<input type="hidden" class="menu-item-url" name="menu-item[<?php echo esc_attr( $_nav_menu_placeholder ); ?>][menu-item-url]" value="#wpm-languages" />
+						<input type="hidden" class="menu-item-classes" name="menu-item[<?php echo esc_attr( $_nav_menu_placeholder ); ?>][menu-item-classes]" value="wpm-languages" />
 					</li>
 				</ul>
 			</div>
 			<p class="button-controls">
 				<span class="add-to-menu">
-					<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php esc_attr_e( 'Add to menu' ); ?>" name="add-post-type-menu-item" id="submit-posttype-wpm-languages">
+					<input type="submit" class="button-secondary submit-add-to-menu right" value="<?php echo esc_html__( 'Add to menu', 'wp-multilang' ); ?>" name="add-post-type-menu-item" id="submit-posttype-wpm-languages">
 					<span class="spinner"></span>
 				</span>
 			</p>
@@ -214,16 +227,16 @@ class WPM_Admin_Menus {
 		$class = sprintf( 'field-%s', $_key );
 
 		$type_options = array(
-			'inline'   => __( 'Inline', 'wp-multilang' ),
-			'single'   => __( 'Single', 'wp-multilang' ),
-			'dropdown' => __( 'Dropdown', 'wp-multilang' ),
+			'inline'   => esc_html__( 'Inline', 'wp-multilang' ),
+			'single'   => esc_html__( 'Single', 'wp-multilang' ),
+			'dropdown' => esc_html__( 'Dropdown', 'wp-multilang' ),
 		);
 		?>
 		<p class="description description-wide <?php echo esc_attr( $class ); ?>">
-			<label for="<?php esc_attr_e( $id ); ?>"><?php esc_html_e( 'Languages menu item type', 'wp-multilang' ); ?></label>
-			<select class="widefat" id="<?php esc_attr_e( $id ); ?>" name="<?php esc_attr_e( $name ); ?>">
+			<label for="<?php echo esc_attr( $id ); ?>"><?php esc_html_e( 'Languages menu item type', 'wp-multilang' ); ?></label>
+			<select class="widefat" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>">
 				<?php foreach ( $type_options as $val => $name ) { ?>
-					<option value="<?php esc_attr_e( $val ); ?>"<?php selected( $val, $value ) ?>><?php esc_html_e( $name ); ?></option>
+					<option value="<?php echo esc_attr( $val ); ?>"<?php selected( $val, $value ) ?>><?php echo esc_html( $name ); ?></option>
 				<?php } ?>
 			</select>
 		</p>
@@ -236,16 +249,16 @@ class WPM_Admin_Menus {
 		$class = sprintf( 'field-%s', $_key );
 
 		$show_options = array(
-			'both' => __( 'Both', 'wp-multilang' ),
-			'flag' => __( 'Flag', 'wp-multilang' ),
-			'name' => __( 'Name', 'wp-multilang' ),
+			'both' => esc_html__( 'Both', 'wp-multilang' ),
+			'flag' => esc_html__( 'Flag', 'wp-multilang' ),
+			'name' => esc_html__( 'Name', 'wp-multilang' ),
 		);
 		?>
 		<p class="description description-wide <?php echo esc_attr( $class ); ?>">
-			<label for="<?php esc_attr_e( $id ); ?>"><?php esc_html_e( 'Show', 'wp-multilang' ); ?></label>
-			<select class="widefat" id="<?php esc_attr_e( $id ); ?>" name="<?php esc_attr_e( $name ); ?>">
+			<label for="<?php echo esc_attr( $id ); ?>"><?php esc_html_e( 'Show', 'wp-multilang' ); ?></label>
+			<select class="widefat" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>">
 				<?php foreach ( $show_options as $val => $name ) { ?>
-					<option value="<?php esc_attr_e( $val ); ?>"<?php selected( $val, $value ) ?>><?php esc_html_e( $name ); ?></option>
+					<option value="<?php echo esc_attr( $val ); ?>"<?php selected( $val, $value ) ?>><?php echo esc_html( $name ); ?></option>
 				<?php } ?>
 			</select>
 		</p>
@@ -259,7 +272,7 @@ class WPM_Admin_Menus {
 	 * @param $menu_item_db_id
 	 */
 	public function update_nav_menu_item( $menu_id, $menu_item_db_id ) {
-
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
 		if( 'update' !== $_REQUEST['action'] ) {
 			return;
 		}
@@ -270,7 +283,14 @@ class WPM_Admin_Menus {
 			return;
 		}
 
-		update_post_meta( $menu_item_db_id, '_menu_item_languages_type', $_POST['languages_type'][ $menu_item_db_id ] );
-		update_post_meta( $menu_item_db_id, '_menu_item_languages_show', $_POST['languages_show'][ $menu_item_db_id ] );
+		if( isset( $_POST['languages_type'] ) && isset( $_POST['languages_type'][ $menu_item_db_id ] ) ) {
+			$languages_type = sanitize_text_field( wp_unslash( $_POST['languages_type'][ $menu_item_db_id ] ) );
+			update_post_meta( $menu_item_db_id, '_menu_item_languages_type', $languages_type );
+		}
+
+		if( isset( $_POST['languages_show'] ) && isset( $_POST['languages_show'][ $menu_item_db_id ] ) ) {
+			$languages_show = sanitize_text_field( wp_unslash( $_POST['languages_show'][ $menu_item_db_id ] ) );
+			update_post_meta( $menu_item_db_id, '_menu_item_languages_show', $languages_show );
+		}
 	}
 }

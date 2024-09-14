@@ -5,9 +5,9 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, multilang
 Requires at least: 4.7
 Tested up to: 6.6
-Stable tag: 2.4.10
+Stable tag: 2.4.11
 Requires PHP: 5.6.20
-License: GPLv3
+License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Multilingual plugin for WordPress. Go Multilingual in minutes with full WordPress support. Translate your site easily with this localization plugin.
@@ -24,6 +24,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Support full site editor for block based themes
 * Support block based widgets
 * Support different feature image for each language
+* Auto Translation ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs/)
 
 == Features of the plugin WP Multilang ==
 
@@ -229,6 +230,12 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.11 =
+- fixed Product attributers are not getting translated in frontend #94
+- enhancement Code improvement #96
+- fixed Warning: Undefined array key #102
+- feature Automatic translation #77
+
 = 2.4.10 =
 - feature Added compatibility with Divi #72
 - fixed issue with canonical and href URL as per the language. #85
@@ -302,12 +309,5 @@ If you have opened several browser tabs for editing this post in different langu
 = 2.3.0 =
 - fixed compatibility with WordPress 5.0
 - fixed compatibility with AIOSP
-
-= 2.2.6 =
-- added donate link to readme.txt
-- fix display language name
-- fix SiteOrigin Builder compatibility
-- fix fatal error when a plugin is disabled
-- fix translate REST requests in admin
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

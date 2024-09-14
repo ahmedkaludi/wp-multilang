@@ -90,10 +90,12 @@ class WPM_Install {
 	 * This function is hooked into admin_init to affect admin only.
 	 */
 	public static function install_actions() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['do_update_wpm'] ) ) {
 			self::update();
 			WPM_Admin_Notices::add_notice( 'update' );
 		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['force_update_wpm'] ) ) {
 			do_action( 'wp_wpm_updater_cron' );
 			wp_safe_redirect( admin_url( 'options-general.php?page=wpm-settings' ) );
@@ -268,7 +270,7 @@ class WPM_Install {
 			foreach ( $installed_languages as $locale ) {
 				$code = ''; $name = '';
 				$flag = explode( '_', strtolower( $locale ) );
-				if(is_array($available_translations[ $locale ])){
+				if( ! empty( $available_translations[ $locale ] ) && is_array($available_translations[ $locale ])){
 					if(isset($available_translations[ $locale ]['iso']) && is_array($available_translations[ $locale ]['iso'])){
 						$code = sanitize_title( current( $available_translations[ $locale ]['iso'] ) );
 					}

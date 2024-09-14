@@ -38,7 +38,7 @@ class WPM_Admin_Newsletter {
 
                 $script_data = apply_filters('wpm_localize_filter',$script_data,'wpm_localize_data');
 
-                wp_register_script( 'wpm-newsletter-script', wpm_asset_path( 'scripts/wpm-newsletter-script' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION );
+                wp_register_script( 'wpm-newsletter-script', wpm_asset_path( 'scripts/wpm-newsletter-script' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
                 wp_localize_script( 'wpm-newsletter-script', 'wpm_localize_data', $script_data );
                 wp_enqueue_script( 'wpm-newsletter-script' );
         }
@@ -57,7 +57,8 @@ class WPM_Admin_Newsletter {
                         
                 global $current_user;                
 		$tour     = array ();
-                $tab      = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : '';                   
+                // phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used. -- Reason unslash not needed because data is not getting stored in database, it's just being used. 
+                $tab      = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : '';                   
                 
                 if (!array_key_exists($tab, $tour)) {                
 			                                           			            	
@@ -66,7 +67,7 @@ class WPM_Admin_Newsletter {
                         $object['current_user_email'] = $current_user->user_email;                
                         $object['current_user_name']  = $current_user->display_name;        
 			$object['displayID']          = '#menu-settings';                        
-                        $object['button1']            = esc_html__('No Thanks');
+                        $object['button1']            = esc_html__('No Thanks', 'wp-multilang');
                         $object['button2']            = false;
                         $object['function_name']      = '';                        
 		}

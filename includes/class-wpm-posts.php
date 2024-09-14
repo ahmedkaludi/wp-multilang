@@ -167,6 +167,7 @@ class WPM_Posts extends WPM_Object {
 				return $data;
 			}
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 			if ( isset( $_GET['action'] ) && 'untrash' === $_GET['action'] ) {
 				return $data;
 			}
@@ -197,7 +198,8 @@ class WPM_Posts extends WPM_Object {
 		if ( 'nav_menu_item' === $data['post_type'] ) {
 			$screen = get_current_screen();
 
-			if ( 'POST' === $_SERVER['REQUEST_METHOD'] && 'update' === $_POST['action'] && ( $screen && 'nav-menus' === $screen->id ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- this is a dependent function and its all security measurament is done wherever it has been used.
+			if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['action'] ) && 'update' === $_POST['action'] && ( $screen && 'nav-menus' === $screen->id ) ) {
 				// hack to get wp to create a post object when too many properties are empty
 				if ( '' === $data['post_title'] && '' === $data['post_content'] ) {
 					$data['post_content'] = ' ';
@@ -238,7 +240,7 @@ class WPM_Posts extends WPM_Object {
 	 * @return string
 	 */
 	public function translate_attachment_link( $link ) {
-		$text            = strip_tags( $link );
+		$text            = wp_strip_all_tags( $link );
 		$translated_text = wpm_translate_string( $text );
 
 		return str_replace( $text, $translated_text, $link );
@@ -269,36 +271,59 @@ class WPM_Posts extends WPM_Object {
 	 * Translate global style post content for full site editor
 	 * @since 2.4.9
 	 * */
-	public function wpm_rest_post_dispatch($result, $server, $request){
-		if(!empty($result->data) && is_array($result->data)){
-			if(isset($result->data['settings']) && $result->data['styles']){
-				if(!empty($result->data['id'])){
+	public function wpm_rest_post_dispatch( $result, $server, $request ) {
+		if( ! empty( $result->data ) && is_array( $result->data ) ) {
+
+			if( isset( $result->data['settings'] ) && $result->data['styles'] ) {
+
+				if( ! empty( $result->data['id'] ) ) {
+
 					$style_id = $result->data['id'];
-					if($style_id > 0){
-						$get_style = get_post($style_id);
-						if(!empty($get_style) && is_object($get_style)){
-							if(!empty($get_style->post_content)){
-								if($get_style->post_type == 'wp_global_styles'){
-									$translate_object = wpm_translate_object($get_style);
-									$raw_config = json_decode($translate_object->post_content, true);
+
+					if( $style_id > 0 ) {
+
+						$get_style = get_post( $style_id );
+
+						if( ! empty( $get_style ) && is_object( $get_style ) ) {
+
+							if( ! empty( $get_style->post_content ) ) {
+
+								if( $get_style->post_type == 'wp_global_styles' ) {
+
+									$translate_object = wpm_translate_object( $get_style );
+									$raw_config = json_decode( $translate_object->post_content, true );
 									$is_global_styles_user_theme_json = isset( $raw_config['isGlobalStylesUserThemeJSON'] ) && true === $raw_config['isGlobalStylesUserThemeJSON'];
+
 									if ( $is_global_styles_user_theme_json ) {
+
 										$config = ( new \WP_Theme_JSON( $raw_config, 'custom' ) )->get_raw_data();
-										if(!empty($config['settings'])){
+										if( ! empty( $config['settings'] ) ) {
+
 											$result->data['settings'] = $config['settings'];
 										}
 
-										if(!empty($config['styles'])){
+										if( ! empty( $config['styles'] ) ) {
+
 											$result->data['styles'] = $config['styles'];
+
 										}
+
 									}
+
 								}
+
 							}
+
 						}
+
 					}
+
 				}
+
 			}
+
 		}
+		
 		return $result;
 	}
 }

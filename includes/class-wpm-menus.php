@@ -22,7 +22,11 @@ class WPM_Menus {
 	 * WPM_Menus constructor.
 	 */
 	public function __construct() {
-		add_filter( 'wp_setup_nav_menu_item', array( $this, 'translate_menu_item' ), ( 'POST' === $_SERVER['REQUEST_METHOD'] ? 99 : 5 ) );
+		$filter_priority = 5;
+		if( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+			$filter_priority = 99;	
+		}
+		add_filter( 'wp_setup_nav_menu_item', array( $this, 'translate_menu_item' ), $filter_priority );
 		add_filter( 'wp_setup_nav_menu_item', array( $this, 'translate_menu_url' ) );
 		add_filter( 'customize_nav_menu_available_items', array( $this, 'filter_menus' ), 5 );
 		add_filter( 'customize_nav_menu_searched_items', array( $this, 'filter_menus' ), 5 );
@@ -90,7 +94,7 @@ class WPM_Menus {
 						$menu_item->_invalid = true;
 					}
 
-					$menu_item->type_label = __( 'Post Type Archive' );
+					$menu_item->type_label = esc_html__( 'Post Type Archive', 'wp-multilang' );
 					$menu_item->url        = get_post_type_archive_link( $menu_item->object );
 
 				} elseif ( 'taxonomy' === $menu_item->type ) {
@@ -113,7 +117,7 @@ class WPM_Menus {
 
 				} else {
 
-					$menu_item->type_label = __( 'Custom Link' );
+					$menu_item->type_label = esc_html__( 'Custom Link', 'wp-multilang' );
 					$menu_item->title      = $menu_item->post_title;
 				}// End if().
 
@@ -151,6 +155,7 @@ class WPM_Menus {
 
 		}// End if().
 
+		/* translators: %d: This will get menu item id */
 		$menu_item->title = '' === $menu_item->title ? sprintf( __( '#%d (no title)' ), $menu_item->ID ) : $menu_item->title;
 
 		return $menu_item;

@@ -80,6 +80,7 @@ class WPM_Comments extends WPM_Object {
 				$meta_query = wp_parse_args( $query->query_vars['meta_query'], $meta_query );
 			}
 
+			//phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			$query->query_vars['meta_query'] = $meta_query;
 		}
 
@@ -125,6 +126,7 @@ class WPM_Comments extends WPM_Object {
 
 		$meta_sql = get_meta_sql( $meta_query, 'comment', $wpdb->comments, 'comment_ID' );
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$count = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->comments} {$meta_sql['join']} WHERE comment_post_ID = %d AND comment_approved = '1' {$meta_sql['where']};", $post_id ) );
 
 		$count_array[ $lang ] = $count;

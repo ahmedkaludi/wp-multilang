@@ -107,7 +107,7 @@ abstract class WPM_Settings_Page {
 		$array_keys = array_keys( $sections );
 
 		foreach ( $sections as $id => $label ) {
-			echo '<li><a href="' . admin_url( 'options-general.php?page=wpm-settings&tab=' . $this->id . '&section=' . sanitize_title( $id ) ) . '" class="' . ( $current_section == $id ? 'current' : '' ) . '">' . $label . '</a> ' . ( end( $array_keys ) == $id ? '' : '|' ) . ' </li>';
+			echo '<li><a href="' . esc_url( admin_url( 'options-general.php?page=wpm-settings&tab=' . $this->id . '&section=' . sanitize_title( $id ) ) ) . '" class="' . ( $current_section == $id ? 'current' : '' ) . '">' . wp_kses( $label, wp_kses_allowed_html('post') ) . '</a> ' . ( end( $array_keys ) == $id ? '' : '|' ) . ' </li>';
 		}
 
 		echo '</ul><br class="clear" />';

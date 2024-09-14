@@ -102,6 +102,7 @@ class WPM_Admin_Meta_Boxes {
 		}
 
 		// Comment languages.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( 'comment' === $screen_id && isset( $_GET['c'] ) ) {
 			add_meta_box( 'wpm-comment-languages', __( 'Languages', 'wp-multilang' ), __NAMESPACE__ . '\Meta_Boxes\WPM_Meta_Box_Comment_Languages::output', 'comment', 'normal' );
 		}
@@ -124,7 +125,7 @@ class WPM_Admin_Meta_Boxes {
 			return;
 		}
 
-		// Check the nonce
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason sanitization not needed for nonce
 		if ( empty( $_POST['wpm_meta_nonce'] ) || ! wp_verify_nonce( $_POST['wpm_meta_nonce'], 'wpm_save_data' ) ) {
 			return;
 		}

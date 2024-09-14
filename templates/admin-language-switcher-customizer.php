@@ -4,7 +4,7 @@
 			<?php if ( $languages[ $lang ]['flag'] ) { ?>
 				<img src="<?php echo esc_url( wpm_get_flag_url( $languages[ $lang ]['flag'] ) ); ?>">
 			<?php } else { ?>
-				<?php esc_html_e( $languages[ $lang ]['name'] ); ?>
+				<?php echo esc_html( $languages[ $lang ]['name'] ); ?>
 			<?php } ?>
 		</div>
 		<div class="lang-dropdown">

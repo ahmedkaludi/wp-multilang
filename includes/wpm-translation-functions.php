@@ -33,6 +33,7 @@ function wpm_translate_url( $url, $language = '' ) {
 	$options       = wpm_get_lang_option();
 
 	if ( $language ) {
+		//phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ( ( $language === $user_language ) && ( ! is_admin() || is_front_ajax() ) && ! isset( $_GET['lang'] ) ) || ! isset( $options[ $language ] ) ) {
 			return $url;
 		}
@@ -196,13 +197,6 @@ function wpm_value_to_ml_array( $value ) {
 	return wpm_string_to_ml_array( $value );
 }
 
-/**
- * Transform multilingual array to multilingual string
- *
- * @param $strings
- *
- * @return string
- */
 function wpm_ml_array_to_string( $strings ) {
 
 	$string = '';
@@ -220,11 +214,17 @@ function wpm_ml_array_to_string( $strings ) {
 			$string .= '[:' . $key . ']' . trim( $value );
 		}
 	}
-
+	
+	/* foreach ($languages as $key => $value) {
+		if(isset($strings[$key]) && $strings[$key]=="" && isset($strings['en']) && $strings['en']!=""){
+			$trans_content =  trim( $strings['en'] );
+			$trans_content = wpm_ml_auto_translate_content($trans_content,'en',$key);
+			$string .= '[:' . $key . ']' . $trans_content;
+		}
+	} */
 	if ( $string ) {
 		$string .= '[:]';
 	}
-
 	return $string;
 }
 
@@ -409,7 +409,13 @@ function wpm_translate_term( $term, $taxonomy, $lang = '' ) {
 function wpm_untranslate_post( $post ) {
 	if ( $post instanceof WP_Post ) {
 		global $wpdb;
-		$orig_post = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE ID = %d;", $post->ID ) );
+		$cache_key 	= 'wpm_posts_by_id_key';
+		$orig_post 		= wp_cache_get($cache_key);
+		if( false === $orig_post ){
+			//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$orig_post = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE ID = %d;", $post->ID ) );
+			wp_cache_set( $cache_key, $orig_post );
+		}
 		foreach ( get_object_vars( $post ) as $key => $content ) {
 			switch ( $key ) {
 				case 'post_title':

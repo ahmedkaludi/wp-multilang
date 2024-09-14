@@ -35,7 +35,7 @@ class WPM_Admin_Edit_Menus {
 	 * @return array
 	 */
 	public function nav_menu_manage_columns( $columns ) {
-		$columns['languages'] = __( 'Languages', 'wp-multilang' );
+		$columns['languages'] = esc_html__( 'Languages', 'wp-multilang' );
 
 		return $columns;
 	}
@@ -61,7 +61,7 @@ class WPM_Admin_Edit_Menus {
 
 		// Sanitize
 		if ( ! empty( $_POST[ $key ][ $menu_item_db_id ] ) ) {
-			// Do some checks here...
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized --Reason: Sanitization is done in wpm_clean() function 
 			$value = wpm_clean( $_POST[ $key ][ $menu_item_db_id ] );
 		} else {
 			$value = null;
@@ -112,10 +112,10 @@ class WPM_Admin_Edit_Menus {
 		$languages = wpm_get_lang_option();
 		$i         = 0;
 		?>
-		<p class="description description-wide <?php esc_attr_e( $class ) ?>">
-			<?php _e( 'Show item only in:', 'wp-multilang' ); ?><br>
+		<p class="description description-wide <?php echo esc_attr( $class ) ?>">
+			<?php esc_html_e( 'Show item only in:', 'wp-multilang' ); ?><br>
 			<?php foreach ( $languages as $code => $language ) { if ( ! $language['enable'] ) continue; ?>
-			<label><input type="checkbox" name="<?php esc_attr_e( $name ); ?>[<?php echo esc_attr( $i ); ?>]" id="<?php echo $id . '-' . $code; ?>" value="<?php echo esc_attr( $code ); ?>"<?php checked( in_array( $code, $value ) ); ?>><?php echo esc_attr( $language['name'] ); ?></label><br>
+			<label><input type="checkbox" name="<?php echo esc_attr( $name ); ?>[<?php echo esc_attr( $i ); ?>]" id="<?php echo esc_attr($id) . '-' . esc_attr($code); ?>" value="<?php echo esc_attr( $code ); ?>"<?php checked( in_array( $code, $value ) ); ?>><?php echo esc_html( $language['name'] ); ?></label><br>
 			<?php $i++; } ?>
 		</p>
 		<?php

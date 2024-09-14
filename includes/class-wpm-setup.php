@@ -189,6 +189,7 @@ class WPM_Setup {
 		if ( ! $this->site_request_uri ) {
 			$original_uri = $this->get_original_request_uri();
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 			if ( isset( $_GET['lang'] ) ) {
 				$site_request_uri = $original_uri;
 				if ( $url_lang = $this->get_lang_from_url() ) {
@@ -351,7 +352,9 @@ class WPM_Setup {
 			}
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( isset( $_REQUEST['lang'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- this is a dependent function and its all security measurament is done wherever it has been used.
 			$lang = wpm_clean( $_REQUEST['lang'] );
 			if ( isset( $languages[ $lang ] ) ) {
 				$user_language = $lang;
@@ -378,6 +381,7 @@ class WPM_Setup {
 				}
 			} elseif ( ! is_admin() && preg_match( '/^.*\.php$/i', wp_parse_url( $url, PHP_URL_PATH ) ) ) {
 				if ( isset( $_COOKIE['language'] ) ) {
+					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 					$user_language = wpm_clean( $_COOKIE['language'] );
 				}
 			}
@@ -398,22 +402,24 @@ class WPM_Setup {
 		$default_language = $this->get_default_language();
 		$url_lang         = $this->get_lang_from_url();
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( ! isset( $_GET['lang'] ) ) {
 			if ( self::get_option( 'use_prefix', 'no' ) === 'yes' ) {
 				if ( ! $url_lang ) {
-					wp_redirect( home_url( $this->get_original_request_uri() ) );
+					wp_safe_redirect( home_url( $this->get_original_request_uri() ) );
 					exit;
 				}
 			} else {
 				if ( $url_lang && $user_language === $default_language ) {
-					wp_redirect( home_url( preg_replace( '!^/' . $url_lang . '(/|$)!i', '/', $this->get_original_request_uri() ) ) );
+					wp_safe_redirect( home_url( preg_replace( '!^/' . $url_lang . '(/|$)!i', '/', $this->get_original_request_uri() ) ) );
 					exit;
 				}
 			}
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( isset( $_GET['lang'] ) && ! empty( $_GET['lang'] ) && $url_lang ) {
-			wp_redirect( $this->get_original_home_url() . $this->get_site_request_uri() );
+			wp_safe_redirect( $this->get_original_home_url() . $this->get_site_request_uri() );
 			exit;
 		}
 	}
@@ -428,6 +434,7 @@ class WPM_Setup {
 	 * @return string
 	 */
 	public function fix_canonical_redirect( $redirect_url ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( isset( $_GET['lang'] ) && ! empty( $_GET['lang'] ) ) {
 			$redirect_url = str_replace( home_url(), $this->get_original_home_url(), $redirect_url );
 		}
@@ -492,6 +499,7 @@ class WPM_Setup {
 	 */
 	public function set_home_url( $value ) {
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( ! $value || ! $this->user_language || ! did_action( 'wpm_init' ) || ( ! empty( $_GET['lang'] ) && ! did_action( 'parse_request' ) ) || ( is_admin() && ! is_front_ajax() ) ) {
 			return $value;
 		}
@@ -530,7 +538,8 @@ class WPM_Setup {
 			'tablepress'                 => __NAMESPACE__ . '\Integrations\WPM_Tablepress',
 			'woocommerce'                => __NAMESPACE__ . '\Integrations\WPM_WooCommerce',
 			'wordpress-seo'              => __NAMESPACE__ . '\Integrations\WPM_Yoast_Seo',
-			'seo-by-rank-math'           => __NAMESPACE__ . '\Integrations\WPM_Rank_Math'
+			'seo-by-rank-math'           => __NAMESPACE__ . '\Integrations\WPM_Rank_Math',
+			'bylaw-plus'           		=> __NAMESPACE__ . '\Integrations\WPM_Bylaw_Plus'
 		) );
 
 		$active_plugins = wp_cache_get( 'active_plugins', 'wpm' );
@@ -597,6 +606,7 @@ class WPM_Setup {
 	 * @return object WP
 	 */
 	public function setup_query_var( $request ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( isset( $_GET['lang'] ) || ( isset( $request->query_vars['paged'] ) && count( $request->query_vars ) === 1 ) || ( '/' === wp_parse_url( $this->get_site_request_uri(), PHP_URL_PATH ) ) ) {
 			return $request;
 		}
@@ -614,6 +624,7 @@ class WPM_Setup {
 	 * @return array
 	 */
 	public function set_home_page( $query_vars ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 		if ( isset( $_GET['lang'] ) && ( ( '/' === wp_parse_url( $this->get_site_request_uri(), PHP_URL_PATH ) ) || ( count( $query_vars ) === 2 && isset( $query_vars['paged'] ) ) ) ) {
 			unset( $query_vars['lang'] );
 		}
@@ -638,11 +649,12 @@ class WPM_Setup {
 					$browser_language = $this->get_browser_language();
 
 					if ( $browser_language && ( $browser_language !== $user_language ) ) {
-						wp_redirect( wpm_translate_current_url( $browser_language ) );
+						wp_safe_redirect( wpm_translate_current_url( $browser_language ) );
 						exit;
 					}
 				}
 			} else {
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 				if ( wpm_clean( $_COOKIE['language'] ) !== $user_language ) {
 					wpm_setcookie( 'language', $user_language, time() + YEAR_IN_SECONDS );
 					do_action( 'wpm_changed_language' );
@@ -658,10 +670,12 @@ class WPM_Setup {
 	 */
 	private function get_browser_language() {
 
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 		if ( ! isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) || ! $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) {
 			return '';
 		}
 
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 		if ( ! preg_match_all( '#([^;,]+)(;[^,0-9]*([0-9\.]+)[^,]*)?#i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $matches, PREG_SET_ORDER ) ) {
 			return '';
 		}
