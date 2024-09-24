@@ -98,21 +98,8 @@ function wpm_get_widget_config( $widget ) {
  * @since 2.4.11
  * */
 function wpm_local_file_get_contents($file_path){
-
-    // Include WordPress Filesystem API
-    if ( ! function_exists( 'WP_Filesystem' ) ) {
-        require_once( ABSPATH . 'wp-admin/includes/file.php' );
+    if (is_readable($file_path)) {
+        return file_get_contents($file_path);
     }
-
-    // Initialize the API
-    global $wp_filesystem;
-    if ( ! WP_Filesystem() ) {
-        return false;
-    }
-    // Check if the file exists
-    if ( $wp_filesystem->exists( $file_path ) ) {
-        // Read the file content
-        $file_safe = $wp_filesystem->get_contents( $file_path );
-        return $file_safe;
-    }
+    return false;
 }
