@@ -21,4 +21,12 @@ jQuery(document).ready(function($){
 		$(this).after(proBtn);	
 	});
 
+	$(document).on('click', '#wpm_string_translation, #wpm_base_translation', function(e) {
+		if($(this).is(':checked')){
+			$(this).parent().after(proBtn);	
+		}else{
+			$('.wpm-upgrade-to-pro-note').remove();
+		}
+	});
+
 });
