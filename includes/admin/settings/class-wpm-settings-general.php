@@ -93,8 +93,8 @@ class WPM_Settings_General extends WPM_Settings_Page {
 			),
 			
 			array(
-				'title'   => esc_html__( 'String Translation', 'wp-multilang' ),
-				'desc'    => esc_html__( 'Translate Post or page slug', 'wp-multilang' ),
+				'title'   => esc_html__( 'Slug Translation', 'wp-multilang' ),
+				'desc'    => esc_html__( 'Translate posts, pages, custom posts, categories and custom taxonomies slug', 'wp-multilang' ),
 				'id'      => 'wpm_string_translation',
 				'default' => 'no',
 				'type'    => 'checkbox',
@@ -102,7 +102,7 @@ class WPM_Settings_General extends WPM_Settings_Page {
 
 			array(
 				'title'   => esc_html__( 'Base Translation', 'wp-multilang' ),
-				'desc'    => esc_html__( 'Translate Category, Tag Base slugs.', 'wp-multilang' ),
+				'desc'    => esc_html__( 'Translate Categories, Product categories, Tags and Custom Taxonomies base', 'wp-multilang' ),
 				'id'      => 'wpm_base_translation',
 				'default' => 'no',
 				'type'    => 'checkbox',

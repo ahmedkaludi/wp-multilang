@@ -4,7 +4,7 @@
  * */
 jQuery(document).ready(function($){
 	
-	let proBtn = '<span class="wpm-upgrade-to-pro-note" style="margin-left: 50px;"> This Feature requires the <a href="https://wp-multilang.com/pricing/#pricings" target="__blank">Premium Version</span>';
+	let proBtn = '<span class="wpm-upgrade-to-pro-note" style="margin-left: 50px; font-weight: 500;"> This Feature requires the <a href="https://wp-multilang.com/pricing/#pricings" target="__blank">Premium Version</span>';
 
 	$(document).on('change', '.wpm-free-translation-cb', function(e){
 		e.preventDefault();
