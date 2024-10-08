@@ -656,4 +656,15 @@ class WPM_Yoast_Seo {
 		}
 		return $schema_data;
 	}
+
+	public function translate_metadesc( $description ){
+
+		global $post;
+
+		if( is_object( $post ) && ! empty( $post->ID ) ) {
+			
+			$description 	=	get_post_meta( $post->ID, '_yoast_wpseo_metadesc', true );
+		}
+		return $description;
+	}
 }
