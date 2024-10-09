@@ -98,7 +98,7 @@ class WPM_Install {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['force_update_wpm'] ) ) {
 			do_action( 'wp_wpm_updater_cron' );
-			wp_safe_redirect( admin_url( 'options-general.php?page=wpm-settings' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=wpm-settings' ) );
 			exit;
 		}
 	}
@@ -427,7 +427,7 @@ class WPM_Install {
 	 */
 	public static function plugin_action_links( $links ) {
 		$action_links = array(
-			'settings' => '<a href="' . admin_url( 'options-general.php?page=wpm-settings' ) . '" aria-label="' . esc_attr__( 'View WP Multilang settings', 'wp-multilang' ) . '">' . esc_html__( 'Settings', 'wp-multilang' ) . '</a>',
+			'settings' => '<a href="' . admin_url( 'admin.php?page=wpm-settings' ) . '" aria-label="' . esc_attr__( 'View WP Multilang settings', 'wp-multilang' ) . '">' . esc_html__( 'Settings', 'wp-multilang' ) . '</a>',
 		);
 
 		return array_merge( $action_links, $links );

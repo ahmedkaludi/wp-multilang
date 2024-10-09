@@ -307,4 +307,9 @@
   margin-right: 15px !important;
 }
 
+.wpm-upgrade-to-pro-note, .wpm-pro-free-btn {
+  font-weight: 500;
+  font-size: 14px;
+}
+
 /*# sourceMappingURL=admin.css.map */

@@ -33,7 +33,7 @@ class WPM_Settings_Auto_Translate extends WPM_Settings_Page {
 	}
 
 	public function enqueue_translation_script( $hook ){
-		if( $hook === 'settings_page_wpm-settings' && ! defined( 'WP_MULTILANG_PRO_VERSION' ) ){
+		if( $hook === 'toplevel_page_wpm-settings' && ! defined( 'WP_MULTILANG_PRO_VERSION' ) ){
 
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			$dir_path = plugin_dir_url(__DIR__);
