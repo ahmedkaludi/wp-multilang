@@ -117,7 +117,7 @@ class WPM_Admin_Assets {
 		}
 
 		$config             = wpm_get_config();
-		$admin_pages_config = apply_filters( 'wpm_admin_pages', $config['admin_pages'] );
+		$admin_pages_config = (array) apply_filters( 'wpm_admin_pages', $config['admin_pages'] );
 
 		if ( in_array( $screen_id, $admin_pages_config, true ) ) {
 			$show_switcher = true;
