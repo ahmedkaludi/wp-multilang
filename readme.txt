@@ -72,6 +72,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Download Monitor (Redefine templates for links in your theme and translate link texts)
 * Better Search
 * Rank Math SEO (thanks for @pratikmts)
+* WPGraphQL (Add lang to the query parameters in URL)
 
 Manage translation settings via json.
 
