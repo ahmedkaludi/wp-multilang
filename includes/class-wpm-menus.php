@@ -79,7 +79,7 @@ class WPM_Menus {
 
 					if ( '' === $original_title ) {
 						/* translators: %d: ID of a post */
-						$original_title = sprintf( __( '#%d (no title)' ), $original_object->ID );
+						$original_title = sprintf( __( '#%d (no title)', 'wp-multilang' ), $original_object->ID );
 					}
 
 					$menu_item->title = '' === $menu_item->post_title ? $original_title : $menu_item->post_title;
@@ -133,7 +133,7 @@ class WPM_Menus {
 
 				if ( '' === $menu_item->post_title ) {
 					/* translators: %d: ID of a post */
-					$menu_item->post_title = sprintf( __( '#%d (no title)' ), $menu_item->ID );
+					$menu_item->post_title = sprintf( __( '#%d (no title)', 'wp-multilang' ), $menu_item->ID );
 				}
 
 				$menu_item->title = $menu_item->post_title;
@@ -156,7 +156,7 @@ class WPM_Menus {
 		}// End if().
 
 		/* translators: %d: This will get menu item id */
-		$menu_item->title = '' === $menu_item->title ? sprintf( __( '#%d (no title)' ), $menu_item->ID ) : $menu_item->title;
+		$menu_item->title = '' === $menu_item->title ? sprintf( __( '#%d (no title)', 'wp-multilang' ), $menu_item->ID ) : $menu_item->title;
 
 		return $menu_item;
 	}

@@ -528,7 +528,6 @@ class WPM_Yoast_Seo {
 			$_presenters[] = $presenter;
 
 			if ( get_class($presenter) == 'Yoast\WP\SEO\Presenters\Open_Graph\Locale_Presenter' ) {
-				error_log(print_r($presenter, 1));
 
 				foreach ( $this->get_ogp_alternate_languages() as $lang ) {
 					$_presenters[] = new WPM_Yoast_Seo_Presenters( $lang );
@@ -571,14 +570,20 @@ class WPM_Yoast_Seo {
 	public function wpm_translate_opengraph_image($image)
 	{
 		$id = 0;
+		$type = '';
 		if(is_singular()){
 			$id = get_the_ID();
+			$type = get_post_type();
 		}else if(is_archive() || (function_exists('is_product_category') && is_product_category())) {
-			$id = get_queried_object_id();
+			$cat_obj = get_queried_object();
+			if( is_object( $cat_obj ) && isset( $cat_obj->term_id ) ) {
+				$id 	= $cat_obj->term_id;
+				$type 	= $cat_obj->taxonomy;
+			}
 		}
 
 		if($id > 0){
-			$result = $this->wpm_get_yoast_data($id, 'open_graph_image');
+			$result = $this->wpm_get_yoast_data( $id, 'open_graph_image', $type );
 
 			if(is_object($result) && isset($result->open_graph_image)){
 
@@ -602,14 +607,20 @@ class WPM_Yoast_Seo {
 	public function wpm_translate_twitter_image($image)
 	{
 		$id = 0;
+		$type = '';
 		if(is_singular()){
 			$id = get_the_ID();
+			$type = get_post_type();
 		}else if(is_archive() || (function_exists('is_product_category') && is_product_category())) {
-			$id = get_queried_object_id();
+			$cat_obj = get_queried_object();
+			if( is_object( $cat_obj ) && isset( $cat_obj->term_id ) ) {
+				$id 	= $cat_obj->term_id;
+				$type 	= $cat_obj->taxonomy;
+			}
 		}
 
 		if($id > 0){
-			$result = $this->wpm_get_yoast_data($id, 'twitter_image');
+			$result = $this->wpm_get_yoast_data( $id, 'twitter_image', $type );
 
 			if(is_object($result) && isset($result->twitter_image)){
 				
@@ -634,10 +645,9 @@ class WPM_Yoast_Seo {
 	public function wpm_get_yoast_data( $object_id, $field_name, $type = '' )
 	{
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'yoast_indexable'; 
 
 		//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason: As per requirement, We have to use the direct query.
-		$result = $wpdb->get_row($wpdb->prepare("SELECT {$field_name} FROM {$wpdb->prefix}yoast_indexable WHERE object_id = %d AND object_sub_type", $object_id, $type ));
+		$result = $wpdb->get_row($wpdb->prepare("SELECT {$field_name} FROM {$wpdb->prefix}yoast_indexable WHERE object_id = %d AND object_sub_type = %s", $object_id, $type ));
 		return $result;
 	}
 
