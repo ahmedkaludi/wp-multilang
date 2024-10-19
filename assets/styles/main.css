@@ -37,7 +37,9 @@
     margin-left: 0;
     padding-left: 0;
     position: absolute;
-    top: 100%; }
+    top: 100%; 
+    z-index: 1;
+  }
   .wpm-switcher-dropdown > li {
     position: relative; }
     .wpm-switcher-dropdown > li:hover .wpm-language-dropdown {
@@ -48,5 +50,9 @@
 .wpm-languages.menu-item > a img {
   display: inline-block;
   margin-right: 5px; }
+
+.wpm-language-switcher br, .wpm-language-switcher p{
+  display: none;
+}
 
 /*# sourceMappingURL=main.css.map */
