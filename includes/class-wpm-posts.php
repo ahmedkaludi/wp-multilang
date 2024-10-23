@@ -56,6 +56,9 @@ class WPM_Posts extends WPM_Object {
 		add_filter( 'wp_get_attachment_link', array( $this, 'translate_attachment_link' ), 5 );
 		add_filter( 'render_block', array( $this, 'wpm_render_post_block' ), 10, 2);
 		add_filter( 'rest_post_dispatch', array( $this, 'wpm_rest_post_dispatch' ), 10, 3);
+		
+		// Block editor filter for saving the post data
+		add_filter( 'wpm_filter_block_editor_post_data', array( $this, 'wpm_filter_block_editor_post_data_clbk' ), 10, 2 );
 	}
 
 
@@ -184,7 +187,7 @@ class WPM_Posts extends WPM_Object {
 				$post_field_config = apply_filters( "wpm_post_field_{$key}_config", $post_field_config, $content );
 
 				if ( $post_id ) {
-					$old_value = get_post_field( $key, $post_id, 'edit' );
+					$old_value = apply_filters( 'wpm_filter_block_editor_post_data', $key, $post_id );
 				} else {
 					$old_value = '';
 				}
@@ -325,5 +328,35 @@ class WPM_Posts extends WPM_Object {
 		}
 		
 		return $result;
+	}
+	
+	/**
+	 * post_title & post_excerpt and not getting translated in gutenberg editor if more than two languages are added
+	 * this filter helps to get raw data for post_title and post_excerpt keys to solve the gutenberg editor issue
+	 * https://github.com/ahmedkaludi/wp-multilang/issues/78
+	 * @param 	$key 		String
+	 * @param 	$post_id 	Integer
+	 * @return 	$old_value 	String
+	 * @since 	2.4.13
+	 * */
+	public function wpm_filter_block_editor_post_data_clbk( $key, $post_id ) {
+		
+		if ( ! function_exists( 'use_block_editor_for_post' ) ) {
+			require_once ABSPATH . 'wp-includes/post.php';
+		}	
+
+		// Check if current post is being edited in gutenberg block editor
+		$is_block_editor 	=	use_block_editor_for_post( $post_id );
+		
+		$raw_keys 			=	array( 'post_title', 'post_excerpt' );
+		$old_value 			= 	get_post_field( $key, $post_id, 'edit' );
+
+		if ( $is_block_editor ) {
+			if ( in_array( $key, $raw_keys ) ) {
+				$old_value 			= 	get_post_field( $key, $post_id, 'raw' );
+			}
+		}
+
+		return $old_value;
 	}
 }

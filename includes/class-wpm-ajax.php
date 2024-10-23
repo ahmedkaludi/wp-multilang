@@ -52,6 +52,7 @@ class WPM_AJAX {
 			}
 			// Turn off display_errors during AJAX events to prevent malformed JSON
 			if ( ! WP_DEBUG || ( WP_DEBUG && ! WP_DEBUG_DISPLAY ) ) {
+				// phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged --Reason Turn off display_errors during AJAX events to prevent malformed JSON
 				@ini_set( 'display_errors', 0 );
 			}
 			$GLOBALS['wpdb']->hide_errors();

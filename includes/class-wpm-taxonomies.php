@@ -161,7 +161,7 @@ class WPM_Taxonomies extends WPM_Object {
 		foreach ( $results as $result ) {
 			$ml_term = wpm_translate_string( $result->name );
 			if ( ( $ml_term === $name || $result->slug === $slug ) && ! is_taxonomy_hierarchical( $taxonomy ) ) {
-				return new \WP_Error( 'term_exists', __( 'A term with the name provided already exists in this taxonomy.' ), $result->term_id );
+				return new \WP_Error( 'term_exists', esc_html__( 'A term with the name provided already exists in this taxonomy.', 'wp-multilang' ), $result->term_id );
 			}
 		}
 

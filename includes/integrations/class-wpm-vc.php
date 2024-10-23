@@ -24,7 +24,7 @@ class WPM_VC {
 		add_action( 'vc_frontend_editor_render', array( $this, 'enqueue_js_frontend' ) );
 		add_filter( 'vc_frontend_editor_iframe_url', array( $this, 'append_lang_to_url' ) );
 		add_filter( 'vc_nav_front_controls', array( $this, 'nav_controls_frontend' ) );
-		if ( ! vc_is_frontend_editor() ) {
+		if ( function_exists( 'vc_is_frontend_editor' ) && ! vc_is_frontend_editor() ) {
 			add_filter( 'vc_get_inline_url', array( $this, 'render_edit_button_link' ) );
 		}
 	}

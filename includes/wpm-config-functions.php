@@ -50,7 +50,7 @@ function wpm_get_post_config( $post_type ) {
  */
 function wpm_get_taxonomy_config( $taxonomy ) {
 	$config            = wpm_get_config();
-	$taxonomies_config = apply_filters( 'wpm_taxonomies_config', $config['taxonomies'] );
+	$taxonomies_config = apply_filters( 'wpm_taxonomies_config', (array) $config['taxonomies'] );
 	$taxonomy_config   = apply_filters( "wpm_taxonomy_{$taxonomy}_config", isset( $taxonomies_config[ $taxonomy ] ) ? $taxonomies_config[ $taxonomy ] : null );
 
 	if ( null !== $taxonomy_config ) {
@@ -89,30 +89,4 @@ function wpm_get_widget_config( $widget ) {
 	}
 
 	return $widget_config;
-}
-
-/**
- * Load local files and return file contents
- * @param $file_path String
- * @return file contents
- * @since 2.4.11
- * */
-function wpm_local_file_get_contents($file_path){
-
-    // Include WordPress Filesystem API
-    if ( ! function_exists( 'WP_Filesystem' ) ) {
-        require_once( ABSPATH . 'wp-admin/includes/file.php' );
-    }
-
-    // Initialize the API
-    global $wp_filesystem;
-    if ( ! WP_Filesystem() ) {
-        return false;
-    }
-    // Check if the file exists
-    if ( $wp_filesystem->exists( $file_path ) ) {
-        // Read the file content
-        $file_safe = $wp_filesystem->get_contents( $file_path );
-        return $file_safe;
-    }
 }

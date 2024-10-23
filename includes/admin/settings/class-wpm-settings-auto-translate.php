@@ -55,7 +55,7 @@ class WPM_Settings_Auto_Translate extends WPM_Settings_Page {
 				'title' => __( 'Auto Translate', 'wp-multilang' ), 
 				'type' => 'title', 
 				/* translators: %s: url */
-				'desc'  => sprintf( __( 'Read <a href="%s" target="_blank">Auto Translate Docs</a>', 'wp-multilang' ), esc_url( 'https://wp-multilang.com/docs/' ) ),
+				'desc'  => sprintf( __( 'Read <a href="%s" target="_blank">Auto Translate Docs</a>', 'wp-multilang' ), esc_url( 'https://wp-multilang.com/docs/knowledge-base/how-to-auto-translate-your-website-contents-using-wp-multilang/' ) ),
 				'id' => 'autotranslate_options', 
 			),
 

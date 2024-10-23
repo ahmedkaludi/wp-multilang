@@ -194,7 +194,8 @@ class WPM_WooCommerce {
 			}
 		}
 
-		return wpm_array_merge_recursive( $this->attribute_taxonomies_config, $taxonomies_config );
+		return wpm_array_merge_recursive( $this->attribute_taxonomies_config, $taxonomies_config );	
+		
 	}
 
 	/**
