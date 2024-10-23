@@ -100,7 +100,7 @@ function wpm_newsletter_form(){
 									<?php esc_html_e( 'No thanks', 'wp-multilang' ); ?>
 									</span>
 									<small style="display:block; margin-top:8px;">
-										<?php echo esc_html__( 'We\'ll share our', 'wp-multilang' ); ?><code> <?php echo esc_html__ ('root', 'wp-multilang'); ?></code> <?php echo esc_html__('password before we share your email with anyone else.', 'wp-multilang' ); ?></small>
+										<?php echo esc_html__( 'We\'ll share our root password before we share your email with anyone else', 'wp-multilang' ); ?></small>
 									
 								</fieldset>
 							</form>
