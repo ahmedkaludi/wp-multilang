@@ -115,8 +115,9 @@ class WPM_Config {
 			$file = apply_filters( "wpm_{$name}_json_file", $file );
 
 			if ( $file && is_readable( $file ) ) {
-				$file_data 	= wpm_local_file_get_contents( $file );
-				$config 	= json_decode( $file_data, true );
+				
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents --Reason We are just loading the plugin static file to get the contents.
+				$config = json_decode( file_get_contents( $file ), true );
 
 				if ( is_array( $config ) && ! empty( $config ) ) {
 					self::$config = wpm_array_merge_recursive( self::$config, $config );
