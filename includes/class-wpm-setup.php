@@ -539,7 +539,8 @@ class WPM_Setup {
 			'woocommerce'                => __NAMESPACE__ . '\Integrations\WPM_WooCommerce',
 			'wordpress-seo'              => __NAMESPACE__ . '\Integrations\WPM_Yoast_Seo',
 			'seo-by-rank-math'           => __NAMESPACE__ . '\Integrations\WPM_Rank_Math',
-			'bylaw-plus'           		=> __NAMESPACE__ . '\Integrations\WPM_Bylaw_Plus'
+			'bylaw-plus'           		 => __NAMESPACE__ . '\Integrations\WPM_Bylaw_Plus',
+			'smart-custom-fields'     	 => __NAMESPACE__ . '\Integrations\WPM_SCF',
 		) );
 
 		$active_plugins = wp_cache_get( 'active_plugins', 'wpm' );
