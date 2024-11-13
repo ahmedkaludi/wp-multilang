@@ -46,8 +46,8 @@ class WPM_SCF {
 		}
 
 		add_action( 'add_meta_boxes', array( $this, 'translate_metabox_title' ), 100, 2 );
-		add_filter( 'add_post_metadata', array( $this, 'add_and_translate_meta_data' ), 100, 5 );
 		add_filter( 'get_post_metadata', array( $this, 'translate_meta_data' ), 100, 5 );
+		add_action( 'added_post_meta', array( $this, 'added_post_meta' ), 10, 4 );
 
 	}
 
@@ -255,86 +255,57 @@ class WPM_SCF {
 	}
 
 	/**
-	 * Add translation data for SCF fields
-	 * @since 2.4.14
-	 */
-	public function add_and_translate_meta_data( $check, $object_id, $meta_key, $meta_value, $unique ){
-		
-		$dynamic_meta_fields 		=	$this->get_group_field_names();
-		
-		if ( ! empty( $dynamic_meta_fields ) && array_key_exists($meta_key, $dynamic_meta_fields) ) {
-
-			global $post;
-			if ( is_object( $post ) && ! empty( $post->ID ) ) {
-				$object_id 	=	$post->ID;
-			}
-
-			$translate_key 			=	$this->prefix.$meta_key;
-			$lang 					=	wpm_get_language();
-			$set_value 				=	array();
-			$old_value 				=	array();
-
-			if ( ! empty( $dynamic_meta_fields[$meta_key]['is_repeatable'] ) ) {
-
-				$old_value 			=	get_post_meta( $object_id, $translate_key, true );
-
-				if ( ! empty( $old_value ) ) {
-					$set_value 		=	$old_value;	
-				}
-				$set_value[$lang][] =	$meta_value;
-				
-			}else{
-				$old_value 			=	get_post_meta( $object_id, $translate_key, true );
-			}
-			
-			if ( empty( $dynamic_meta_fields[$meta_key]['is_repeatable'] ) ) {
-
-				if ( empty( $old_value ) ) {
-
-					$set_value[$lang] 	=	$meta_value;	
-
-				}else if ( is_array( $old_value ) ) {
-
-					$set_value 			=	$old_value;
-					$set_value[$lang] 	=	$meta_value;	
-
-				}
-			}
-			
-			update_post_meta( $object_id, $translate_key, $set_value );
-
-		}
-
-		return $check;
-	}
-
-	/**
 	 * Get translation data for SCF fields
 	 * @since 2.4.14
 	 */
 	public function translate_meta_data( $value, $object_id, $meta_key, $single, $meta_type ) {
 
+		global $post;
 		$translate_key 		=	$this->prefix.$meta_key;
 		$lang 				=	wpm_get_language();
 
-		$get_value 			=	$this->get_post_meta( $object_id, $translate_key );
+		$parent_id 			=	wp_get_post_parent_id( $object_id );
+		if ( ! empty( $parent_id ) ) {
+			$object_id 		=	$parent_id;	
+		}
+		
+		$settings 			=	array();
+		if ( is_object( $post ) && ! empty( $post->ID ) ) {
+			$settings 			=	$this->get_settings( $post );
+		}
 
-		if ( ! empty( $get_value ) && is_array( $get_value ) ) { 
+		if ( ! empty( $settings ) && is_array( $settings ) ) {
 
-			if ( isset( $get_value[0] ) && is_object( $get_value[0] ) && isset( $get_value[0]->meta_value ) ) {
+			$setting_fields 	=	$this->get_setting_fields( $settings );
+			$check_scf_field 	=	$this->is_scf_field( $setting_fields, $meta_key );
 
-				if ( ! empty( $get_value[0]->meta_value ) && is_string( $get_value[0]->meta_value ) ) {
+			if( ! empty( $check_scf_field ) ) {
 
-					$get_value 	=	maybe_unserialize($get_value[0]->meta_value);
-					if ( ! empty( $get_value ) && is_array( $get_value ) && isset( $get_value[$lang] ) ) {
-						if ( is_string( $get_value[$lang] ) ) {
-							$value[0] 	=	$get_value[$lang];
+				// Using built-in function get_post_meta is causing infinite loop here, so written custom query to get the meta data
+				$get_value 			=	$this->get_post_meta( $object_id, $translate_key );
+				
+				if ( ! empty( $get_value ) && is_array( $get_value ) ) { 
+
+					if ( isset( $get_value[0] ) && is_object( $get_value[0] ) && isset( $get_value[0]->meta_value ) ) {
+
+						if ( ! empty( $get_value[0]->meta_value ) && is_string( $get_value[0]->meta_value ) ) {
+
+							$get_value 	=	maybe_unserialize($get_value[0]->meta_value);
+							if ( ! empty( $get_value ) && is_array( $get_value ) && isset( $get_value[$lang] ) ) {
+								if ( is_string( $get_value[$lang] ) ) {
+									$value[0] 	=	$get_value[$lang];
+								}else{
+									if ( ! empty( $check_scf_field['is_repeatable'] ) ) {
+										$value 	=	$get_value[$lang];		
+									}
+								}
+							}
+
 						}
 					}
 
 				}
 			}
-
 		}
 
 		return $value;
@@ -352,7 +323,175 @@ class WPM_SCF {
 
 		global $wpdb;
 
-		$meta_value =	$wpdb->get_results( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s AND post_id = %d ", $meta_key, $post_id ) );	
+		$meta_value =	$wpdb->get_results( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s AND post_id = %d ORDER BY meta_id", $meta_key, $post_id ) );	
 		return $meta_value;
 	}
+
+	/**
+	 * Update the translated fields
+	 * @param $mid integer
+	 * @param $object_id integer
+	 * @param $meta_key string
+	 * @param $_meta_value mixed
+	 * @since 2.4.14
+	 */
+	public function added_post_meta( $mid, $object_id, $meta_key, $_meta_value ){
+		
+		$dynamic_meta_fields 	=	$this->get_group_field_names();
+		
+		if ( ! empty( $dynamic_meta_fields ) && array_key_exists($meta_key, $dynamic_meta_fields) ) {
+
+			$parent_id 			=	wp_get_post_parent_id( $object_id );
+			if ( ! empty( $parent_id ) ) {
+				$object_id 		=	$parent_id;	
+			}
+
+			$translate_key 		=	$this->prefix.$meta_key;
+			$lang 				=	wpm_get_language();
+			$updated_data 		=	get_post_meta( $object_id, $translate_key, true );
+			if ( empty( $updated_data ) ) {
+				$updated_data 		=	array();
+			}
+
+			if ( ! empty( $dynamic_meta_fields[$meta_key]['is_repeatable'] ) ) {
+
+				$data 			=	array();
+				$get_meta 			=	$this->get_post_meta( $object_id, $meta_key );
+				if ( ! empty( $get_meta ) && is_array( $get_meta ) ) {
+					foreach ( $get_meta as $gkey => $gvalue ) {
+						if ( is_object( $gvalue ) && isset( $gvalue->meta_value ) ) {
+							$data[] 	=	$gvalue->meta_value;
+						}		
+					}
+				}
+
+				if ( is_array( $data ) ) {
+					
+					$updated_data[$lang]  	=	$data;
+				}
+				
+			}else{
+				if ( empty( $updated_data ) ) {
+
+					$updated_data[$lang] 	=	$_meta_value;	
+
+				}else if ( is_array( $updated_data ) ) {
+
+					$updated_data[$lang] 	=	$_meta_value;	
+
+				}
+
+			}
+
+			update_post_meta( $object_id, $translate_key, $updated_data );	
+		}
+
+	}
+
+	/**
+	 * Get SCF field keys 
+	 * @param $wp_object integer
+	 * @return $settings array
+	 * @since 2.4.14
+	 */
+	public function get_settings( $wp_object ){
+
+		$settings 			=	array();
+
+		if ( ! empty( $wp_object ) && is_object( $wp_object ) ) {
+
+			$meta      = new \Smart_Custom_Fields_Meta( $wp_object );
+			
+			$id        = $meta->get_id();
+			$type      = $meta->get_type( false );
+			$types     = $meta->get_types( false );
+			$meta_type = $meta->get_meta_type();
+
+			// IF the post that has custom field settings according to post ID,
+			// don't display because the post ID would change in preview.
+			// So if in preview, re-getting post ID from original post (parent of the preview).
+			if ( 'post' === $meta_type && 'revision' === $wp_object->post_type ) {
+				$wp_object = get_post( $wp_object->post_parent );
+			}
+
+			$settings_posts 	=	\SCF::get_settings_posts( $wp_object );
+
+
+			if ( ! empty( $settings_posts ) && is_array( $settings_posts ) ) {
+				
+				foreach ( $settings_posts as $sp_key => $setting_post ) {
+
+					if ( $meta_type == 'post' && is_object( $setting_post ) && ! empty( $setting_post->ID ) ) {
+
+						$setting_meta 	=	$this->get_post_meta( $setting_post->ID, self::SMART_CF_SETTINGS );
+						
+						if ( is_array( $setting_meta ) && ! empty( $setting_meta[0] ) && ! empty( $setting_meta[0]->meta_value ) && is_string( $setting_meta[0]->meta_value ) ) {
+							$setting_meta	=	maybe_unserialize( $setting_meta[0]->meta_value );
+							if ( ! empty( $setting_meta ) && is_array( $setting_meta ) ) {
+
+								if ( empty( $settings ) ) {
+									$settings 	=	$setting_meta;
+								}else{
+									$settings 	=	array_merge( $settings, $setting_meta );
+								}
+								
+							}
+						}
+					}	
+				}
+
+			}
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Filter the settings and and return on fields 
+	 * @param $settings array
+	 * @return $fields array
+	 * @since 2.4.14
+	 */
+	public function get_setting_fields( $settings ){
+		
+		$fields 	=	array();
+
+		if ( ! empty( $settings ) && is_array( $settings ) ) {
+			foreach ( $settings as $set_key => $set_value ) {
+				$data 					=	array();
+				$data['field_name']		=	'';
+				$data['is_repeatable']	=	'';
+
+				if ( ! empty( $set_value['fields'] ) && ! empty( $set_value['fields'][0] ) && ! empty( $set_value['fields'][0]['name'] ) ) {
+					$data['field_name'] = 	$set_value['fields'][0]['name'];
+				}	
+
+				$data['is_repeatable'] 	= 	isset( $set_value['repeat'] ) ? $set_value['repeat'] : '';
+				$fields[] 				=	$data;
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Check if current post meta key is a SCF field
+	 * @param $fields array
+	 * @param $key string
+	 * @return $match array
+	 * @since 2.4.14
+	 */
+	public function is_scf_field( $fields, $key ){
+
+		$match 	=	array();
+		foreach ($fields as $fkey => $field) {
+			if ( $field['field_name'] == $key ) {
+				$match 	=	$field;
+				break;
+			}
+		}
+		
+		return $match;
+	}
+
 }
