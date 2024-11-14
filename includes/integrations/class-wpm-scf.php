@@ -46,8 +46,15 @@ class WPM_SCF {
 		}
 
 		add_action( 'add_meta_boxes', array( $this, 'translate_metabox_title' ), 100, 2 );
+		
+		// Hooks for Posts and pages
 		add_filter( 'get_post_metadata', array( $this, 'translate_meta_data' ), 100, 5 );
 		add_action( 'added_post_meta', array( $this, 'added_post_meta' ), 10, 4 );
+		add_action( 'save_post_smart-custom-fields', array( $this, 'clear_post_meta_cache' ), 10, 5 );
+
+		// Hooks for Term
+		add_action( 'added_term_meta', array( $this, 'added_term_meta' ), 10, 4 );
+		add_filter( 'get_term_metadata', array( $this, 'translate_term_meta_data' ), 100, 5 );
 
 	}
 
@@ -225,12 +232,11 @@ class WPM_SCF {
 	 * @return $dynamic_meta_fields array
 	 * @since 2.4.14
 	 */
-	public function get_group_field_names(){
+	public function get_group_field_names( $post ){
 		
-		global $post;
 		$dynamic_meta_fields 	=	array();
 		
-		if ( is_object( $post ) && ! empty( $post->ID ) ) {
+		if ( is_object( $post ) ) {
 
 			if ( class_exists( 'SCF' ) ) {
 				$settings   = \SCF::get_settings( $post );
@@ -311,6 +317,61 @@ class WPM_SCF {
 		return $value;
 
 	}
+
+	/**
+	 * Get translation data for SCF fields
+	 * @since 2.4.14
+	 */
+	public function translate_term_meta_data( $value, $object_id, $meta_key, $single, $meta_type ) { 
+
+		$translate_key 		=	$this->prefix.$meta_key;
+		$lang 				=	wpm_get_language();
+
+		$term 	=	get_term( $object_id );
+
+		$settings 			=	array();
+		if ( is_object( $term ) && ! empty( $term->term_id ) ) {
+			$settings 			=	$this->get_settings( $term );
+		}
+
+		if ( ! empty( $settings ) && is_array( $settings ) ) {
+
+			$setting_fields 	=	$this->get_setting_fields( $settings );
+			$check_scf_field 	=	$this->is_scf_field( $setting_fields, $meta_key );
+
+			if( ! empty( $check_scf_field ) ) {
+
+				// Using built-in function get_post_meta is causing infinite loop here, so written custom query to get the meta data
+				$get_value 			=	$this->get_term_meta( $object_id, $translate_key );
+
+				if ( ! empty( $get_value ) && is_array( $get_value ) ) { 
+
+					if ( isset( $get_value[0] ) && is_object( $get_value[0] ) && isset( $get_value[0]->meta_value ) ) {
+
+						if ( ! empty( $get_value[0]->meta_value ) && is_string( $get_value[0]->meta_value ) ) {
+
+							$get_value 	=	maybe_unserialize($get_value[0]->meta_value);
+							if ( ! empty( $get_value ) && is_array( $get_value ) && isset( $get_value[$lang] ) ) {
+								if ( is_string( $get_value[$lang] ) ) {
+									$value[0] 	=	$get_value[$lang];
+								}else{
+									if ( ! empty( $check_scf_field['is_repeatable'] ) ) {
+										$value 	=	$get_value[$lang];		
+									}
+								}
+							}
+
+						}
+					}
+
+				}
+			}
+
+		}
+		
+		return $value;
+
+	}
 	
 	/**
 	 * Get post meta data from table
@@ -323,8 +384,42 @@ class WPM_SCF {
 
 		global $wpdb;
 
-		$meta_value =	$wpdb->get_results( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s AND post_id = %d ORDER BY meta_id", $meta_key, $post_id ) );	
+		$cache_data 	=	false;
+		$cache_key 		=	$post_id.$meta_key;
+		$cache_group 	=	'wpm_scf';
+
+		if ( $meta_key == self::SMART_CF_SETTINGS ) {
+			$cache_data	=	wp_cache_get( $cache_key, $cache_group );
+			$meta_value = 	$cache_data;
+		}
+
+		if ( $cache_data == false  ) {
+
+			$meta_value =	$wpdb->get_results( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s AND post_id = %d ORDER BY meta_id", $meta_key, $post_id ) );
+
+			if ( $meta_key == self::SMART_CF_SETTINGS ) {
+				wp_cache_set( $cache_key, $meta_value, $cache_group );
+			}
+
+		}
+
 		return $meta_value;
+	}
+
+	/**
+	 * Get term meta data from table
+	 * @param $term_id integer
+	 * @param $meta_key string
+	 * @return $meta_value array
+	 * @since 2.4.14
+	 */
+	public function get_term_meta( $term_id, $meta_key ){
+
+		global $wpdb;
+
+		$meta_value =	$wpdb->get_results( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->termmeta} WHERE meta_key = %s AND term_id = %d ORDER BY meta_id", $meta_key, $term_id ) );
+		return $meta_value;
+
 	}
 
 	/**
@@ -337,7 +432,9 @@ class WPM_SCF {
 	 */
 	public function added_post_meta( $mid, $object_id, $meta_key, $_meta_value ){
 		
-		$dynamic_meta_fields 	=	$this->get_group_field_names();
+		global $post;
+
+		$dynamic_meta_fields 	=	$this->get_group_field_names( $post );
 		
 		if ( ! empty( $dynamic_meta_fields ) && array_key_exists($meta_key, $dynamic_meta_fields) ) {
 
@@ -389,6 +486,65 @@ class WPM_SCF {
 	}
 
 	/**
+	 * Update the translated fields
+	 * @param $mid integer
+	 * @param $object_id integer
+	 * @param $meta_key string
+	 * @param $_meta_value mixed
+	 * @since 2.4.14
+	 */
+	public function added_term_meta( $mid, $object_id, $meta_key, $_meta_value ){ 
+		
+		$term 	=	get_term( $object_id );
+
+		$dynamic_meta_fields 	=	$this->get_group_field_names( $term );
+		
+		if ( ! empty( $dynamic_meta_fields ) && array_key_exists($meta_key, $dynamic_meta_fields) ) {
+
+			$translate_key 		=	$this->prefix.$meta_key;
+			$lang 				=	wpm_get_language();
+			$updated_data 		=	get_term_meta( $object_id, $translate_key, true );
+			if ( empty( $updated_data ) ) {
+				$updated_data 	=	array();
+			}
+
+			if ( ! empty( $dynamic_meta_fields[$meta_key]['is_repeatable'] ) ) {
+
+				$data 			=	array();
+				$get_meta 			=	$this->get_term_meta( $object_id, $meta_key );
+				if ( ! empty( $get_meta ) && is_array( $get_meta ) ) {
+					foreach ( $get_meta as $gkey => $gvalue ) {
+						if ( is_object( $gvalue ) && isset( $gvalue->meta_value ) ) {
+							$data[] 	=	$gvalue->meta_value;
+						}		
+					}
+				}
+
+				if ( is_array( $data ) ) {
+					
+					$updated_data[$lang]  	=	$data;
+				}
+				
+			}else{
+				if ( empty( $updated_data ) ) {
+
+					$updated_data[$lang] 	=	$_meta_value;	
+
+				}else if ( is_array( $updated_data ) ) {
+
+					$updated_data[$lang] 	=	$_meta_value;	
+
+				}
+
+			}
+
+			update_term_meta( $object_id, $translate_key, $updated_data );
+
+		}
+
+	}
+
+	/**
 	 * Get SCF field keys 
 	 * @param $wp_object integer
 	 * @return $settings array
@@ -421,7 +577,7 @@ class WPM_SCF {
 				
 				foreach ( $settings_posts as $sp_key => $setting_post ) {
 
-					if ( $meta_type == 'post' && is_object( $setting_post ) && ! empty( $setting_post->ID ) ) {
+					if ( is_object( $setting_post ) && ! empty( $setting_post->ID ) ) {
 
 						$setting_meta 	=	$this->get_post_meta( $setting_post->ID, self::SMART_CF_SETTINGS );
 						
@@ -492,6 +648,20 @@ class WPM_SCF {
 		}
 		
 		return $match;
+	}
+	
+	/**
+	 * Clear post meta cache once SCF post is saved
+	 * @param $post_id integer
+	 * @param $post WP_Post
+	 * @param $update bool
+	 * @since 2.4.14
+	 * */
+	public function clear_post_meta_cache( $post_id, $post, $update ){
+		
+		$cache_key 		=	$post_id.self::SMART_CF_SETTINGS;
+		$cache_group 	=	'wpm_scf';
+		wp_cache_delete( $cache_key, $cache_group );
 	}
 
 }
