@@ -159,7 +159,7 @@ function wpm_string_to_ml_array( $string ) {
 		return $string;
 	}
 
-	$string = htmlspecialchars_decode( $string );
+	$string = apply_filters( 'wpm_filter_string_to_ml_array', $string );
 	$blocks = preg_split( '#\[:([a-z-]*)\]#im', $string, - 1, PREG_SPLIT_DELIM_CAPTURE );
 
 	if ( empty( $blocks ) ) {
@@ -525,4 +525,30 @@ function wpm_set_new_value( $old_value, $new_value, $config = array(), $lang = '
 	$value = wpm_ml_value_to_string( $value );
 
 	return $value;
+}
+
+/**
+ * Filter content if WP Githun MD plugin is active and string contains any <code> tags
+ * https://github.com/ahmedkaludi/wp-multilang/issues/99
+ * @param	$string 	string
+ * @return	$string 	string
+ * @since 	2.4.14
+ * */
+add_filter( 'wpm_filter_string_to_ml_array', 'wpm_filter_string_for_github_md_plugin' );
+function wpm_filter_string_for_github_md_plugin( $string ) {
+
+	$flag 	=	0;
+
+	if ( in_array( 'githuber-md/githuber-md.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ), true )  ) ) {
+		// Check if string contains <code> tag and it's post markdown option is enabled
+		if ( strpos( $string, '<code>' ) !== false ) {
+			$flag 	=	1;
+		}
+	}
+	
+	if ( $flag == 0 ) {
+		$string = htmlspecialchars_decode( $string );
+	}
+
+	return $string;
 }
