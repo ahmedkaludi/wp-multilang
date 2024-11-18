@@ -63,11 +63,14 @@ class WPM_WooCommerce {
 		add_filter( 'woocommerce_rest_prepare_product_object', array( $this, 'translate_rest_object' ), 10, 3 );
 		add_filter( 'woocommerce_rest_prepare_product_variation_object', array( $this, 'translate_rest_object' ), 10, 3 );
 		add_filter( 'wpm_modify_woocommerce_product_attributes_config', array( $this, 'modify_product_attributes' ), 10, 4 );
+		add_action( 'woocommerce_admin_process_variation_object', array( $this, 'translate_variation_attribute' ), 10, 2 );
 
 		if ( is_admin() ) {
 			add_filter( 'wpm_taxonomies_config', array( $this, 'add_attribute_taxonomies' ) );
 		}
 		add_filter( 'rest_post_dispatch', array( $this, 'wpm_translate_filter_attribute_widget' ), 10, 3);
+
+		add_filter( 'woocommerce_dropdown_variation_attribute_options_args', array( $this, 'translate_variation_attribute_options_args' ) );
 	}
 
 
@@ -385,7 +388,7 @@ class WPM_WooCommerce {
 			if(function_exists('wc_get_product')){
 
 				$product = wc_get_product($product_id);
-				if($product->get_type() == 'simple'){
+				if ( $product->get_type() == 'simple' || $product->get_type() == 'variable' ){
 					if(isset($object_fields_config[$meta_key]) && is_array($object_fields_config[$meta_key])){
 						if(is_array($meta_value) && !empty($meta_value)){
 							$attr_array = array();
@@ -433,5 +436,98 @@ class WPM_WooCommerce {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Translate variation attribute meta data
+	 * @param 	$variation 	Object
+	 * @param 	$product_id Integer
+	 * @since 	2.4.14
+	 * */
+	public function translate_variation_attribute( $variation, $product_id ){
+
+		if ( ! empty( $variation ) && is_object( $variation ) ) {
+
+			global $wpdb;
+
+			$lang 				=	wpm_get_language();
+
+			$variation_id 		=	$variation->get_id();
+
+			$old_variation 		=	new \WC_Product_Variation( $variation_id );
+			$old_attributes 	=	$old_variation->get_attributes();
+
+			$attributes 		=	$variation->get_attributes();
+
+			if ( ! empty( $attributes ) && is_array( $attributes ) ) {
+
+				foreach ($attributes as $key => $value) {
+					
+					$attr_key 	=	'attribute_'.$key;	
+
+					if ( isset( $old_attributes[$key] ) ) {
+
+						//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+						$old_value  = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s AND post_id = %d LIMIT 1;", $attr_key, $variation_id ) );
+						$old_value  = maybe_unserialize( $old_value );
+
+						$attributes[$key] = wpm_set_new_value( $old_value, $value );	
+					}
+				}
+			}
+
+			$variation->set_attributes( $attributes );
+
+		}
+	}
+	
+	/**
+	 * Translate dropdown attribute arguments on single product page
+	 * @param 	$args 	Array
+	 * @return  $args 	Array
+	 * @since 	2.4.14
+	 * */
+	public function translate_variation_attribute_options_args( $args ) {
+		
+		if ( empty( $args['options'] ) && ! empty( $args['attribute'] ) && ! empty( $args['product'] ) && is_object( $args['product'] ) ) {
+
+			$product 		=	$args['product'];
+			$attribute 		=	strtolower( $args['attribute'] );
+			$attribute 		=	str_replace( ' ', '-', $attribute );
+			
+			if ( $product->is_type( 'variable' ) ) {
+				
+				// Get all variation IDs
+				$variation_ids 	= 	$product->get_children();	
+
+				if ( ! empty( $variation_ids ) && is_array( $variation_ids ) ) {
+					foreach ($variation_ids as $key => $variation_id) {
+						
+						// Get the variation product
+						$variation = new \WC_Product_Variation( $variation_id );
+
+						if ( ! empty( $variation )  && is_object( $variation ) ) {
+							// Get Attributes
+							$attributes 	=	$variation->get_attributes();
+							if ( ! empty( $attributes ) && is_array( $attributes ) ) {
+								foreach ($attributes as $a_key => $a_val) {
+									
+									if ( $a_key == $attribute ) {
+										$args['options'][] 	=	wpm_translate_string( $a_val );	
+									}
+								}
+							}
+						}
+					}
+				}
+				
+			}
+		}
+
+		if ( ! empty( $args['options'] ) ){
+			$args['options'] = array_unique( $args['options'] );
+		}
+
+		return $args;
 	}
 }
