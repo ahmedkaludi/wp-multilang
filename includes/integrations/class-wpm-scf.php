@@ -77,7 +77,7 @@ class WPM_SCF {
 
 		$current_value = get_post_meta( $this->object_id, "{$key}_translate", true );
 
-		if ( ( ! empty( $update_value ) && is_array( $update_value ) ) && ( ! empty( $current_value ) ) ) {
+		if ( ( ! empty( $update_value ) && is_array( $update_value ) ) ) {
 
 			$translate_cur_val 	=	$current_value;
 			if ( is_string( $translate_cur_val ) ) {
@@ -96,6 +96,8 @@ class WPM_SCF {
 
 								$update_value[$u_key]['fields'][$f_key]['label'] = 	wpm_set_new_value( $translate_cur_val[$u_key]['fields'][$f_key]['label'], $f_value['label'] );	
 
+							}else {
+								$update_value[$u_key]['fields'][$f_key]['label'] = 	wpm_set_new_value( '', $f_value['label'] );
 							}							
 
 						}
@@ -554,7 +556,7 @@ class WPM_SCF {
 
 		$settings 			=	array();
 
-		if ( ! empty( $wp_object ) && is_object( $wp_object ) ) {
+		if ( ! empty( $wp_object ) && is_object( $wp_object ) && class_exists( 'Smart_Custom_Fields_Meta' ) ) {
 
 			$meta      = new \Smart_Custom_Fields_Meta( $wp_object );
 			
@@ -570,7 +572,10 @@ class WPM_SCF {
 				$wp_object = get_post( $wp_object->post_parent );
 			}
 
-			$settings_posts 	=	\SCF::get_settings_posts( $wp_object );
+			$settings_posts 		=	array();
+			if ( class_exists( 'SCF' ) ) {
+				$settings_posts 	=	\SCF::get_settings_posts( $wp_object );
+			}
 
 
 			if ( ! empty( $settings_posts ) && is_array( $settings_posts ) ) {
