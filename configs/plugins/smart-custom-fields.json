@@ -1,0 +1,8 @@
+{
+  "post_types": {
+    "smart-custom-fields": {}
+  },
+  "post_fields": {
+    "smart-cf-setting": {}
+  }
+}

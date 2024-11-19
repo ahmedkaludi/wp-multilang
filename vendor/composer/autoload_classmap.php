@@ -35,6 +35,7 @@ $class_map_array =  array(
     'WPM\\Includes\\Admin\\WPM_Deactivate_Feedback_Form' => $baseDir . '/includes/admin/tracking/class-wpm-feedback-form.php',
     'WPM\\Includes\\Integrations\\WPM_AIOSP' => $baseDir . '/includes/integrations/class-wpm-aiosp.php',
     'WPM\\Includes\\Integrations\\WPM_Acf' => $baseDir . '/includes/integrations/class-wpm-acf.php',
+    'WPM\\Includes\\Integrations\\WPM_SCF' => $baseDir . '/includes/integrations/class-wpm-scf.php',
     'WPM\\Includes\\Integrations\\WPM_Better_Search' => $baseDir . '/includes/integrations/class-wpm-better-search.php',
     'WPM\\Includes\\Integrations\\WPM_BuddyPress' => $baseDir . '/includes/integrations/class-wpm-buddypress.php',
     'WPM\\Includes\\Integrations\\WPM_CF7' => $baseDir . '/includes/integrations/class-wpm-cf7.php',
