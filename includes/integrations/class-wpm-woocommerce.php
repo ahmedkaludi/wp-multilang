@@ -71,6 +71,7 @@ class WPM_WooCommerce {
 		add_filter( 'rest_post_dispatch', array( $this, 'wpm_translate_filter_attribute_widget' ), 10, 3);
 
 		add_filter( 'woocommerce_dropdown_variation_attribute_options_args', array( $this, 'translate_variation_attribute_options_args' ) );
+		add_filter( 'get_term', array( $this, 'translate_product_variation_metadata' ), 10, 2 );
 	}
 
 
@@ -409,6 +410,22 @@ class WPM_WooCommerce {
 	}
 	
 	/**
+	 * Translate attribute term name
+	 * @param 	$term 		WP_Term
+	 * @param 	$taxonomy 	string
+	 * @return  $term 		WP_Term
+	 * @since 2.4.14
+	 * */
+	public function translate_product_variation_metadata( $term, $taxonomy ){
+
+		if ( is_object( $term ) && ! empty( $term->name ) && strpos( $taxonomy, 'pa_' ) !== false ) {
+			$term->name 	=	wpm_translate_string( $term->name );	
+		}
+		
+		return $term;
+	}
+	
+	/**
 	 * Translate filter attribute widget name
 	 * @param 	$result 	WP_HTTP_Response
 	 * @param 	$server 	WP_REST_Server
@@ -488,8 +505,12 @@ class WPM_WooCommerce {
 	 * @since 	2.4.14
 	 * */
 	public function translate_variation_attribute_options_args( $args ) {
-		
-		if ( empty( $args['options'] ) && ! empty( $args['attribute'] ) && ! empty( $args['product'] ) && is_object( $args['product'] ) ) {
+
+		if ( ! empty( $args['options'] ) && is_array( $args['options'] ) ) {
+
+			$args['options'] 	=	wpm_translate_value( $args['options'] );
+
+		}else if ( empty( $args['options'] ) && ! empty( $args['attribute'] ) && ! empty( $args['product'] ) && is_object( $args['product'] ) ) {
 
 			$product 		=	$args['product'];
 			$attribute 		=	strtolower( $args['attribute'] );
