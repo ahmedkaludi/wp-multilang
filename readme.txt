@@ -244,9 +244,6 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed Code improvement #125
 - fixed Compatibility with WordPress 6.7 and updated readme.txt #126
 
-= 2.4.14 =
-- feature WP GraphQL support #44
-
 = 2.4.13 =
 - feature WP GraphQL support #44
 - fixed Post Title translation issue for multiple languages #78
