@@ -2,7 +2,7 @@
 
 Contributors: magazine3
 Donate link: https://paypal.me/kaludi
-Tags: localization, multilanguage, multilingual, translation, multilang
+Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.7
 Stable tag: 2.4.13
