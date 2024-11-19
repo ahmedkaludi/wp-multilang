@@ -24,6 +24,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Support full site editor for block based themes
 * Support block based widgets
 * Support different feature image for each language
+* Support Smart Custom Fields Plugin
 * Auto Translation ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-auto-translate-your-website-contents-using-wp-multilang/)
 * Support URL Slug Translation ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-translate-url-slugs-with-selective-languages/)
 * Support Base Translation ( [available in premium version](https://wp-multilang.com/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-translate-taxonomy-bases-such-as-categories-and-tags-into-selective-languages-using-the-base-translation-option/)
@@ -74,6 +75,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Better Search
 * Rank Math SEO (thanks for @pratikmts)
 * WPGraphQL (Add lang to the query parameters in URL. Eg: lang=en)
+* Smart Custom Fields
 
 Manage translation settings via json.
 
