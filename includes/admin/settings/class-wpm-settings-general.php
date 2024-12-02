@@ -31,6 +31,8 @@ class WPM_Settings_General extends WPM_Settings_Page {
 		add_filter( 'wpm_general_settings', array( $this, 'add_uninstall_setting' ) );
 		add_action( 'wpm_update_options_general', array( $this, 'update_wplang' ) );
 		add_filter( 'wpm_disable_translation_options', array( $this, 'unset_translation_options' ) );
+		add_filter( 'wpm_general_settings', array( $this, 'add_reset_settings' ) );
+		add_action( 'wpm_admin_field_reset_settings', array( $this, 'reset_settings' ) );
 	}
 
 	/**
@@ -190,5 +192,61 @@ class WPM_Settings_General extends WPM_Settings_Page {
 		}
 		
 		return $settings;
+	}
+	
+	/**
+	 * Add reset settings options
+	 * @param  	$settings 	Array
+	 * @return 	$settings 	Array
+	 * @since 	2.4.15
+	 * */
+	public function add_reset_settings( $settings ){
+			$settings[] = array(
+				'title' => esc_html__( 'Reset', 'wp-multilang' ),
+				'type'  => 'title',
+				'id'	=> 'wpm-reset-settings'	
+			);
+
+			$settings[] = array(
+				'title'   => esc_html__( 'Reset Settings', 'wp-multilang' ),
+				'id'    => 'wpm-reset-settings-btn',
+				'type'  => 'reset_settings',
+			);
+
+			$settings[] = array( 'type' => 'sectionend', 'id' => 'wpm-reset-settings' );
+
+		return $settings;
+	}
+
+	/**
+	 * Render reset settings button
+	 * @param  	$value 	Array
+	 * @since 	2.4.15
+	 * */
+	public function reset_settings( $value ){
+		
+		$main_params = array(
+			'plugin_url'                 => wpm()->plugin_url(),
+			'ajax_url'                   => admin_url( 'admin-ajax.php' ),
+			'wpm_reset_settings_nonce'   => wp_create_nonce( 'wpm-reset-settings' ),
+			'wpm_confirm_reset'       	 => esc_html__( 'Are you sure you want to reset the settings to default?', 'wp-multilang' ),
+		);
+		wp_localize_script( 'wpm_reset_settings', 'wpm_reset_settings_params', $main_params );
+		wp_enqueue_script( 'wpm_reset_settings' );
+
+		?>
+		<tr valign="top">
+			<th scope="row" class="titledesc">
+				<h4><?php echo esc_html( $value['title'] ); ?></h4>
+			</th>
+			<td class="forminp">
+				<p>
+					<button type="button" id="<?php echo esc_attr( $value['id'] ); ?>" class="button js-wpm-action"><?php esc_html_e( 'Reset', 'wp-multilang' ); ?></button>
+				</p>
+				<p class="description"><?php esc_html_e( 'This will reset all multilang settings to default, and remove all the translations applied on post, pages etc.', 'wp-multilang' ); ?></p>
+			</td>
+		</tr>
+		<?php
+
 	}
 }

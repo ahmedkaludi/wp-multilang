@@ -73,6 +73,7 @@ class WPM_Admin_Assets {
 		wp_register_script( 'wpm_additional_settings', wpm_asset_path( 'scripts/additional-settings' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
 		wp_register_script( 'wpm_support_settings', wpm_asset_path( 'scripts/support-settings' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
 		wp_register_script( 'wpm_premium_settings', wpm_asset_path( 'scripts/premium-settings' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
+		wp_register_script( 'wpm_reset_settings', wpm_asset_path( 'scripts/reset-settings' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
 
 		$script = "
 			(function( $ ) {

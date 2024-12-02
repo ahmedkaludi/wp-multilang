@@ -44,6 +44,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Admin\\WPM_Admin_Newsletter' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin-newsletter.php',
         'WPM\\Includes\\Admin\\WPM_Admin_Gutenberg_Block' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin-gutenberg-block.php',
         'WPM\\Includes\\Admin\\WPM_Deactivate_Feedback_Form' => __DIR__ . '/../..' . '/includes/admin/tracking/class-wpm-feedback-form.php',
+        'WPM\\Includes\\Admin\\WPM_Reset_Settings' => __DIR__ . '/../..' . '/includes/admin/class-wpm-reset-settings.php',
         'WPM\\Includes\\Integrations\\WPM_AIOSP' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-aiosp.php',
         'WPM\\Includes\\Integrations\\WPM_Acf' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-acf.php',
         'WPM\\Includes\\Integrations\\WPM_SCF' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-scf.php',
