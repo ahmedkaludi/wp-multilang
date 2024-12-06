@@ -31,7 +31,8 @@ class WPM_Schema_Saswp {
 	 */
 	public function __construct() {
 
-		add_filter( 'wpm_post_fields_config', array( $this, 'load_post_config' ) );
+		add_filter( 'wpm_post_fields_config', array( $this, 'load_config' ) );
+		add_filter( 'wpm_term_fields_config', array( $this, 'load_config' ) );
 
 		$meta_keys = array(
 			self::WPM_SASWP_META_LIST_VAL => array(
@@ -87,7 +88,7 @@ class WPM_Schema_Saswp {
 	 * Load schema post meta keys to config array
 	 * @since 2.4.15
 	 */
-	public function load_post_config( $config ) {
+	public function load_config( $config ) {
 		
 		global $wpdb;
 		$schema_config 		=	array();	
@@ -112,8 +113,8 @@ class WPM_Schema_Saswp {
 	    		$post_type 		=	get_post_type( $id );
 	    	}
 	    	// get term id from edit page
-	    	if ( ! empty( $_GET['tag_ID'] ) ) {
-	    		$id 			=	intval( $_GET['tag_ID'] );
+	    	if ( ! empty( $_REQUEST['tag_ID'] ) ) {
+	    		$id 			=	intval( $_REQUEST['tag_ID'] );
 	    		$is_term 		=	1;
 	    	}
 	    	// Get schema id from schema edit page
