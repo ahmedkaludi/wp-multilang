@@ -101,16 +101,25 @@ class WPM_Schema_Saswp {
 
 	    $is_term 			=	0;
 	    $id 				=	0;
+	    $post_type 			=	'';
 
 	    // Get the post or term id when you are in a editor page
 	    if ( is_admin() ) {
 
+	    	// Get Post id from edit post/page
 	    	if ( ! empty( $_GET['post'] ) ){
 	    		$id 			=	intval( $_GET['post'] );
+	    		$post_type 		=	get_post_type( $id );
 	    	}
+	    	// get term id from edit page
 	    	if ( ! empty( $_GET['tag_ID'] ) ) {
 	    		$id 			=	intval( $_GET['tag_ID'] );
 	    		$is_term 		=	1;
+	    	}
+	    	// Get schema id from schema edit page
+	    	if ( ! empty( $_REQUEST['post_ID'] ) ){
+	    		$id 			=	intval( $_REQUEST['post_ID'] );
+	    		$post_type 		=	get_post_type( $id );
 	    	}
 	    } else{
 
@@ -162,7 +171,7 @@ class WPM_Schema_Saswp {
 
 	    			}
 
-	    			if ( $is_modify_enabled == 1 ) {
+	    			if ( $is_modify_enabled == 1 || $post_type == 'saswp' || $post_type == 'saswp_template' ) {
 	    				 
 			    		// Get schema type
 			    		$key 			=	'schema_type';
@@ -234,7 +243,7 @@ class WPM_Schema_Saswp {
 		}
 
 		$db_value 	=	$value;
-		if ( ! empty( $db_value ) && is_array( $db_value ) ) {
+		if ( is_array( $db_value ) ) {
 			$db_value 	=	maybe_serialize( $db_value );
 		}
 
