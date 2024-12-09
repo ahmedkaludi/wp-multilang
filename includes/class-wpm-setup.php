@@ -542,6 +542,7 @@ class WPM_Setup {
 			'bylaw-plus'           		 => __NAMESPACE__ . '\Integrations\WPM_Bylaw_Plus',
 			'smart-custom-fields'     	 => __NAMESPACE__ . '\Integrations\WPM_SCF',
 			'schema-and-structured-data-for-wp' => __NAMESPACE__ . '\Integrations\WPM_Schema_Saswp',
+			'tlp-team' 					 => __NAMESPACE__ . '\Integrations\WPM_Team',
 		) );
 
 		$active_plugins = wp_cache_get( 'active_plugins', 'wpm' );

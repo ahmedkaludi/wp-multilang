@@ -1,0 +1,33 @@
+{
+	"post_types": {
+		"team": {},
+		"team-sc": {}
+	},
+	"post_fields": {
+		"short_bio": {},
+		"experience_year": {},
+		"email": {},
+		"telephone": {},
+		"mobile": {},
+		"fax": {},
+		"web_url": {},
+		"location": {},
+		"ttp_custom_detail_url": {},
+		"social": {},
+		"ttp_column": {},
+		"layout": {},
+		"layout_type": {},
+		"ttl_image_column": {},
+		"ttp_carousel_speed": {},
+		"ttp_carousel_autoplay_timeout": {},
+		"image_style": {},
+		"ttp_image_size": {},
+		"character_limit": {},
+		"ttp_after_short_desc_text": {},
+		"ttp_read_more_btn_text": {}
+	},
+	"taxonomies": {
+    	"team_designation" : {},
+    	"team_department": {}
+  	}
+}
