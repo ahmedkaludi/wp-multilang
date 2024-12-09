@@ -108,17 +108,23 @@ class WPM_Schema_Saswp {
 	    if ( is_admin() ) {
 
 	    	// Get Post id from edit post/page
+	    	// phpcs:ignore WordPress.Security.NonceVerification.Recommended --Reason Not a form submission data just accessing the values for conditional check
 	    	if ( ! empty( $_GET['post'] ) ){
+	    		// phpcs:ignore WordPress.Security.NonceVerification.Recommended --Reason Not a form submission data just accessing the values for conditional check
 	    		$id 			=	intval( wp_unslash( $_GET['post'] ) );
 	    		$post_type 		=	get_post_type( $id );
 	    	}
 	    	// get term id from edit page
+	    	// phpcs:ignore WordPress.Security.NonceVerification.Recommended --Reason Not a form submission data just accessing the values for conditional check
 	    	if ( ! empty( $_REQUEST['tag_ID'] ) ) {
+	    		// phpcs:ignore WordPress.Security.NonceVerification.Recommended --Reason Not a form submission data just accessing the values for conditional check
 	    		$id 			=	intval( wp_unslash( $_REQUEST['tag_ID'] ) );
 	    		$is_term 		=	1;
 	    	}
 	    	// Get schema id from schema edit page
+	    	// phpcs:ignore WordPress.Security.NonceVerification.Recommended --Reason Not a form submission data just accessing the values for conditional check
 	    	if ( ! empty( $_REQUEST['post_ID'] ) ){
+	    		// phpcs:ignore WordPress.Security.NonceVerification.Recommended --Reason Not a form submission data just accessing the values for conditional check
 	    		$id 			=	intval( wp_unslash( $_REQUEST['post_ID'] ) );
 	    		$post_type 		=	get_post_type( $id );
 	    	}
@@ -151,6 +157,7 @@ class WPM_Schema_Saswp {
 	    				$cache_key    		= 	'wpm_schema_get_term_'.$modified_key.'_'.$id;
             			$termmeta_value 	= 	wp_cache_get( $cache_key );
             			if ( false === $termmeta_value ) {
+	    					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery --Reason Using built function doesn't work in our case, so added manual query
 	    					$termmeta_value 	=	$wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->termmeta} WHERE term_id = %d AND meta_key = %s", $id, $modified_key ) );
 	    					wp_cache_set( $cache_key, $termmeta_value );
 	    				}
@@ -163,6 +170,7 @@ class WPM_Schema_Saswp {
 	    				$cache_key    		= 	'wpm_schema_get_post_'.$modified_key.'_'.$id;
             			$postmeta_value 	= 	wp_cache_get( $cache_key );
             			if ( false === $postmeta_value ) {
+	    					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery --Reason Using built function doesn't work in our case, so added manual query
 	    					$postmeta_value 	=	$wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $id, $modified_key ) );
 	    					wp_cache_set( $cache_key, $postmeta_value );
 	    				}
@@ -181,6 +189,7 @@ class WPM_Schema_Saswp {
             			$schema_meta 	= 	wp_cache_get( $cache_key );
 
             			if ( false === $schema_meta ) {
+			    			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery --Reason Using built function doesn't work in our case, so added manual query
 			    			$schema_meta 	=	$wpdb->get_results( $wpdb->prepare( "SELECT meta_key FROM {$wpdb->postmeta} WHERE post_id = %d", $schema_id ) );
 			    			wp_cache_set( $cache_key, $schema_meta );
 			    		}
@@ -233,6 +242,7 @@ class WPM_Schema_Saswp {
 		// If translate data is not present then get default value
 		if ( empty( $current_value ) ) {
 
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Using built function doesn't work in our case, so added manual query
 			$current_value 	=	$wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s AND post_id = %d", $key, $this->object_id ) );
 			
 			if ( ! empty( $current_value ) ) {

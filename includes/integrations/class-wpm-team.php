@@ -87,6 +87,7 @@ class WPM_Team {
 		// If translate data is not present then get default value
 		if ( empty( $current_value ) ) {
 
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Reason Using built function doesn't work in our case, so added manual query
 			$current_value 	=	$wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s AND post_id = %d", $key, $this->object_id ) );
 			
 			if ( ! empty( $current_value ) ) {
