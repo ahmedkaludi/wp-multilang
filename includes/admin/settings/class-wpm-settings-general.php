@@ -229,7 +229,7 @@ class WPM_Settings_General extends WPM_Settings_Page {
 			'plugin_url'                 => wpm()->plugin_url(),
 			'ajax_url'                   => admin_url( 'admin-ajax.php' ),
 			'wpm_reset_settings_nonce'   => wp_create_nonce( 'wpm-reset-settings' ),
-			'wpm_confirm_reset'       	 => esc_html__( 'Are you sure you want to reset the settings to default?', 'wp-multilang' ),
+			'wpm_confirm_reset'       	 => esc_html__( 'Are you sure ? You can not undo once press ok button.', 'wp-multilang' ),
 		);
 		wp_localize_script( 'wpm_reset_settings', 'wpm_reset_settings_params', $main_params );
 		wp_enqueue_script( 'wpm_reset_settings' );

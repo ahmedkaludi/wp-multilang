@@ -531,6 +531,10 @@ class WPM_AJAX {
     public static function reset_settings() {
 
 		check_ajax_referer( 'wpm-reset-settings', 'security' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( -1 );    
+        }
 		
 		$reset_obj 	=	new WPM_Reset_Settings();
 		$reset_obj->reset_settings();
