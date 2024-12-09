@@ -190,9 +190,11 @@ Please try WP Multilang in a test-environment before activating it on an existin
 [Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/) | [Premium](https://wp-multilang.com/)
 
 Support
+
 We try our best to provide support on WordPress.org forums. However, We have a special [community support](https://wp-multilang.com/contact-us/) where you can ask us questions and get help about your WP Multilang related questions. Delivering a good user experience means a lot to us and so we try our best to reply each and every question that gets asked.
 
 Bug Reports
+
 Bug reports for WP Multilang are [welcomed on GitHub](https://github.com/ahmedkaludi/wp-multilang/issues). Please note GitHub is not a support forum, and issues that aren't properly qualified as bugs will be closed.
 
 Installation
@@ -201,4 +203,5 @@ Installation
 3. Adjust languages on WP Multilang Settings page.
 
 Upgrade Notice
+
 Before installing or uninstalling make the site database backup before.
