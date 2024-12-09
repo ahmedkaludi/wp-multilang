@@ -138,7 +138,7 @@ class WPM_Settings_General extends WPM_Settings_Page {
 
 			$settings[] = array(
 				'title'   => esc_html__( 'Delete translations', 'wp-multilang' ),
-				'desc'    => esc_html__( 'Delete translations when uninstalling plugin (some translations may not be deleted and you must delete them manually).', 'wp-multilang' ),
+				'desc'    => esc_html__( 'Delete translations when uninstalling plugin ( some translations may not be deleted and you must delete them manually ).', 'wp-multilang' ),
 				'id'      => 'wpm_uninstall_translations',
 				'default' => 'no',
 				'type'    => 'checkbox',
@@ -241,9 +241,9 @@ class WPM_Settings_General extends WPM_Settings_Page {
 			</th>
 			<td class="forminp">
 				<p>
-					<button type="button" id="<?php echo esc_attr( $value['id'] ); ?>" class="button js-wpm-action"><?php esc_html_e( 'Reset', 'wp-multilang' ); ?></button>
+					<button type="button" id="<?php echo esc_attr( $value['id'] ); ?>" class="button js-wpm-action"><?php echo esc_html__( 'Reset', 'wp-multilang' ); ?></button>
 				</p>
-				<p class="description"><?php esc_html_e( 'This will reset all multilang settings to default, and remove all the translations applied on post, pages etc.', 'wp-multilang' ); ?></p>
+				<p><?php echo esc_html__( 'This will reset all multilang settings to default, and remove all the translations applied on post, pages etc.', 'wp-multilang' ); ?> <a href="https://wp-multilang.com/docs/" target="_blank"><?php echo esc_html__( 'Learn More', 'wp-multilang' ); ?></a></p>
 			</td>
 		</tr>
 		<?php

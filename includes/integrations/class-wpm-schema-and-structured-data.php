@@ -109,17 +109,17 @@ class WPM_Schema_Saswp {
 
 	    	// Get Post id from edit post/page
 	    	if ( ! empty( $_GET['post'] ) ){
-	    		$id 			=	intval( $_GET['post'] );
+	    		$id 			=	intval( wp_unslash( $_GET['post'] ) );
 	    		$post_type 		=	get_post_type( $id );
 	    	}
 	    	// get term id from edit page
 	    	if ( ! empty( $_REQUEST['tag_ID'] ) ) {
-	    		$id 			=	intval( $_REQUEST['tag_ID'] );
+	    		$id 			=	intval( wp_unslash( $_REQUEST['tag_ID'] ) );
 	    		$is_term 		=	1;
 	    	}
 	    	// Get schema id from schema edit page
 	    	if ( ! empty( $_REQUEST['post_ID'] ) ){
-	    		$id 			=	intval( $_REQUEST['post_ID'] );
+	    		$id 			=	intval( wp_unslash( $_REQUEST['post_ID'] ) );
 	    		$post_type 		=	get_post_type( $id );
 	    	}
 	    } else{

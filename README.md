@@ -8,6 +8,17 @@ Multilingual plugin for WordPress.
 
 Translation for any post types, taxonomies, meta fields, options, text fields in miltimedia files, menus, titles and text fields in widgets.
 
+[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/) | [Premium Features](https://wp-multilang.com/#features)
+
+New Features of the plugin WP Multilang:
+* Support full site editor for block based themes
+* Support block based widgets
+* Support different feature image for each language
+* Support Smart Custom Fields Plugin
+* Auto Translation ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-auto-translate-your-website-contents-using-wp-multilang/)
+* Support URL Slug Translation ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-translate-url-slugs-with-selective-languages/)
+* Support Base Translation ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-translate-taxonomy-bases-such-as-categories-and-tags-into-selective-languages-using-the-base-translation-option/)
+
 Features of the plugin WP Multilang:
 * 100% free.
 * Translation at PHP.
@@ -27,6 +38,8 @@ Features of the plugin WP Multilang:
 * No limits by languages or by possibilities.
 
 **WP Multilang** compatible out of the box with the plugins:
+* Elementor ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-build-a-multilingual-site-with-elementor-using-wp-multilang/)
+* Divi Builder ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-build-a-multilingual-site-with-divi-builder-using-wp-multilang/)
 * ACF, ACF Pro
 * WooCommerce
 * WooCommerce Customizer
@@ -49,6 +62,10 @@ Features of the plugin WP Multilang:
 * Download Monitor (Redefine templates for links in your theme and translate link texts)
 * Better Search
 * Rank Math SEO (thanks for @pratikmts)
+* WPGraphQL (Add lang to the query parameters in URL. Eg: lang=en)
+* Smart Custom Fields
+* Team – Team Members Showcase Plugin
+* Schema & Structured Data for WP & AMP
    
 Supports configuration via json.   
    
@@ -147,3 +164,41 @@ Support translating from syntax qTranslate-X, WPGlobus etc.
 Compatible with REST-API.   
 Support transfer the required translation through option `lang` in the GET request to REST.   
 Has the ability to keep recording the target language through the transmission parameter `lang` in the request.
+
+Migration from qTranslate-X
+
+1. Before installing/uninstalling, make database backup.
+2. Deactivate qTranslate-X.
+3. Install and activate WP Multilang.
+4. Create in root of your theme file ‘wpm-config.json’.
+5. Add all needed post types, taxonomies, options, fields to ‘wpm-config.json’. Setting from qTranslate-X not importing.
+6. Import term names from qTranslate.
+7. Check that everything is okay.
+8. If everything is okay, remove qTranslate-X. If not, make screenshots of errors, restore database from backup and add support issue with your screenshots and description of errors.
+
+Warning
+Not compatible with:
+- WP Maintenance
+
+Known issues
+Function 'get_page_by_title' not working, because in title field are stored titles for all languages. Use function 'wpm_get_page_by_title( $title )' as solution.
+
+NOTE: Because plugins have different ways of storing data, WP Multilang is not compatible with every single plugin out-of-the-box (mostly page builders). This may result in texts not being translatable or translations not being saved. Most of these issues can be resolved using the integration options (wpm-config.json or filters) of WP Multilang.
+
+Please try WP Multilang in a test-environment before activating it on an existing production site and always make a backup before activating!
+
+[Home](https://wp-multilang.com/) | [Help & Tech Support](https://wp-multilang.com/contact-us/) | [Documentation](https://wp-multilang.com/docs/) | [Premium](https://wp-multilang.com/)
+
+Support
+We try our best to provide support on WordPress.org forums. However, We have a special [community support](https://wp-multilang.com/contact-us/) where you can ask us questions and get help about your WP Multilang related questions. Delivering a good user experience means a lot to us and so we try our best to reply each and every question that gets asked.
+
+Bug Reports
+Bug reports for WP Multilang are [welcomed on GitHub](https://github.com/ahmedkaludi/wp-multilang/issues). Please note GitHub is not a support forum, and issues that aren't properly qualified as bugs will be closed.
+
+Installation
+1. Upload the plugin files to the `/wp-content/plugins/wp-multilang` directory, or install the plugin through the WordPress plugins screen directly.
+2. Activate the plugin through the 'Plugins' screen in WordPress.
+3. Adjust languages on WP Multilang Settings page.
+
+Upgrade Notice
+Before installing or uninstalling make the site database backup before.
