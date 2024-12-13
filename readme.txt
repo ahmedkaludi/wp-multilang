@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.7
-Stable tag: 2.4.14
+Stable tag: 2.4.15
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -235,9 +235,16 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.15 =
+- feature Added compatibility with Schema & Structured Data for WP & AMP Plugin #59
+- feature Added compatibility with Team – Team Members Showcase Plugin #75
+- feature Added option to reset the translation languages #122
+- fixed WPBakery Builder Meta Descriptions and Meta Titles Not Translating #128
+- fixed Auto translate not working when adding post via elementor #130
+
 = 2.4.14 =
 - fixed Woocommerce product attributes are not getting translated #93
-- feature Added ompatibility with the WP Githuber plugin #99
+- feature Added compatibility with the WP Githuber plugin #99
 - enhancement Use 'translate' keyword for search the plugin from add new plugin section #103
 - feature Added compatibility with Smart Custom Fields Plugin #116
 - feature Added eature to translate slug for 2nd level of hierarchy of urls #121
@@ -320,8 +327,5 @@ If you have opened several browser tabs for editing this post in different langu
 - enhancement ( ! ) Deprecated: Hook wpseo_opengraph is deprecated since version WPSEO 14.0 with no alternative available #7
 - enhancement ( ! ) Deprecated: setcookie(): Passing null to parameter #5 ($domain) of type string is deprecated #8
 - fixed Issue with the ACF Pro plugin #10
-
-= 2.4.1 =
-- removed support old version of ACF lower 5.0
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
