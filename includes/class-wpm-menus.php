@@ -224,6 +224,7 @@ class WPM_Menus {
 					}
 
 					if ( ( ( 'flag' === $show_type ) || ( 'both' === $show_type ) ) && ( $language['flag'] ) ) {
+						// phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Reason Using built in function doesn't work in our case, so created custom function
 						$language_title = '<img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" alt="' . esc_attr( $language['name'] ) . '">';
 					}
 

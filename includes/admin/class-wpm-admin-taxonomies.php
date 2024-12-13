@@ -89,6 +89,7 @@ class WPM_Admin_Taxonomies {
 
 			foreach ( $languages as $code => $language ) {
 				if ( isset( $strings[ $code ] ) && ! empty( $strings[ $code ] ) ) {
+					// phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Reason Using built in function doesn't work in our case, so created custom function
 					$output[] = '<img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" alt="' . esc_attr( $language['name'] ) . '" title="' . $language['name'] . '">';
 				}
 			}

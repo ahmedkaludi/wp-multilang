@@ -1,6 +1,7 @@
 <?php
 
 namespace WPM\Includes;
+use WPM\Includes\Admin\WPM_Reset_Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -104,7 +105,8 @@ class WPM_AJAX {
 			'subscribe_to_news_letter' => false,
 			'newsletter_hide_form' => false,
 			'settings_newsletter_submit' => false,
-			'block_lang_switcher' => true
+			'block_lang_switcher' => true,
+			'reset_settings' 		=> true
 		);
 		
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
@@ -521,4 +523,23 @@ class WPM_AJAX {
 		echo wp_json_encode($translated_urls);
 		wp_die();
     }
+    
+    /**
+     * Reset plugin settings to default
+     * @since 2.4.15
+     * */
+    public static function reset_settings() {
+
+		check_ajax_referer( 'wpm-reset-settings', 'security' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( -1 );    
+        }
+		
+		$reset_obj 	=	new WPM_Reset_Settings();
+		$reset_obj->reset_settings();
+
+		wp_die();
+
+	}
 }

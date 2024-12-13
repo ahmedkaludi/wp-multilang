@@ -1,0 +1,12 @@
+{
+  "post_types": {
+    "saswp": {}
+  },
+  "post_fields": {
+    "saswp_meta_list_val": {},
+    "saswp_taxonomy_term": {},
+    "saswp_fixed_text": {},
+    "saswp_custom_meta_field": {},
+    "saswp_schema_template_field": {}
+  }
+}

@@ -76,6 +76,7 @@ class WPM_Admin_Menus {
 				'id'     => 'wpm-language-switcher',
 				'parent' => 'top-secondary',
 				'title'  => '<span class="ab-icon">' .
+							// phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Reason Using built in function doesn't work in our case, so created custom function
 				            ( $languages ? '<img src="' . esc_url( wpm_get_flag_url( $languages[ $user_language ]['flag'] ) ) . '"/>' : '' ) . '</span><span class="ab-label">' . $available_translations[ get_locale() ]['native_name'] . '</span>',
 			) );
 		}
@@ -106,6 +107,7 @@ class WPM_Admin_Menus {
 				$wp_admin_bar->add_menu( array(
 					'parent' => 'wpm-language-switcher',
 					'id'     => 'wpm-language-' . $code,
+					// phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Reason Using built in function doesn't work in our case, so created custom function
 					'title'  => '<span class="ab-icon">' . '<img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" />' . '</span>' . '<span class="ab-label">' . esc_html( $native_name ) . '</span>',
 					'href'   => wpm_translate_current_url( $code ),
 				) );
