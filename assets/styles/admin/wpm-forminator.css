@@ -1,0 +1,7 @@
+/**
+ * This CSS is only for forminator plugin 
+ * @since 2.4.16
+ * */
+.wpmudev-forminator-forminator-cform, .wpmudev-forminator-forminator-poll, .wpmudev-forminator-forminator-quiz, .wpmudev-forminator-forminator-poll-wizard, .wpmudev-forminator-forminator-cform-wizard, .wpmudev-forminator-forminator-knowledge-wizard, .wpmudev-forminator-forminator-entries{
+	margin-top: 50px !important;
+}
