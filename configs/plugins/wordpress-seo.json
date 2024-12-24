@@ -15,7 +15,8 @@
     "_yoast_wpseo_opengraph-image": {},
     "_yoast_wpseo_opengraph-image-id": {},
     "_yoast_wpseo_twitter-image": {},
-    "_yoast_wpseo_twitter-image-id": {}
+    "_yoast_wpseo_twitter-image-id": {},
+    "_yoast_wpseo_canonical": {}
   },
   "admin_pages": [
     "seo_page_wpseo_titles",
