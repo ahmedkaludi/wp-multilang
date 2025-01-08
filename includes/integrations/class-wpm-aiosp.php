@@ -178,7 +178,7 @@ class WPM_AIOSP {
 
 				$table_name = $wpdb->prefix . 'postmeta';
 
-				$meta_key_array = array('_aioseo_title', '_aioseo_description', '_aioseo_twitter_title', '_aioseo_twitter_description', '_aioseo_og_title', '_aioseo_og_description', '_aioseo_wpm_schema', '_aioseo_wpm_canonical_url', '_aioseo_wpm_og_video', '_aioseo_og_article_section', '_aioseo_og_article_tags', '_aioseo_wpm_keyphrases', '_aioseo_wpm_og_object_type', '_aioseo_wpm_twitter_card');
+				$meta_key_array = array('_aioseo_title', '_aioseo_description', '_aioseo_twitter_title', '_aioseo_twitter_description', '_aioseo_og_title', '_aioseo_og_description', '_aioseo_wpm_schema', '_aioseo_wpm_canonical_url', '_aioseo_wpm_og_video', '_aioseo_og_article_section', '_aioseo_og_article_tags', '_aioseo_wpm_keyphrases', '_aioseo_wpm_og_object_type', '_aioseo_wpm_twitter_card', '_aioseo_wpm_og_image_type', '_aioseo_wpm_og_image_url', '_aioseo_wpm_og_image_custom_url', '_aioseo_wpm_og_custom_url', '_aioseo_wpm_twitter_image_type', '_aioseo_wpm_twitter_image_url', '_aioseo_wpm_twitter_image_custom_url');
 
 				// Get _aioseo_description and _aioseo_title values from table
 				//phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedDynamicPlaceholderGeneration, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -264,6 +264,27 @@ class WPM_AIOSP {
 								if($pmr_value->meta_key == '_aioseo_wpm_twitter_card'){
 									$post->twitter_card = wpm_translate_string( $pmr_value->meta_value, $current_lang );			
 								}
+								if($pmr_value->meta_key == '_aioseo_wpm_og_image_type'){
+									$post->og_image_type = wpm_translate_string( $pmr_value->meta_value, $current_lang );			
+								}
+								if($pmr_value->meta_key == '_aioseo_wpm_og_image_url'){
+									$post->og_image_url = wpm_translate_string( $pmr_value->meta_value, $current_lang );			
+								}
+								if($pmr_value->meta_key == '_aioseo_wpm_og_image_custom_url'){
+									$post->og_image_custom_url = wpm_translate_string( $pmr_value->meta_value, $current_lang );		
+								}
+								if($pmr_value->meta_key == '_aioseo_wpm_og_custom_url'){
+									$post->og_custom_url = wpm_translate_string( $pmr_value->meta_value, $current_lang );		
+								}
+								if($pmr_value->meta_key == '_aioseo_wpm_twitter_image_type'){
+									$post->twitter_image_type = wpm_translate_string( $pmr_value->meta_value, $current_lang );		
+								}
+								if($pmr_value->meta_key == '_aioseo_wpm_twitter_image_url'){
+									$post->twitter_image_url = wpm_translate_string( $pmr_value->meta_value, $current_lang );		
+								}
+								if($pmr_value->meta_key == '_aioseo_wpm_twitter_image_custom_url'){
+									$post->twitter_image_custom_url = wpm_translate_string( $pmr_value->meta_value, $current_lang );		
+								}
 
 							}
 						}
@@ -331,7 +352,7 @@ class WPM_AIOSP {
 			$table 					=	$wpdb->prefix.'aioseo_posts';
 			//phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedDynamicPlaceholderGeneration, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$post_data 				= 	$wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE post_id = %d" , $post_id ) );
-
+			
 			if ( ! empty( $post_data ) && is_object($post_data) ) { 
 
 				if ( isset( $post_data->schema ) ) {
@@ -363,6 +384,40 @@ class WPM_AIOSP {
 				if ( isset( $post_data->twitter_card ) ) {
 					$key 	=	'_aioseo_wpm_twitter_card';
 					$this->create_post_custom_meta_key( $key, $post_data->twitter_card, $post_id, 'text' );
+				}
+
+				if ( isset( $post_data->og_image_type ) ) {
+					$key 	=	'_aioseo_wpm_og_image_type';
+					$this->create_post_custom_meta_key( $key, $post_data->og_image_type, $post_id, 'text' );
+				}
+				if ( isset( $post_data->og_image_url ) ) {
+					$key 	=	'_aioseo_wpm_og_image_url';
+					$this->create_post_custom_meta_key( $key, $post_data->og_image_url, $post_id, 'text' );
+				}
+
+				if ( isset( $post_data->og_image_custom_url ) ) {
+					$key 	=	'_aioseo_wpm_og_image_custom_url';
+					$this->create_post_custom_meta_key( $key, $post_data->og_image_custom_url, $post_id, 'text' );
+				}
+
+				if ( isset( $post_data->og_custom_url ) ) {
+					$key 	=	'_aioseo_wpm_og_custom_url';
+					$this->create_post_custom_meta_key( $key, $post_data->og_custom_url, $post_id, 'text' );
+				}
+
+				if ( isset( $post_data->twitter_image_type ) ) {
+					$key 	=	'_aioseo_wpm_twitter_image_type';
+					$this->create_post_custom_meta_key( $key, $post_data->twitter_image_type, $post_id, 'text' );
+				}
+
+				if ( isset( $post_data->twitter_image_url ) ) {
+					$key 	=	'_aioseo_wpm_twitter_image_url';
+					$this->create_post_custom_meta_key( $key, $post_data->twitter_image_url, $post_id, 'text' );
+				}
+
+				if ( isset( $post_data->twitter_image_custom_url ) ) {
+					$key 	=	'_aioseo_wpm_twitter_image_custom_url';
+					$this->create_post_custom_meta_key( $key, $post_data->twitter_image_custom_url, $post_id, 'text' );
 				}
 
 			}
