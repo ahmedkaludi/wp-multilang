@@ -221,7 +221,13 @@ class WPM_Rank_Math {
 						$meta_id 					=	absint( str_replace( 'schema-', '', $schema_key ) );
 						if ( $meta_id > 0 ) {
 
-							$term_meta 				= $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->termmeta} WHERE meta_id = %d", $meta_id ) );
+							$cache_key 				=	'wpm_rankmath_term_meta_'.$meta_id;
+							$term_meta 				=	wp_cache_get( $cache_key );
+							if ( $term_meta === false ){
+								// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+								$term_meta 				= $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->termmeta} WHERE meta_id = %d", $meta_id ) );
+								wp_cache_set( $cache_key, $term_meta );
+							}
 							if ( is_object( $term_meta ) && ! empty( $term_meta->term_id ) ) {
 								$translated_schema 	=	get_term_meta( $term_meta->term_id, $translated_key, true );
 							}
