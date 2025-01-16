@@ -1,0 +1,1 @@
+!function(t){"use strict";t(function(){if(0===t("#wpm-language-switcher").length){var n=wp.template("wpm-ls");t("#wpbody-content").length>0&&t("#wpbody-content").prepend(n)}})}(jQuery,wp);

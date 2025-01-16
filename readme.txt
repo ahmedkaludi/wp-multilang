@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.7
-Stable tag: 2.4.15
+Stable tag: 2.4.16
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -78,6 +78,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Smart Custom Fields
 * Team – Team Members Showcase Plugin
 * Schema & Structured Data for WP & AMP
+* Forminator Forms
 
 Manage translation settings via json.
 
@@ -235,6 +236,13 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.16 =
+- feature Rankmath multilingual schema and structured data support #56
+- feature Yoast multilingual schema and structured data support #57
+- feature AIOSEO multilingual schema and structured data support #58
+- feature Added a new feature that helps users select different logos as per the language of the site #71
+- feature Compatibility with Forminator form Plugin #132
+
 = 2.4.15 =
 - feature Added compatibility with Schema & Structured Data for WP & AMP Plugin #59
 - feature Added compatibility with Team – Team Members Showcase Plugin #75
@@ -321,11 +329,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed No translation for Title, Meta etc. if using AIOSEO plugin #18
 - fixed No Translation of URL, and social meta tags using YOAST plugin in #23
 - fixed Issue with the Rank Math Seo meta field #24
-
-= 2.4.3 =
-- fixed Conflict with Yoast SEO #6
-- enhancement ( ! ) Deprecated: Hook wpseo_opengraph is deprecated since version WPSEO 14.0 with no alternative available #7
-- enhancement ( ! ) Deprecated: setcookie(): Passing null to parameter #5 ($domain) of type string is deprecated #8
-- fixed Issue with the ACF Pro plugin #10
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

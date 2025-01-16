@@ -8,7 +8,22 @@
     "_aioseo_twitter_title": {},
     "_aioseo_twitter_description": {},
     "_aioseo_og_title": {},
-    "_aioseo_og_description": {}
+    "_aioseo_og_description": {},
+    "_aioseo_og_article_section": {},
+    "_aioseo_og_article_tags": {}
+  },
+  "term_fields": {
+    "_aioseop_title": {},
+    "_aioseop_description": {},
+    "_aioseop_keywords": {},
+    "_aioseo_title": {},
+    "_aioseo_description": {},
+    "_aioseo_twitter_title": {},
+    "_aioseo_twitter_description": {},
+    "_aioseo_og_title": {},
+    "_aioseo_og_description": {},
+    "_aioseo_og_article_section": {},
+    "_aioseo_og_article_tags": {} 
   },
   "admin_pages": [
     "toplevel_page_all-in-one-seo-pack/aioseop_class"

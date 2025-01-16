@@ -1,0 +1,19 @@
+{
+	"post_types": {
+		"forminator_forms": {},
+		"forminator_polls": {},
+		"forminator_quizzes": {}
+	},
+	"post_fields": {
+		"forminator_form_meta": {}
+	},
+	"admin_pages": [
+    	"forminator_page_forminator-cform",
+    	"forminator_page_forminator-poll",
+    	"forminator_page_forminator-quiz",
+    	"forminator_page_forminator-poll-wizard",
+    	"forminator_page_forminator-cform-wizard",
+    	"forminator_page_forminator-knowledge-wizard",
+    	"forminator_page_forminator-entries"
+  	]
+}

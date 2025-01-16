@@ -34,6 +34,8 @@ class WPM_Options {
 			add_action( "add_option_{$key}", 'update_option', 99, 2 );
 			add_filter( "pre_update_option_{$key}", array( $this, 'wpm_update_option' ), 99, 3 );
 		}
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'customizer_style' ), 99 );
 	}
 
 
@@ -64,5 +66,40 @@ class WPM_Options {
 		$value = wpm_set_new_value( $old_value, $value, $this->options_config[ $option ] );
 
 		return $value;
+	}
+
+	/**
+	 * Add inline css for proper positioning of astra theme
+	 * @since 2.4.16
+	 */
+	public function customizer_style() {
+
+		$screen    = get_current_screen();
+		$screen_id = $screen ? $screen->id : '';
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		if ( $screen_id == 'customize' ) {
+			
+			if ( ! function_exists( 'wp_get_theme' ) ) {
+				require_once ABSPATH . 'wp-includes/theme.php';
+			}
+
+			$active_theme 		= wp_get_theme();
+			$active_theme_name 	= '';
+			if ( ! empty( $active_theme ) && is_object( $active_theme ) ) {
+				$active_theme_name = $active_theme->get( 'Name' );
+			}
+
+			if ( $active_theme_name == 'Astra' ) {
+
+				$custom_css = "
+                	#customize-controls .wpm-language-switcher{
+						margin-left: 45px;
+					}";
+					
+				wp_add_inline_style( 'wpm_language_switcher', $custom_css );
+			
+			}	
+		}
 	}
 }

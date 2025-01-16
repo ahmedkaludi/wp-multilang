@@ -358,7 +358,7 @@ class WPM_Yoast_Seo {
 			if($post_id){
 				$table_name = $wpdb->prefix . 'postmeta';
 
-				$meta_key_array = array('_yoast_wpseo_title', '_yoast_wpseo_metadesc', '_yoast_wpseo_opengraph-title','_yoast_wpseo_opengraph-description', '_yoast_wpseo_twitter-title', '_yoast_wpseo_twitter-description', '_yoast_wpseo_focuskw', '_yoast_wpseo_schema_page_type', '_yoast_wpseo_schema_article_type', '_yoast_wpseo_opengraph-image', '_yoast_wpseo_opengraph-image-id', '_yoast_wpseo_twitter-image', '_yoast_wpseo_twitter-image-id');
+				$meta_key_array = array('_yoast_wpseo_title', '_yoast_wpseo_metadesc', '_yoast_wpseo_opengraph-title','_yoast_wpseo_opengraph-description', '_yoast_wpseo_twitter-title', '_yoast_wpseo_twitter-description', '_yoast_wpseo_focuskw', '_yoast_wpseo_schema_page_type', '_yoast_wpseo_schema_article_type', '_yoast_wpseo_opengraph-image', '_yoast_wpseo_opengraph-image-id', '_yoast_wpseo_twitter-image', '_yoast_wpseo_twitter-image-id', '_yoast_wpseo_canonical');
 
 				// Get _yoast_wpseo_metadesc and _yoast_wpseo_title values from table
 				//phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.QuotedDynamicPlaceholderGeneration,WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason: Making use of built in functions fetched data of current language 
@@ -404,6 +404,8 @@ class WPM_Yoast_Seo {
 											$update_array_values['twitter_image'] = sanitize_textarea_field($meta_value); 
 										}else if($key_name == '_yoast_wpseo_twitter-image-id' && $result->twitter_image_id !== $meta_value){
 											$update_array_values['twitter_image_id'] = sanitize_textarea_field($meta_value); 
+										}else if($key_name == '_yoast_wpseo_canonical' && $result->canonical !== $meta_value){
+											$update_array_values['canonical'] = sanitize_textarea_field($meta_value); 
 										}
 									}
 								}

@@ -37,7 +37,8 @@
   ],
   "options": {
     "blogname": {},
-    "blogdescription": {}
+    "blogdescription": {},
+    "site_logo": {}
   },
   "site_options": {
     "site_name": {},
