@@ -645,11 +645,12 @@ class WPM_Bulk_Translate {
 				<p>
 					<form enctype="multipart/form-data" type="post" id="wpm-import-xliff-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 						<input type="file" name="wpm_import_xliff_file" id="wpm-import-xliff-file">
-						<button type="submit" id="wpm-import-xliff-btn" class="button js-wpm-action" name="wpm_import_xliff_btn" value="Import xliff data"><?php esc_html_e( 'Import File', 'wp-multilang' ); ?></button>
+						<button type="submit" id="wpm-import-xliff-btn" class="button js-wpm-action" name="wpm_import_xliff_btn" value="Import xliff data"><?php echo esc_html__( 'Import File', 'wp-multilang' ); ?></button>
 						<input type="hidden" name="action" value="wpm_import_translations">
 						<?php wp_nonce_field( 'wpm-xliff-nonce', 'security' ); ?>
 					</form>
 				</p>
+				<p class="description"><?php echo esc_html__( 'Import translated xliff file.', 'wp-multilang' ); ?></p>
 			</td>
 		</tr>
 		<?php
