@@ -56,6 +56,12 @@ class WPM_Settings_Additional extends WPM_Settings_Page {
 				'id'    => 'wpm_qtx_import',
 				'type'  => 'qtx_import',
 			),
+			
+			array(
+				'title' => esc_html__( 'Import Translations', 'wp-multilang' ),
+				'id'    => 'wpm_import_translations',
+				'type'  => 'import_translations',
+			),
 
 			array( 'type' => 'sectionend', 'id' => 'additional_options' ),
 

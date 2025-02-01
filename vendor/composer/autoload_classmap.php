@@ -34,6 +34,7 @@ $class_map_array =  array(
     'WPM\\Includes\\Admin\\WPM_Admin_Gutenberg_Block' => $baseDir . '/includes/admin/class-wpm-admin-gutenberg-block.php',
     'WPM\\Includes\\Admin\\WPM_Deactivate_Feedback_Form' => $baseDir . '/includes/admin/tracking/class-wpm-feedback-form.php',
     'WPM\\Includes\\Admin\\WPM_Reset_Settings' => $baseDir . '/includes/admin/class-wpm-reset-settings.php',
+    'WPM\\Includes\\Admin\\WPM_Bulk_Translate' => $baseDir . '/includes/admin/class-wpm-admin-bulk-translate.php',
     'WPM\\Includes\\Integrations\\WPM_AIOSP' => $baseDir . '/includes/integrations/class-wpm-aiosp.php',
     'WPM\\Includes\\Integrations\\WPM_Acf' => $baseDir . '/includes/integrations/class-wpm-acf.php',
     'WPM\\Includes\\Integrations\\WPM_SCF' => $baseDir . '/includes/integrations/class-wpm-scf.php',
