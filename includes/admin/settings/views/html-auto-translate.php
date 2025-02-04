@@ -110,6 +110,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <button class="button button-primary" id="wpmpro-translate" style="display:block" type="button"><?php echo esc_html__('Start Translation', 'wp-multilang') ?></button>
         <button class="button button-primary" id="wpmpro-translate-hide" style="display:none" type="button"><?php echo esc_html__('Translating...', 'wp-multilang') ?></button>
     </div>
+    <?php do_action( 'wpm_display_license_status_msg' ); ?>
 
 </div>
 
@@ -125,4 +126,5 @@ $main_params = array(
     'source_language'                   => $source_language,
     'wpmpro_autotranslate_nonce'        => wp_create_nonce( 'wpmpro-autotranslate-nonce' ),
 );
+$main_params    =   apply_filters( 'wpm_localize_autotranslate_params', $main_params );
 do_action( 'wpmpro_autotranslate_enqueue_script', $main_params );
