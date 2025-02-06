@@ -264,7 +264,12 @@ class WPM_Reset_Settings {
 						}
 
 						if ( wpm_is_ml_string( $option_value ) ) {
-							$option_value = wpm_translate_string( $option_value, $default_language );
+							$check_value 	=	maybe_unserialize( $option_value );
+							if ( is_array( $check_value ) || is_object( $check_value ) ) {
+								$option_value = serialize( wpm_translate_value( unserialize( $option_value ), $default_language ) );	
+							}else{
+								$option_value = wpm_translate_string( $option_value, $default_language );	
+							}
 						}
 
 						//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching --Reason Reason We are just cleaning the data that has been changed by our plugin
