@@ -72,6 +72,9 @@ class WPM_WooCommerce {
 
 		add_filter( 'woocommerce_dropdown_variation_attribute_options_args', array( $this, 'translate_variation_attribute_options_args' ) );
 		add_filter( 'get_term', array( $this, 'translate_product_variation_metadata' ), 10, 2 );
+		add_filter( 'woocommerce_product_export_product_column_name', array( $this, 'modify_product_export_data' ), 10, 3 );
+		add_filter( 'woocommerce_product_export_product_column_short_description', array( $this, 'modify_product_export_data' ), 10, 3 );
+		add_filter( 'woocommerce_product_export_product_column_description', array( $this, 'modify_product_export_data' ), 10, 3 );
 	}
 
 
@@ -550,5 +553,26 @@ class WPM_WooCommerce {
 		}
 
 		return $args;
+	}
+	
+	/**
+	 * Modify product export data while export
+	 * @param 	$value 		string
+	 * @param 	$product 	WC_Product
+	 * @return 	$value 		string
+	 * @since 	2.4.17
+	 * */
+	public function modify_product_export_data( $value, $product, $column_id ) {
+
+		if ( $column_id == 'name') { 
+			return $product->get_name();
+		}else if ( $column_id == 'short_description') { 
+			return $product->get_short_description();
+		}else if ( $column_id == 'description') { 
+			return $product->get_description();
+		}
+
+		return $value;
+
 	}
 }
