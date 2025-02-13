@@ -431,4 +431,102 @@ class WPM_Schema_Saswp {
 		return $this->get_value( $key, $value );
 	}
 
+	/**
+	 * Auto translate saswp_reviews post type data
+	 * @param 	$post 		WP_Post
+	 * @param 	$source 	string	
+	 * @param 	$target 	string	
+	 * @return 	$response	array
+	 * @since 	1.10
+	 * */
+	public static function auto_translate( $post, $source, $target ){
+		
+		global $wpdb;
+		$response 					=	array('status'=>true, 'message'=>esc_html__('Already Processed','wp-multilang'));
+
+		if ( $post && isset( $post->ID ) ) {
+
+			$post_id 				=	$post->ID;
+			$post_arr 				= 	array();
+			$should_update 			= 	false;
+
+			$post_title 			=	$post->post_title;
+
+			$is_title_exist 		= 	wpm_ml_check_language_string( $post_title, $target );
+			
+			
+			if ( $is_title_exist === false ) {
+
+				$is_src_title_exist = wpm_ml_check_language_string( $post_title, $source );
+
+				if( $is_src_title_exist === false ) {
+					$post_title 	=	'[:'.$source.']'.$post_title.'[:]';
+				}
+				
+				$source_title 		=	wpm_ml_get_language_string( $post_title, $source );
+				$new_title 			=	wpm_ml_auto_translate_content( $source_title, $source, $target );
+				
+				$new_title 			= 	'[:'.$target.']'.$new_title.'[:]';
+				$new_title_string 	=	str_replace('[:]',$new_title,$post_title);
+				$post->post_title 	=	$new_title_string;
+				$should_update 		=	true;
+
+			}
+
+			$post_meta 	= $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key IN ('saswp_reviewer_name', 'saswp_review_text') ", $post_id ) );	
+
+			if ( is_array( $post_meta ) && ! empty( $post_meta ) ) {
+
+				foreach ( $post_meta as $meta ) {
+
+					if ( is_object( $meta ) && isset( $meta->meta_value ) ) {
+
+						$val 				=	$meta->meta_value;
+						$is_val_exists 		= 	wpm_ml_check_language_string( $val, $target );
+						if ( $is_val_exists === false ) {
+
+							$is_src_val_exist = wpm_ml_check_language_string( $val, $source );
+
+							if( $is_src_val_exist === false ) {
+								$val 			=	'[:'.$source.']'.$val.'[:]';
+							}
+							$source_val 		=	wpm_ml_get_language_string( $val, $source );
+							$new_val 			=	wpm_ml_auto_translate_content( $source_val, $source, $target );
+							
+							$new_val 			= 	'[:'.$target.']'.$new_val.'[:]';
+							$new_val_string 	=	str_replace('[:]',$new_val,$val);
+								
+							update_post_meta( $post_id, $meta->meta_key, $new_val_string );
+						}
+						
+					}
+
+				}
+					
+			}
+
+			$post_arr 		=	array( 
+										'ID'			=>	$post->ID,
+										'post_title'	=>	$post->post_title,
+
+									);
+			if ( $should_update == true ) {
+				$result  = wp_update_post( $post_arr );
+
+				if ( is_wp_error( $result ) ) {
+					// Handle error.
+					$error_message = $result->get_error_message();
+					$response = array('status'=>false, 'message'=>$error_message);
+				} elseif ( $result === 0 ) {
+					$response = array('status'=>false, 'message'=>esc_html__('Translation can not be updated','wp-multilang'));
+				} else {
+					$response = array('status'=>true, 'message'=>esc_html__('Translation updated successfully','wp-multilang'));
+				} 
+			}
+			
+		}
+
+		return $response;
+	}
+
 }
