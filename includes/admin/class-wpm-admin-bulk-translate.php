@@ -647,7 +647,7 @@ class WPM_Bulk_Translate {
 						<input type="file" name="wpm_import_xliff_file" id="wpm-import-xliff-file">
 						<button type="submit" id="wpm-import-xliff-btn" class="button js-wpm-action" name="wpm_import_xliff_btn" value="Import xliff data"><?php echo esc_html__( 'Import File', 'wp-multilang' ); ?></button>
 						<input type="hidden" name="action" value="wpm_import_translations">
-						<?php wp_nonce_field( 'wpm-xliff-nonce', 'security' ); ?>
+						<?php wp_nonce_field( 'wpm-xliff-nonce', 'wpm_xliff_security' ); ?>
 					</form>
 				</p>
 				<p class="description"><?php echo esc_html__( 'Import translated xliff file.', 'wp-multilang' ); ?></p>
@@ -668,11 +668,11 @@ class WPM_Bulk_Translate {
 			return;
 		}
 
-		if ( ! isset( $_POST['security'] ) ) {
+		if ( ! isset( $_POST['wpm_xliff_security'] ) ) {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_POST['security'], 'wpm-xliff-nonce' ) ) {
+		if ( ! wp_verify_nonce( $_POST['wpm_xliff_security'], 'wpm-xliff-nonce' ) ) {
 			$error 	=	new \WP_Error(
 				'wpm_nonce_error',
 				__( 'Unauthorized to import the file' , 'wp-multilang' )
