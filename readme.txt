@@ -83,7 +83,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 == Advance Woocommerce Support ==
 * Send emails in customer's language
 * REST API Support
-* REST API Support
+* Product import and export of CSV in customer's language
 
 Manage translation settings via json.
 
