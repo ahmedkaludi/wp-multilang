@@ -68,6 +68,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Integrations\\WPM_Schema_Saswp' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-schema-and-structured-data.php',
         'WPM\\Includes\\Integrations\\WPM_Team' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-team.php',
         'WPM\\Includes\\Integrations\\WPM_Forminator' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-forminator.php',
+        'WPM\\Includes\\Integrations\\WPM_Gravityforms' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-gravityforms.php',
         'WPM\\Includes\\Libraries\\WPM_Walker_Nav_Menu_Edit' => __DIR__ . '/../..' . '/includes/libraries/class-wpm-walker-nav-menu-edit.php',
         'WPM\\Includes\\Libraries\\WP_Async_Request' => __DIR__ . '/../..' . '/includes/libraries/abstract-wp-async-request.php',
         'WPM\\Includes\\Libraries\\WP_Background_Process' => __DIR__ . '/../..' . '/includes/libraries/abstract-wp-background-process.php',
