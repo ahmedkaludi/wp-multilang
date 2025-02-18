@@ -80,6 +80,11 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Schema & Structured Data for WP & AMP
 * Forminator Forms
 
+== Advance Woocommerce Support ==
+* Send emails in customer's language
+* REST API Support
+* REST API Support
+
 Manage translation settings via json.
 
 Add in the root of your theme or plugin file `wpm-config.json`.
