@@ -14,7 +14,12 @@
     "wp_template": {},
     "wp_template_part": {},
     "wp_navigation": {},
-    "wp_global_styles": {}
+    "wp_global_styles": {},
+    "woodmart_layout": {},
+    "cms_block": {},
+    "al_product": {},
+    "saswp_reviews": {},
+    "saswp-collections": {}
   },
   "post_fields": {
     "_wp_attachment_image_alt": {},
@@ -22,7 +27,9 @@
   },
   "taxonomies": {
     "category" : {},
-    "post_tag" : {}
+    "post_tag" : {},
+    "al_product-cat" : {},
+    "brand-category" : {}
   },
   "term_fields": {},
   "user_fields": {},

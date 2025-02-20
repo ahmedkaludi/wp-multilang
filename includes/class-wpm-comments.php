@@ -39,6 +39,8 @@ class WPM_Comments extends WPM_Object {
 		add_filter( "update_{$this->object_type}_metadata", array( $this, 'update_meta_field' ), 99, 5 );
 		add_filter( "add_{$this->object_type}_metadata", array( $this, 'add_meta_field' ), 99, 5 );
 		add_action( "delete_{$this->object_type}_metadata", array( $this, 'delete_meta_field' ), 99, 3 );
+		add_filter( "wp_update_{$this->object_type}_data", array( $this, 'save_translated_comment' ), 10, 3 );
+		add_filter( "get_{$this->object_type}", array( $this, 'translate_comment' ) );
 	}
 
 	/**
@@ -133,5 +135,71 @@ class WPM_Comments extends WPM_Object {
 		wp_cache_add( $post_id, $count_array, 'wpm_comment_count' );
 
 		return $count;
+	}
+	
+	/**
+	 * Translate Comment data and store it in a comment meta table
+	 * @param 	$commentdata 	array
+	 * @return 	$commentdata 	array
+	 * @since 	2.4.17
+	 * */
+	public function save_translated_comment( $data, $old_data, $commentarr ){
+		
+		if ( is_admin() ) {
+			
+			if ( is_array( $data ) && isset( $data['comment_content'] ) && is_array( $old_data ) && isset( $old_data['comment_content'] ) ) {
+				$current_language 	=	wpm_get_language();
+				$default_language 	=	wpm_get_default_language();
+				$languages 			=	wpm_get_languages();
+
+				// Comment has not been edited in default language, then store old comment only
+				$updated_comment 	=	$data['comment_content'];
+				if ( $current_language !==  $default_language) {
+					$data['comment_content'] = $old_data['comment_content'];
+				}
+
+				if ( ! empty( $languages ) && is_array( $languages ) && array_key_exists( $current_language, $languages ) ) {
+
+					$comment_id 	=	$data['comment_ID'];
+					$comment_meta 	=	get_comment_meta( $comment_id, '_wpm_translated_comments', true );
+
+					if ( empty( $comment_meta ) ) {
+						$comment_meta =	array();
+					}
+
+					if ( empty( $comment_meta ) && $current_language !== $default_language ) {
+						$comment_meta[$default_language] 	=	$old_data['comment_content'];			
+					}
+
+					$comment_meta[$current_language]		=	$updated_comment;
+					update_comment_meta( $comment_id, '_wpm_translated_comments', $comment_meta );
+
+				}
+			}
+
+		}
+		return $data; 
+	}
+
+	/**
+	 * Translate comment content
+	 * @param 	$_comment 	WP_Comment 
+	 * @return 	$_comment 	WP_Comment
+	 * @since 	2.4.17
+	 * */
+	public function translate_comment( $_comment ) {
+		
+		if ( is_object( $_comment ) && isset( $_comment->comment_ID ) ) {
+
+			$current_language 	=	wpm_get_language();
+			$comment_id 		=	$_comment->comment_ID;
+
+			$comment_meta 		=	get_comment_meta( $comment_id, '_wpm_translated_comments', true );
+			if ( is_array( $comment_meta ) && isset( $comment_meta[$current_language] ) ) {
+				$_comment->comment_content	=	$comment_meta[$current_language];
+			}
+		}
+
+		return $_comment;
 	}
 }

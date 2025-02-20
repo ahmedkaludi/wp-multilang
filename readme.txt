@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.7
-Stable tag: 2.4.16
+Stable tag: 2.4.17
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -28,6 +28,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Auto Translation ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-auto-translate-your-website-contents-using-wp-multilang/)
 * Support URL Slug Translation ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-translate-url-slugs-with-selective-languages/)
 * Support Base Translation ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-translate-taxonomy-bases-such-as-categories-and-tags-into-selective-languages-using-the-base-translation-option/)
+* Export and import content in XLIFF or xml format to translate outside
 
 == Features of the plugin WP Multilang ==
 
@@ -79,6 +80,14 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Team – Team Members Showcase Plugin
 * Schema & Structured Data for WP & AMP
 * Forminator Forms
+* Gravity Forms
+
+== Advance Woocommerce Support ==
+* Send emails in customer's selected language
+* REST API Support
+* Import and export products in customer's selected language
+* Translate products (simple products, variable products, grouped products), categories, tags, global attributes
+* Cart synchronization across multiple languages 
 
 Manage translation settings via json.
 
@@ -235,6 +244,17 @@ If you have opened several browser tabs for editing this post in different langu
 5. Post edit page
 
 == Changelog ==
+
+= 2.4.17 =
+- feature Comments translation compatibility #38
+- feature Export and import content in XLIFF or xml format to translate outside #48
+- enhancement Made uninstall easy #138
+- feature Advance woocommerce support #139
+- feature Auto-translate single post/product #142
+- enhancement Checked license key for autotranslation feature #144
+- feature Added compatibility with Gravity form #148
+- fixed Execution timing issue with the code-profiler plugin #149
+- feature Auto-Translation for Reviews and Collections in Schema Plugin #150
 
 = 2.4.16 =
 - feature Rankmath multilingual schema and structured data support #56

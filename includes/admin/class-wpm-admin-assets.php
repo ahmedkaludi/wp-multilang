@@ -117,6 +117,10 @@ class WPM_Admin_Assets {
 			$show_switcher = true;
 		}
 
+		if ( 'edit-comments' === $screen_id ) {
+			$show_switcher = true;
+		}
+
 		$config             = wpm_get_config();
 		$admin_pages_config = (array) apply_filters( 'wpm_admin_pages', $config['admin_pages'] );
 

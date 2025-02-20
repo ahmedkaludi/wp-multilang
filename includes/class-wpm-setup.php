@@ -544,6 +544,7 @@ class WPM_Setup {
 			'schema-and-structured-data-for-wp' => __NAMESPACE__ . '\Integrations\WPM_Schema_Saswp',
 			'tlp-team' 					 => __NAMESPACE__ . '\Integrations\WPM_Team',
 			'forminator' 				 => __NAMESPACE__ . '\Integrations\WPM_Forminator',
+			'gravityforms' 				 => __NAMESPACE__ . '\Integrations\WPM_Gravityforms',
 		) );
 
 		$active_plugins = wp_cache_get( 'active_plugins', 'wpm' );

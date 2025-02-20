@@ -101,7 +101,7 @@ class WPM_AJAX {
 			'qtx_import'           => false,
 			'rated'                => false,
 			'send_query_message'   => false,
-			'send_feedback'   	   => false,
+			'deactivate_plugin'    => false,
 			'subscribe_to_news_letter' => false,
 			'newsletter_hide_form' => false,
 			'settings_newsletter_submit' => false,
@@ -318,14 +318,14 @@ class WPM_AJAX {
 	}
 	
 	/**
-	 * Triggered when any support query is sent from Help & Support tab
-	 * @since 2.4.6
+	 * Trigger when delete translation check box checked from popup modal when deactivating the plugin
+	 * @since 2.4.17
 	 * */
-	public static function send_feedback()
+	public static function deactivate_plugin()
 	{
-		if ( ! current_user_can( 'manage_translations' ) ) {
-			wp_die( -1 );
-		}
+		// if ( ! current_user_can( 'manage_translations' ) ) {
+		// 	wp_die( -1 );
+		// }
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Security measurament is done below in this function with nonce key wpm_feedback_nonce.
 		if( isset( $_POST['data'] ) ) {
@@ -333,47 +333,23 @@ class WPM_AJAX {
 	        parse_str( $_POST['data'], $data );
 	    }
 
-	    if(!isset($data['wpm_feedback_nonce'])){
+	    if ( ! isset( $data['wpm_deactivate_plugin_nonce'] ) ) {
 	    	wp_die( -1 );
 	    }
 
-	    if ( !wp_verify_nonce( $data['wpm_feedback_nonce'], 'wpm_feedback_nonce' ) ){
-       		return;  
+	    if ( ! wp_verify_nonce( $data['wpm_deactivate_plugin_nonce'], 'wpm_deactivate_plugin_nonce' ) ) {
+       		wp_die( -1 ); 
     	}
 
-		$text = '';
-	    if( isset( $data['wpm_disable_text'] ) ) {
-	        $text = implode( "\n\r", sanitize_text_field( $data['wpm_disable_text'] ) );
-	    }
+    	// Reset translation data
+    	if ( ! empty( $data['wpm_uninstall_translations'] ) ) {
+    		
+    		if ( class_exists('WPM\Includes\Admin\WPM_Reset_Settings') ) {
+    			
+    			\WPM\Includes\Admin\WPM_Reset_Settings::wpm_uninstall_translations_data();
+    		}
 
-	    $headers = array();
-
-	    $from = isset( $data['wpm_disable_from'] ) ? sanitize_email( $data['wpm_disable_from'] ) : '';
-	    if( $from ) {
-	    	$headers[] = 'Content-Type: text/html; charset=UTF-8';
-	        $headers[] = "From: $from";
-	        $headers[] = "Reply-To: $from";
-	    }
-
-	    $subject = isset( $data['wpm_disable_reason'] ) ? sanitize_text_field( $data['wpm_disable_reason'] ) : '(no reason given)';
-
-	    if($subject == 'technical'){
-	    	  $subject = $subject.' - WP Multilang';
-	    	  
-	          $text = trim($text);
-
-	          if(!empty($text)){
-
-	            $text = 'technical issue description: '.$text;
-
-	          }else{
-
-	            $text = 'no description: '.$text;
-	          }
-	      
-	    }
-
-	    $success = wp_mail( 'team@magazine3.in', $subject, $text, $headers );
+    	}
 
 		wp_die();
 	}

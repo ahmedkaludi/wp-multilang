@@ -675,7 +675,10 @@ class WPM_Yoast_Seo {
 
 		if( is_object( $post ) && ! empty( $post->ID ) ) {
 			
-			$description 	=	get_post_meta( $post->ID, '_yoast_wpseo_metadesc', true );
+			$desc 	=	get_post_meta( $post->ID, '_yoast_wpseo_metadesc', true );
+			if ( ! empty( $desc ) ) {
+				$description 	=	$desc;
+			}
 		}
 		return $description;
 	}

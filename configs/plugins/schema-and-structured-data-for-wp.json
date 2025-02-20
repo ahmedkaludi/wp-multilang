@@ -7,6 +7,8 @@
     "saswp_taxonomy_term": {},
     "saswp_fixed_text": {},
     "saswp_custom_meta_field": {},
-    "saswp_schema_template_field": {}
+    "saswp_schema_template_field": {},
+    "saswp_reviewer_name": {},
+    "saswp_review_text": {}
   }
 }
