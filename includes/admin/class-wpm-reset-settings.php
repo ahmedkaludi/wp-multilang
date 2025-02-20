@@ -276,6 +276,29 @@ class WPM_Reset_Settings {
 						$wpdb->update( $wpdb->options, compact( 'option_value' ), array( 'option_id' => $result->option_id ) );
 					}
 
+					/**
+					 * Delete custom options stored by WP-Multilang plgin
+					 * @since 2.4.17
+					 * */
+					$delete_options 	=	array( 'gf_display_meta_' );
+
+					// Prepare the LIKE conditions for the query
+					$like_clauses = array_map(function($prefix) use ($wpdb) {
+					    return $wpdb->prepare("option_name LIKE %s", $prefix . '%');
+					}, $delete_options);
+					// Join the conditions with OR
+					$where_clause = implode(' OR ', $like_clauses);
+					// Query the options table
+					$custom_options = $wpdb->get_results("SELECT * FROM {$wpdb->options} WHERE $where_clause");
+
+					if ( ! empty( $custom_options ) && is_array( $custom_options ) ) {
+						foreach ( $custom_options as $gf_options ) {
+							if ( is_object( $gf_options ) && isset( $gf_options->option_id ) ) {
+								$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_id=$gf_options->option_id");		
+							}
+						}
+					}
+
 					break;
 
 				case 'site_options':
