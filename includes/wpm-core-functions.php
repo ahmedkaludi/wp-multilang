@@ -535,3 +535,33 @@ if ( ! function_exists( 'is_front_ajax' ) ) {
 		return wp_doing_ajax() && ( $referrer = wp_get_raw_referer() ) && ! is_admin_url( $referrer ) ;
 	}
 }
+
+/**
+ * Get custom post types
+ * @return 	$cpt 	array
+ * @since 	2.4.18
+ * */
+function wpm_get_custom_post_types() {
+
+	$cpt_array 			=	array();
+	$custom_post_types 	=	get_post_types( array(), 'objects' );
+
+	if ( ! empty( $custom_post_types ) && is_array( $custom_post_types ) ) {
+
+		// Remove these post types from array
+		$unset_cpt 		=	array( 'saswp_reviews_server', 'saswp_server_rvs_loc', 'saswp_rvs_location',  );
+		$exclude_types	=	apply_filters( 'wpm_exclude_post_types', $unset_cpt );
+
+		foreach ( $custom_post_types as $key => $cpt ) {
+			if ( in_array( $cpt->name, $exclude_types ) ) {
+				unset( $custom_post_types[ $cpt->name ] );
+			}else{
+				$cpt_array[ $cpt->name ] 	=	$cpt->label;	
+			}
+		}
+
+	}
+
+	return $cpt_array;
+
+}

@@ -311,5 +311,10 @@
   font-weight: 500;
   font-size: 14px;
 }
-
+.wpm-post-type-table td{
+  padding: 0px;
+}
+.wpm-post-type-table td label:hover{
+  cursor: pointer;
+}
 /*# sourceMappingURL=admin.css.map */

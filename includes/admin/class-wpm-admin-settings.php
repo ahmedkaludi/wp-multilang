@@ -506,6 +506,56 @@ class WPM_Admin_Settings {
 						echo $description_escaped;
 					}
 				break;	
+				
+				case 'checkboxgroup':
+					
+					if ( $value['id'] == 'wpm_custom_post_types' ) {
+
+						$post_type_config 	=	wpm_get_config();
+						$post_type_config 	=	$post_type_config['post_types'];	
+
+						$supported_post 	=	get_option( 'wpm_custom_post_types' );
+						// echo "<pre>supported_post===== "; print_r($supported_post); die;
+						
+					?>
+						<tr valign="top">
+							<th scope="row">
+								<label><?php echo esc_html( $value['title'] ); ?></label>
+							</th>
+							<td>
+								<table class="wpm-post-type-table">
+									<?php 
+									foreach ( $value['options'] as $opt_key  => $option ) {
+
+										$field_id 		=	$value['id'].'['.$opt_key.']';
+										$checked 		=	'';
+									?>
+										<tr>
+											<td>
+												<?php 
+												if ( ( empty( $supported_post ) && array_key_exists( $opt_key, $post_type_config ) ) || ( ! empty( $supported_post ) && array_key_exists( $opt_key, $supported_post ) ) ) {		
+													?>
+													<input type="checkbox" name="<?php echo esc_attr( $field_id ); ?>" id="<?php echo esc_attr( $field_id ); ?>" <?php checked( 'yes', 'yes' ); ?>>
+													<?php
+												}else{ ?>
+													<input type="checkbox" name="<?php echo esc_attr( $field_id ); ?>" id="<?php echo esc_attr( $field_id ); ?>" <?php echo esc_attr( $checked ); ?>>
+												<?php
+												}	
+												?>
+												<label for="<?php echo esc_attr( $field_id ); ?>"><?php echo esc_html( $option ); ?></label>
+											</td>
+										</tr>
+									<?php
+									}
+									?>
+								</table>
+							</td>
+						</tr>
+					<?php
+					}
+					// echo "<pre>value===== "; print_r($value); die;
+
+				break;	
 
 				// Default: run an action
 				default:

@@ -179,6 +179,7 @@ final class WP_Multilang {
 		new WPM_Users();
 		new WPM_Comments();
 		new WPM_Shortcodes();
+		new WPM_Custom_Post_Types();
 
 		if ( $this->is_request( 'admin' ) ) {
 			new Admin\WPM_Admin();
