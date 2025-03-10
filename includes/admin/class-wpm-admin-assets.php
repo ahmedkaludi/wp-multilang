@@ -250,12 +250,10 @@ class WPM_Admin_Assets {
                         window.setTimeout(wpm_add_language_switcher_deferred, ".esc_js( $interval ).");
 
                         wpm_site_editor_lang_switcher_deferred = function() {
-                            var SiteToolBar = $('.edit-site-layout__header-container .edit-site-site-hub__site-view-link');
+                            var SiteToolBar = $('.edit-site-site-hub .edit-site-site-hub__title');
                             
                             if(SiteToolBar.length) {
                                 SiteToolBar.before(language_switcher);
-
-                                $('.edit-site-layout__header-container .wpm-language-switcher').css({'left': '67%'});
                             }
                         }
 
@@ -331,7 +329,7 @@ class WPM_Admin_Assets {
 	            		if($('.wpm-language-switcher').length > 0){
 	            			$('.wpm-language-switcher').css({'left': '67%'});
 
-	            			$('.edit-site-layout__header-container .wpm-language-switcher').remove();
+	            			$('.edit-site-site-hub .wpm-language-switcher').remove();
 
 	            			window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
 
@@ -348,7 +346,7 @@ class WPM_Admin_Assets {
 	                	if($('.wpm-language-switcher').length > 0){
 			            	$('.wpm-language-switcher').css({'left': '67%'});
 
-			            	$('.edit-site-layout__header-container .wpm-language-switcher').remove();
+			            	$('.edit-site-site-hub .wpm-language-switcher').remove();
 
 			            	window.setTimeout(wpm_site_editor_lang_switcher_deferred, 500);
 			            }else{
