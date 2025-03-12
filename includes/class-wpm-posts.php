@@ -56,6 +56,7 @@ class WPM_Posts extends WPM_Object {
 		add_filter( 'wp_get_attachment_link', array( $this, 'translate_attachment_link' ), 5 );
 		add_filter( 'render_block', array( $this, 'wpm_render_post_block' ), 10, 2);
 		add_filter( 'rest_post_dispatch', array( $this, 'wpm_rest_post_dispatch' ), 10, 3);
+		add_filter( 'rest_post_dispatch', array( $this, 'translate_block_nav_url' ), 10, 3);
 		
 		// Block editor filter for saving the post data
 		add_filter( 'wpm_filter_block_editor_post_data', array( $this, 'wpm_filter_block_editor_post_data_clbk' ), 10, 2 );
@@ -358,5 +359,30 @@ class WPM_Posts extends WPM_Object {
 		}
 
 		return $old_value;
+	}
+
+	/**
+	 * Transate the block editor navigation block url for page
+	 * @param 	$result 	WP_HTTP_Response 
+	 * @param 	$server 	WP_REST_Server  
+	 * @param 	$request 	WP_REST_Request  
+	 * @return 	$result 	WP_HTTP_Response  
+	 * @since 	2.4.18
+	 * */
+	public function translate_block_nav_url( $result, $server, $request  ) {
+		
+		if ( is_object( $result ) && ! empty( $result->data ) && is_array( $result->data ) ) {
+
+			foreach ( $result->data as $key => $value ) {
+
+				if ( is_array( $value ) && ! empty( $value['subtype'] ) && ! empty( $value['url'] ) && $value['subtype'] == 'page' ) {
+					$result->data[$key]['url'] 	=	wpm_translate_url( $value['url'] );		
+				}
+
+			}
+		
+		}
+		return $result;
+
 	}
 }
