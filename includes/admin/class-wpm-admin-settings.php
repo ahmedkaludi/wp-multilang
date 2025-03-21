@@ -515,7 +515,7 @@ class WPM_Admin_Settings {
 						$post_type_config 	=	$post_type_config['post_types'];	
 
 						$supported_post 	=	get_option( 'wpm_custom_post_types' );
-						// echo "<pre>supported_post===== "; print_r($supported_post); die;
+						
 						
 					?>
 						<tr valign="top">

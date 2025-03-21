@@ -265,13 +265,13 @@ class WPM_Settings_General extends WPM_Settings_Page {
 
 
 		$settings[] = array(
-			'title' => esc_html__( 'Custom Post Type', 'wp-multilang' ),
+			'title' => esc_html__( 'Activate Multilingual Support for Post Types', 'wp-multilang' ),
 			'type'  => 'title',
 			'id'	=> 'wpm-cpt-settings'	
 		);
 
 		$settings[] = array(
-			'title'    => esc_html__( 'Enable Support', 'wp-multilang' ),
+			'title'    => esc_html__( 'Post Types', 'wp-multilang' ),
 			'desc'     => esc_html__( 'Select custom post types for translation', 'wp-multilang' ),
 			'id'       => 'wpm_custom_post_types',
 			'type'     => 'checkboxgroup',

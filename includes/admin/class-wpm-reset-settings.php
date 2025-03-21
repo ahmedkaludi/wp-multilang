@@ -57,6 +57,7 @@ class WPM_Reset_Settings {
 		update_option( 'wpm_elementor_compatibility_free', 'no' );
 		update_option( 'wpm_divi_compatibility_free', 'no' );
 		update_option( 'wpm_languages', $default_language );
+		delete_option( 'wpm_custom_post_types' );
 
 	}
 
