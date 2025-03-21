@@ -72,7 +72,7 @@ class WPM_Admin_Gutenberg_Block {
 
             if(is_object($current_screen)){
                 if(!empty($current_screen->post_type) && !empty($current_screen->is_block_editor) ){
-                    if(($current_screen->post_type == 'page' || $current_screen->post_type == 'post') && $current_screen->is_block_editor == 1){
+                    if ( ( null !== wpm_get_post_config( $current_screen->post_type ) ) && $current_screen->is_block_editor == 1){
 
                         $filename = '/assets/blocks/language-switcher/css/wpm-block-style.css';
                         $css_style_path = wpm()->plugin_url().$filename;

@@ -3,3 +3,6 @@
 	text-align: left;
 	margin-left: 0px !important;
 }
+.interface-interface-skeleton__body .interface-navigable-region{
+	z-index: 1;
+}

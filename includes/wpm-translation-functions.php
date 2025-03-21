@@ -9,6 +9,7 @@
  * @package       WPM/Functions
  * @version       2.0.0
  */
+use WPM\Includes\WPM_Custom_Post_Types;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -26,6 +27,16 @@ function wpm_translate_url( $url, $language = '' ) {
 	$host = wpm_get_orig_home_url();
 
 	if ( strpos( $url, $host ) === false ) {
+		return $url;
+	}
+
+	/**
+	 * Check if post type support is enabled or not
+	 * if it is not enabled then return the string as it is
+	 * @since 2.4.18
+	 * */
+	global $post;
+	if ( WPM_Custom_Post_Types::validate_post_type_support( $post ) ) {
 		return $url;
 	}
 
@@ -87,6 +98,16 @@ function wpm_translate_url( $url, $language = '' ) {
 function wpm_translate_string( $string, $language = '' ) {
 
 	if ( ! wpm_is_ml_string( $string ) ) {
+		return $string;
+	}
+
+	/**
+	 * Check if post type support is enabled or not
+	 * if it is not enabled then return the string as it is
+	 * @since 2.4.18
+	 * */
+	global $post;
+	if ( WPM_Custom_Post_Types::validate_post_type_support( $post ) ) {
 		return $string;
 	}
 

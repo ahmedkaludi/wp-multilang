@@ -33,6 +33,7 @@ class WPM_Settings_General extends WPM_Settings_Page {
 		add_filter( 'wpm_disable_translation_options', array( $this, 'unset_translation_options' ) );
 		add_filter( 'wpm_general_settings', array( $this, 'add_reset_settings' ) );
 		add_action( 'wpm_admin_field_reset_settings', array( $this, 'reset_settings' ) );
+		add_filter( 'wpm_general_settings', array( $this, 'add_cpt_settings' ) );
 	}
 
 	/**
@@ -247,6 +248,39 @@ class WPM_Settings_General extends WPM_Settings_Page {
 			</td>
 		</tr>
 		<?php
+
+	}
+
+	/**
+	 * Add reset settings options
+	 * @param  	$settings 	Array
+	 * @return 	$settings 	Array
+	 * @since 	2.4.18
+	 * */
+	public function add_cpt_settings( $settings ){
+
+		$post_types 	=	array();
+		$post_types 	=	wpm_get_custom_post_types();
+
+
+
+		$settings[] = array(
+			'title' => esc_html__( 'Activate Multilingual Support for Post Types', 'wp-multilang' ),
+			'type'  => 'title',
+			'id'	=> 'wpm-cpt-settings'	
+		);
+
+		$settings[] = array(
+			'title'    => esc_html__( 'Post Types', 'wp-multilang' ),
+			'desc'     => esc_html__( 'Select custom post types for translation', 'wp-multilang' ),
+			'id'       => 'wpm_custom_post_types',
+			'type'     => 'checkboxgroup',
+			'options'  => $post_types,
+		);
+
+		$settings[] = array( 'type' => 'sectionend', 'id' => 'wpm-cpt-settings' );
+
+		return $settings;
 
 	}
 }

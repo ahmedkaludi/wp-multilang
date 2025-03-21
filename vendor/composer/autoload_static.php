@@ -89,6 +89,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\WPM_Users' => __DIR__ . '/../..' . '/includes/class-wpm-users.php',
         'WPM\\Includes\\WPM_Widgets' => __DIR__ . '/../..' . '/includes/class-wpm-widgets.php',
         'WPM\\Includes\\WP_Multilang' => __DIR__ . '/../..' . '/includes/class-wp-multilang.php',
+        'WPM\\Includes\\WPM_Custom_Post_Types' => __DIR__ . '/../..' . '/includes/class-wpm-custom-types.php',
         'WPM\\Includes\\Widgets\\WPM_Widget_Language_Switcher' => __DIR__ . '/../..' . '/includes/widgets/class-wpm-widget-language-switcher.php',
     );
 

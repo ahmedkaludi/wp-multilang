@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.7
-Stable tag: 2.4.17
+Stable tag: 2.4.18
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -29,6 +29,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Support URL Slug Translation ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-translate-url-slugs-with-selective-languages/)
 * Support Base Translation ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-translate-taxonomy-bases-such-as-categories-and-tags-into-selective-languages-using-the-base-translation-option/)
 * Export and import content in XLIFF or xml format to translate outside
+* Activate Multilingual Support for Post Types
 
 == Features of the plugin WP Multilang ==
 
@@ -244,6 +245,16 @@ If you have opened several browser tabs for editing this post in different langu
 5. Post edit page
 
 == Changelog ==
+
+= 2.4.18 =
+- feature Feature to enable support for any custom post type #143
+- fixed Language Switcher issue on gutenberg editor #147
+- fixed Navigation links are not translatable #151
+- fixed Code improvement for bulk translation #153
+- fixed Code improvement of on language switcher on custom post type editor #155
+- fixed code improvement for Category base translation #157
+- fixed Elementor css file creation for respective language #158
+- enhancement Auto translation code improvement when some specials characters are present #159
 
 = 2.4.17 =
 - feature Comments translation compatibility #38

@@ -78,6 +78,7 @@ $class_map_array =  array(
     'WPM\\Includes\\WPM_Users' => $baseDir . '/includes/class-wpm-users.php',
     'WPM\\Includes\\WPM_Widgets' => $baseDir . '/includes/class-wpm-widgets.php',
     'WPM\\Includes\\WP_Multilang' => $baseDir . '/includes/class-wp-multilang.php',
+    'WPM\\Includes\\WPM_Custom_Post_Types' => $baseDir . '/includes/class-wpm-custom-types.php',
     'WPM\\Includes\\Widgets\\WPM_Widget_Language_Switcher' => $baseDir . '/includes/widgets/class-wpm-widget-language-switcher.php',
 );
 
