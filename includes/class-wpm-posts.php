@@ -72,7 +72,23 @@ class WPM_Posts extends WPM_Object {
 	 */
 	public function translate_posts( $posts ) {
 		foreach ( $posts as &$post ) {
-			$post = wpm_translate_post( $post );
+
+			if(!function_exists('wp_get_theme')){
+				require_once ABSPATH . 'wp-includes/theme.php';
+			}
+
+			$active_theme = wp_get_theme();
+			$active_theme_name = '';
+			if ( ! empty( $active_theme ) && is_object( $active_theme ) ) {
+				$active_theme_name = $active_theme->get( 'Name' );
+			}
+
+			if ( $active_theme_name == 'Pinnacle' && isset( $post->post_type ) && $post->post_type == 'page' ) {
+				$post = $post;
+			}else{
+				$post = wpm_translate_post( $post );
+			}
+
 		}
 
 		return $posts;
