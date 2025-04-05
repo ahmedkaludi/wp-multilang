@@ -52,8 +52,13 @@ function wpm_translate_url( $url, $language = '' ) {
 		$language = $user_language;
 	}
 
-	if ( is_admin_url( $url ) || preg_match( '/^.*\.php$/i', wp_parse_url( $url, PHP_URL_PATH ) ) ) {
-		return add_query_arg( 'lang', $language, $url );
+	if ( ! empty( $url ) ) {
+		$parse_url 	=	wp_parse_url( $url, PHP_URL_PATH );
+		if ( ! empty( $parse_url ) ) {
+			if ( is_admin_url( $url ) || preg_match( '/^.*\.php$/i', $parse_url ) ) {
+				return add_query_arg( 'lang', $language, $url );
+			}
+		}
 	}
 
 	$url         = remove_query_arg( 'lang', $url );
