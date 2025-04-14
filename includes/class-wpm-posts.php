@@ -114,6 +114,23 @@ class WPM_Posts extends WPM_Object {
 			}
 		}
 
+		/**
+		 * If language is not selected from language meta box for category then return as it is
+		 * Solution to ticket no #149
+		 * @since 	2.4.19
+		 * */
+		if ( is_category() || is_archive() || ( function_exists( 'is_product_category' ) && is_product_category() ) ) {
+
+			$queried_obj 	=	get_queried_object();
+			if ( is_object( $queried_obj ) && isset( $queried_obj->term_id ) ) {
+				$is_lang_exists 	=	get_term_meta( $queried_obj->term_id, '_languages', true );
+				if ( empty( $is_lang_exists ) ) {
+					return $query;	
+				}
+			}
+
+		}
+
 		$lang = get_query_var( 'lang' );
 
 		if ( ! $lang ) {
