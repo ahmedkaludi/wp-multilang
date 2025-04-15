@@ -405,6 +405,7 @@ class WPM_Bulk_Translate
             );
             header("Content-Length: " . strlen($xliff_content));
 
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped --Reason: escaping is already done above.
             echo $xliff_content;
 
             exit();

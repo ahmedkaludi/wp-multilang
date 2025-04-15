@@ -289,12 +289,13 @@ class WPM_Reset_Settings {
 					}, $delete_options);
 					// Join the conditions with OR
 					$where_clause 		= implode( ' OR ', $like_clauses );
-					// Query the options table
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 					$custom_options 	= $wpdb->get_results( "SELECT * FROM {$wpdb->options} WHERE $where_clause" );
 
 					if ( ! empty( $custom_options ) && is_array( $custom_options ) ) {
 						foreach ( $custom_options as $gf_options ) {
 							if ( is_object( $gf_options ) && isset( $gf_options->option_id ) ) {
+								// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 								$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_id=$gf_options->option_id" );		
 							}
 						}

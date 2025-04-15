@@ -473,6 +473,7 @@ class WPM_Schema_Saswp {
 
 			}
 
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$post_meta 	= $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key IN ('saswp_reviewer_name', 'saswp_review_text') ", $post_id ) );	
 
 			if ( is_array( $post_meta ) && ! empty( $post_meta ) ) {
