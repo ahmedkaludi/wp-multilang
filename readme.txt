@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.8
-Stable tag: 2.4.18
+Stable tag: 2.4.19
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -246,6 +246,15 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.19 =
+- fixed Code-profiler plugin execution time issue #149
+- fixed Woocommerce settings translation improvement #161
+- feature Compatibility with ACF Pro Pages Option #162
+- fixed Conflict issue with pinnacle theme #163
+- fixed Code improvement of translation #164
+- fixed Compatibility with WordPress 6.8 and updated readme.txt #165
+- feature Added compatibility with Cyr-To-Lat plugin #169
+
 = 2.4.18 =
 - feature Feature to enable support for any custom post type #143
 - fixed Language Switcher issue on gutenberg editor #147
@@ -351,14 +360,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed Translate escaping text #34
 - fixed Rank Math custom fields getting duplicated on the translated posts #35
 - fixed Issue with language switcher regex for gutenberg #36
-
-= 2.4.4 =
-- fixed issue with ACF PRO #12
-- fixed An error occurred when deleting a post #13
-- fixed E_ERROR in class-wpm-install.php #16
-- fixed Issue with Gutenberg reusable blocks and create pattern #17
-- fixed No translation for Title, Meta etc. if using AIOSEO plugin #18
-- fixed No Translation of URL, and social meta tags using YOAST plugin in #23
-- fixed Issue with the Rank Math Seo meta field #24
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
