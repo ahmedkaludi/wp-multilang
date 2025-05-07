@@ -72,7 +72,23 @@ class WPM_Posts extends WPM_Object {
 	 */
 	public function translate_posts( $posts ) {
 		foreach ( $posts as &$post ) {
-			$post = wpm_translate_post( $post );
+
+			if(!function_exists('wp_get_theme')){
+				require_once ABSPATH . 'wp-includes/theme.php';
+			}
+
+			$active_theme = wp_get_theme();
+			$active_theme_name = '';
+			if ( ! empty( $active_theme ) && is_object( $active_theme ) ) {
+				$active_theme_name = $active_theme->get( 'Name' );
+			}
+
+			if ( $active_theme_name == 'Pinnacle' && isset( $post->post_type ) && $post->post_type == 'page' ) {
+				$post = $post;
+			}else{
+				$post = wpm_translate_post( $post );
+			}
+
 		}
 
 		return $posts;
@@ -96,6 +112,23 @@ class WPM_Posts extends WPM_Object {
 			if ( is_string( $post_type ) && null === wpm_get_post_config( $post_type ) ) {
 				return $query;
 			}
+		}
+
+		/**
+		 * If language is not selected from language meta box for category then return as it is
+		 * Solution to ticket no #149
+		 * @since 	2.4.19
+		 * */
+		if ( is_category() || is_archive() || ( function_exists( 'is_product_category' ) && is_product_category() ) ) {
+
+			$queried_obj 	=	get_queried_object();
+			if ( is_object( $queried_obj ) && isset( $queried_obj->term_id ) ) {
+				$is_lang_exists 	=	get_term_meta( $queried_obj->term_id, '_languages', true );
+				if ( empty( $is_lang_exists ) ) {
+					return $query;	
+				}
+			}
+
 		}
 
 		$lang = get_query_var( 'lang' );

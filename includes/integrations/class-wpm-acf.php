@@ -35,6 +35,8 @@ class WPM_Acf {
 		add_filter( 'wpm_acf_textarea_config', '__return_empty_array' );
 		add_filter( 'wpm_acf_wysiwyg_config', '__return_empty_array' );
 		add_filter( 'wpm_acf_image_config', '__return_empty_array' );
+		add_filter( 'wpm_admin_pages', array( $this, 'add_dynamic_pages' ) );
+
 	}
 
 
@@ -158,5 +160,62 @@ class WPM_Acf {
 		$value = wpm_set_new_value( $old_value, $value, $acf_field_config );
 
 		return $value;
+	}
+	
+	/**
+	 * Add dynamic option pages to config
+	 * @param 	$config 	array
+	 * @return 	$config 	array
+	 * @since 	2.4.19
+	 * */
+	public function add_dynamic_pages( $config ) {
+		
+		$posts = get_posts([
+		    'post_type'      => 'acf-ui-options-page',
+		    'post_status'    => 'publish',
+		    'numberposts'    => -1, // Get all published posts
+		]);
+
+		if ( ! empty( $posts ) && is_array( $posts ) ) {
+			foreach ( $posts as $option_page ) {
+				if ( is_object( $option_page ) && ! empty( $option_page->post_content ) ) {
+					$content 	=	maybe_unserialize( wpm_translate_string( $option_page->post_content ) );
+					if ( is_array( $content ) && ! empty( $content['menu_slug'] ) ) {
+						$parent 	=	$content['parent_slug'];
+						$page_id 	=	'toplevel_page_' . $content['menu_slug'];
+						$config[] 	=	$page_id;
+						
+						// If page is assigned to any of the menus the get the proper base to add it into the config
+						if ( $parent != 'none' ) {
+							
+							if ( $parent == 'options-general.php' ) {
+								$page_id 	=	'settings_page_' . $content['menu_slug']; 	
+							} else if( $parent == 'tools.php' ) {
+								$page_id 	=	'tools_page_' . $content['menu_slug'];
+							}else{
+
+								// If parent is assigned other than settings and tools menu then get the correct base for this
+								$parse_parent	=	parse_url( $parent, PHP_URL_QUERY );
+								parse_str( $parse_parent, $params );
+								if ( is_array( $params ) && ! empty( $params['post_type'] ) ) {
+									$delimiter	=	strpos( $params['post_type'], '-' ) !== false ? '-' : '_';
+									if ( ! empty( $delimiter ) ) {
+										$base 	=	explode( $delimiter, $params['post_type'] )[0];
+										$page_id 	=	$base . '_' . 'page_' . $content['menu_slug'];
+									}
+								}
+
+							}
+							
+						}
+
+						$config[] 	=	$page_id;
+					}
+				}	
+			}
+		}
+		
+		return $config;
+
 	}
 }
