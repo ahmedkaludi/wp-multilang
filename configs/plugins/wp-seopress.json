@@ -1,0 +1,56 @@
+{
+  "post_fields": {
+    "_seopress_titles_title": {},
+    "_seopress_titles_desc": {},
+    "_seopress_social_fb_title": {},
+    "_seopress_social_fb_desc": {},
+    "_seopress_social_fb_img": {},
+    "_seopress_social_twitter_title": {},
+    "_seopress_social_twitter_desc": {},
+    "_seopress_social_twitter_img": {},
+    "_seopress_canonical_url": {},
+    "_seopress_target_kw": {},
+    "_seopress_analysis_data": {}
+  },
+  "admin_pages": [
+    "seopress-option-titles",
+    "seopress-option-social"
+  ],
+  "options": {
+    "seopress_titles_option_name": {
+      "seopress_titles_home_site_title": {},
+      "seopress_titles_home_site_desc": {},
+      "seopress_titles_author_title": {},
+      "seopress_titles_author_desc": {},
+      "seopress_titles_archives_title": {},
+      "seopress_titles_archives_desc": {},
+      "seopress_titles_search_title": {},
+      "seopress_titles_404_title": {}
+    },
+    "seopress_breadcrumbs_option_name": {
+      "seopress_breadcrumb_home_title": {},
+      "seopress_breadcrumb_prefix": {},
+      "seopress_breadcrumb_archive_title": {},
+      "seopress_breadcrumb_search_title": {},
+      "seopress_breadcrumb_404_title": {}
+    },
+    "seopress_rss_option_name": {
+      "seopress_rss_before_content": {},
+      "seopress_rss_after_content": {}
+    },
+    "seopress_taxonomy_option_name": {
+      "each_tax": {
+        "seopress_titles_tax_title": {},
+        "seopress_titles_tax_desc": {},
+        "seopress_social_fb_title": {},
+        "seopress_social_fb_desc": {},
+        "seopress_social_fb_img": {},
+        "seopress_social_twitter_title": {},
+        "seopress_social_twitter_desc": {},
+        "seopress_social_twitter_img": {},
+        "seopress_target_kw": {},
+        "seopress_analysis_data": {}
+      }
+    }
+  }
+}
