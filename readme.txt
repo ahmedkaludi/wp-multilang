@@ -246,6 +246,9 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.19.1 =
+- fixed Vulnerability fix reported by patchstack
+
 = 2.4.19 =
 - fixed Code-profiler plugin execution time issue #149
 - fixed Woocommerce settings translation improvement #161
