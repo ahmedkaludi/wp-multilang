@@ -63,6 +63,14 @@ function wpm_get_language_switcher( $type = 'list', $show = 'both' ) {
 		return '';
 	}
 
+	if ( ! in_array( $type, array( 'list', 'dropdown', 'select' ), true ) ) {
+		$type = 'list';
+	}
+
+	if ( ! in_array( $show, array( 'both', 'flag', 'name' ), true ) ) {
+		$show = 'both';
+	}
+	
 	$vars = array(
 		'languages'   => wpm_get_languages(),
 		'lang'        => wpm_get_language(),
