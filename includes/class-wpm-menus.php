@@ -31,6 +31,31 @@ class WPM_Menus {
 		add_filter( 'customize_nav_menu_available_items', array( $this, 'filter_menus' ), 5 );
 		add_filter( 'customize_nav_menu_searched_items', array( $this, 'filter_menus' ), 5 );
 		add_filter( 'wp_nav_menu_objects', array( $this, 'add_languages_to_menu' ), 5 );
+		add_filter('render_block', array( $this, 'wpmlang_filter_duplicate_page_list_blocks_by_language' ), 10, 2);
+	}
+	public function wpmlang_filter_duplicate_page_list_blocks_by_language($block_content, $block) {
+		if ($block['blockName'] !== 'core/navigation') {
+			return $block_content;
+		}
+
+		$current_lang = function_exists('wpm_get_language') ? wpm_get_language() : 'en';
+		$found = [];
+
+		// Match all <ul class="wp-block-page-list">...</ul> blocks
+		$block_content = preg_replace_callback(
+			'/<ul[^>]*class="[^"]*wp-block-page-list[^"]*"[^>]*>.*?<\/ul>/is',
+			function ($matches) use (&$found) {
+				static $included_once = false;
+				if (!$included_once) {
+					$included_once = true;
+					return $matches[0]; // Keep the first one
+				}
+				return ''; // Remove others
+			},
+			$block_content
+		);
+
+		return $block_content;
 	}
 
 	/**
