@@ -32,6 +32,59 @@ class WPM_Menus {
 		add_filter( 'customize_nav_menu_searched_items', array( $this, 'filter_menus' ), 5 );
 		add_filter( 'wp_nav_menu_objects', array( $this, 'add_languages_to_menu' ), 5 );
 		add_filter('render_block', array( $this, 'wpmlang_filter_duplicate_page_list_blocks_by_language' ), 10, 2);
+		add_filter('render_block', array( $this, 'wpmlang_filter_duplicate_page_list_blocks' ), 10, 2);
+	}
+	function wpmlang_filter_duplicate_page_list_blocks($block_content, $block) {
+		// Only process core/navigation blocks
+		if ($block['blockName'] !== 'core/navigation') {
+			return $block_content;
+		}
+
+		// Check if block content is empty
+		if (empty($block_content)) {
+			return $block_content;
+		}
+
+		// Regex to match <li> elements with class wp-block-navigation-item
+		// Captures the entire <li>, href, label text, and optional submenu
+		$pattern = '/(<li[^>]*class="[^"]*wp-block-navigation-item[^"]*"[^>]*>.*?';
+		$pattern .= '<a[^>]*href="([^"]*)"[^>]*>.*?';
+		$pattern .= '<span[^>]*class="[^"]*wp-block-navigation-item__label[^"]*"[^>]*>([^<]+)<\/span>.*?)';
+		$pattern .= '(?:(<button[^>]*wp-block-navigation__submenu-icon[^>]*>.*?(?:<\/ul>|(?=<li|$)).*?))?';
+		$pattern .= '(?:<\/li>|(?=<li|$))/si';
+
+		$seen_items = [];
+		$cleaned_content = '';
+		$last_pos = 0;
+
+		// Find all matches
+		preg_match_all($pattern, $block_content, $matches, PREG_OFFSET_CAPTURE);
+
+		foreach ($matches[0] as $i => $match) {
+			$li_content = $match[0];
+			$href = $matches[2][$i][0];
+			$label = $matches[3][$i][0];
+			$offset = $match[1];
+
+			// Append content before this match
+			$cleaned_content .= substr($block_content, $last_pos, $offset - $last_pos);
+
+			// Create unique key for the item
+			$item_key = $href . '|' . $label;
+
+			// Keep the first occurrence of the item
+			if (!isset($seen_items[$item_key])) {
+				$cleaned_content .= $li_content;
+				$seen_items[$item_key] = true;
+			}
+
+			$last_pos = $offset + strlen($li_content);
+		}
+
+    // Append remaining content
+   	 	$cleaned_content .= substr($block_content, $last_pos);
+
+		return $cleaned_content;
 	}
 	public function wpmlang_filter_duplicate_page_list_blocks_by_language($block_content, $block) {
 		if ($block['blockName'] !== 'core/navigation') {
