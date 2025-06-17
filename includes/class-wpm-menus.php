@@ -45,13 +45,8 @@ class WPM_Menus {
 			return $block_content;
 		}
 
-		// Regex to match <li> elements with class wp-block-navigation-item
-		// Captures the entire <li>, href, label text, and optional submenu
-		$pattern = '/(<li[^>]*class="[^"]*wp-block-navigation-item[^"]*"[^>]*>.*?';
-		$pattern .= '<a[^>]*href="([^"]*)"[^>]*>.*?';
-		$pattern .= '<span[^>]*class="[^"]*wp-block-navigation-item__label[^"]*"[^>]*>([^<]+)<\/span>.*?)';
-		$pattern .= '(?:(<button[^>]*wp-block-navigation__submenu-icon[^>]*>.*?(?:<\/ul>|(?=<li|$)).*?))?';
-		$pattern .= '(?:<\/li>|(?=<li|$))/si';
+		// Updated regex to capture entire <li> including nested elements like submenus
+		$pattern = '/(<li[^>]*class="[^"]*wp-block-navigation-item[^"]*"[^>]*>.*?<a[^>]*href="([^"]*)"[^>]*>.*?<span[^>]*class="[^"]*wp-block-navigation-item__label[^"]*"[^>]*>([^<]+)<\/span>.*?<\/a>.*?(?:<ul.*?<\/ul>)?\s*<\/li>)/si';
 
 		$seen_items = [];
 		$cleaned_content = '';
@@ -62,17 +57,15 @@ class WPM_Menus {
 
 		foreach ($matches[0] as $i => $match) {
 			$li_content = $match[0];
-			$href = $matches[2][$i][0];
-			$label = $matches[3][$i][0];
 			$offset = $match[1];
+			$href = trim($matches[2][$i][0]);
+			$label = trim($matches[3][$i][0]);
 
 			// Append content before this match
 			$cleaned_content .= substr($block_content, $last_pos, $offset - $last_pos);
 
-			// Create unique key for the item
 			$item_key = $href . '|' . $label;
 
-			// Keep the first occurrence of the item
 			if (!isset($seen_items[$item_key])) {
 				$cleaned_content .= $li_content;
 				$seen_items[$item_key] = true;
@@ -81,8 +74,8 @@ class WPM_Menus {
 			$last_pos = $offset + strlen($li_content);
 		}
 
-    // Append remaining content
-   	 	$cleaned_content .= substr($block_content, $last_pos);
+		// Append remaining unmatched content
+		$cleaned_content .= substr($block_content, $last_pos);
 
 		return $cleaned_content;
 	}
