@@ -57,7 +57,9 @@ class WPM_Posts extends WPM_Object {
 		add_filter( 'render_block', array( $this, 'wpm_render_post_block' ), 10, 2);
 		add_filter( 'rest_post_dispatch', array( $this, 'wpm_rest_post_dispatch' ), 10, 3);
 		add_filter( 'rest_post_dispatch', array( $this, 'translate_block_nav_url' ), 10, 3);
-		
+		add_filter('block_parser_class', function () {
+   			return 'WPM\\Includes\\My_Custom_Block_Parser';
+		});
 		// Block editor filter for saving the post data
 		add_filter( 'wpm_filter_block_editor_post_data', array( $this, 'wpm_filter_block_editor_post_data_clbk' ), 10, 2 );
 	}

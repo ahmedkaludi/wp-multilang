@@ -70,6 +70,7 @@ $class_map_array =  array(
     'WPM\\Includes\\WPM_Menus' => $baseDir . '/includes/class-wpm-menus.php',
     'WPM\\Includes\\WPM_Options' => $baseDir . '/includes/class-wpm-options.php',
     'WPM\\Includes\\WPM_Posts' => $baseDir . '/includes/class-wpm-posts.php',
+    'WPM\\Includes\\My_Custom_Block_Parser' => $baseDir . '/includes/class-wpm-wp-block-parser.php',
     'WPM\\Includes\\WPM_REST_Settings' => $baseDir . '/includes/class-wpm-rest-settings.php',
     'WPM\\Includes\\WPM_Setup' => $baseDir . '/includes/class-wpm-setup.php',
     'WPM\\Includes\\WPM_Shortcodes' => $baseDir . '/includes/class-wpm-shortcodes.php',
