@@ -5,7 +5,7 @@ namespace WPM\Includes;
  * Class to parse the navigation menu
  * @since 2.4.20
 */
-class My_Custom_Block_Parser extends \WP_Block_Parser {
+class WPM_WP_Block_Parser extends \WP_Block_Parser {
     
 	/**
 	 * Modify the parse function and translate the content if it contains navigation
