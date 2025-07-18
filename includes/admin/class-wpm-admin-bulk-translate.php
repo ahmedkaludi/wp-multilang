@@ -17,7 +17,7 @@ class WPM_Bulk_Translate
 {
     protected $current_screen;
 
-    protected $screens_array = ["edit-post"];
+    protected $screens_array = ["edit-post", "edit-page", "edit-product"];
 
     /**
      * Constructor
@@ -136,7 +136,10 @@ class WPM_Bulk_Translate
                 $query_args["item_ids"],
                 $query_args["wpm_bt_file_format"]
             );
-            $this->add_settings_error($error);
+            
+            if ( ! empty( $error ) ) {
+                $this->add_settings_error($error);
+            }
         }
 
         return $sendback;
@@ -338,6 +341,7 @@ class WPM_Bulk_Translate
 
         $posts = get_posts([
             "post__in" => $post_ids,
+            "post_type" => [ 'post', 'page', 'product' ], // Include both posts and pages
             "posts_per_page" => count($post_ids),
             "orderby" => "post__in",
             "ignore_sticky_posts" => true,
