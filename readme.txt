@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.8
-Stable tag: 2.4.19
+Stable tag: 2.4.20
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -30,6 +30,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Support Base Translation ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-translate-taxonomy-bases-such-as-categories-and-tags-into-selective-languages-using-the-base-translation-option/)
 * Export and import content in XLIFF or xml format to translate outside
 * Activate Multilingual Support for Post Types
+* Support Auto URL Slug Translation ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-translate-url-slugs-with-selective-languages/)
 
 == Features of the plugin WP Multilang ==
 
@@ -59,6 +60,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * WooCommerce Customizer
 * Gutenberg
 * Yoast Seo
+* SEOPress 
 * Contact Form 7 (added mail tag [_language] for send user language in mail)
 * WPBakery Visual Composer
 * Page Builder by SiteOrigin
@@ -246,6 +248,19 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.20 =
+- feature Compatibility with SEOpress #170
+- feature Auto url slug translation #171
+- fixed Divi builder content translation improvement #173
+- fixed Conflict with latest pro 1.12 version #178
+- feature Added option to retranslate #180
+- fixed Yoast default title issue #181
+- feature Added support for exporting and importing content in XLIFF or XML format for pages #182
+- fixed Code improvement for custom post taxonomy description #183
+
+= 2.4.19.1 =
+- fixed Vulnerability fix reported by patchstack
+
 = 2.4.19 =
 - fixed Code-profiler plugin execution time issue #149
 - fixed Woocommerce settings translation improvement #161
@@ -349,16 +364,5 @@ If you have opened several browser tabs for editing this post in different langu
 - enhancement Updated website links like contact page and other info in plugin and wp.org #45
 - feature Adedd feedback popup on deactivation #54
 - feature Added compatibility with Elementor (Premium) 
-
-= 2.4.5 =
-- feature Different product or post images for each language #20
-- fixed Widget block translate issue #29
-- fixed Fatal Error with latest Yoast SEO plugin update #30
-- fixed Translation of special mail tags for Contact Form 7 #31
-- fixed Translation of the "title" attribute in the shortcode of Contact Form 7 #32
-- fixed wpseo_og:locale:alternate to be set properly #33
-- fixed Translate escaping text #34
-- fixed Rank Math custom fields getting duplicated on the translated posts #35
-- fixed Issue with language switcher regex for gutenberg #36
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

@@ -21,7 +21,7 @@ jQuery(document).ready(function($){
 		$(this).after(proBtn);	
 	});
 
-	$(document).on('click', '#wpm_string_translation, #wpm_base_translation', function(e) {
+	$(document).on('click', '#wpm_string_translation, #wpm_base_translation, #wpm_auto_slug_translation', function(e) {
 		if($(this).is(':checked')){
 			$(this).parent().after(proBtn);	
 		}else{

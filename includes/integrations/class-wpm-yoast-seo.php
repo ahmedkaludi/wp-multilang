@@ -120,11 +120,8 @@ class WPM_Yoast_Seo {
 	 * @return string
 	 */
 	public function translate_title( $title ) {
-		$separator   = wpseo_replace_vars( '%%sep%%', array() );
-		$separator   = ' ' . trim( $separator ) . ' ';
-		$titles_part = explode( $separator, $title );
-		$titles_part = wpm_translate_value( $titles_part );
-		$title       = implode( $separator, $titles_part );
+		
+		$title = wpm_translate_value( $title );
 
 		return $title;
 	}

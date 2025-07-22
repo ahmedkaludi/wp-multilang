@@ -220,7 +220,9 @@ class WPM_Taxonomies extends WPM_Object {
 		}
 
 		$description = wpm_set_new_value( array(), $value, $taxonomy_config['description'] );
-
+		if ( ! empty( $description ) ) {
+			$description = wp_unslash( $description );
+		}
 		global $wpdb;
 		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->update( $wpdb->term_taxonomy, compact( 'description' ), array( 'term_taxonomy_id' => $tt_id ) );
@@ -284,7 +286,9 @@ class WPM_Taxonomies extends WPM_Object {
 		}
 
 		$description = wpm_set_new_value( $this->description['old'], $value, $taxonomy_config['description'] );
-
+		if ( ! empty( $description ) ) {
+			$description = wp_unslash( $description );
+		}
 		global $wpdb;
 		//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Reason: using WP bulit in function updates the data of term_taxonomy of current language which does not work for our plugin in this case
 		$wpdb->update( $wpdb->term_taxonomy, compact( 'description' ), array( 'term_taxonomy_id' => $tt_id ) );

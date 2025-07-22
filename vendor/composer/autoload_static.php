@@ -81,6 +81,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\WPM_Menus' => __DIR__ . '/../..' . '/includes/class-wpm-menus.php',
         'WPM\\Includes\\WPM_Options' => __DIR__ . '/../..' . '/includes/class-wpm-options.php',
         'WPM\\Includes\\WPM_Posts' => __DIR__ . '/../..' . '/includes/class-wpm-posts.php',
+        'WPM\\Includes\\WPM_WP_Block_Parser' => __DIR__ . '/../..' . '/includes/class-wpm-wp-block-parser.php',
         'WPM\\Includes\\WPM_REST_Settings' => __DIR__ . '/../..' . '/includes/class-wpm-rest-settings.php',
         'WPM\\Includes\\WPM_Setup' => __DIR__ . '/../..' . '/includes/class-wpm-setup.php',
         'WPM\\Includes\\WPM_Shortcodes' => __DIR__ . '/../..' . '/includes/class-wpm-shortcodes.php',
