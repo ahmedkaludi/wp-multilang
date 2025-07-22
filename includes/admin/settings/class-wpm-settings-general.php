@@ -187,7 +187,7 @@ class WPM_Settings_General extends WPM_Settings_Page {
 	 * */
 	public function unset_translation_options( $settings ){
 		
-		$unset_keys 	=	array( 'wpm_string_translation', 'wpm_base_translation' );
+		$unset_keys 	=	array( 'wpm_string_translation', 'wpm_base_translation', 'wpm_auto_slug_translation' );
 
 		if( ! defined('WP_MULTILANG_PRO_VERSION') ) {
 			if( ! empty( $settings ) && is_array( $settings ) ) {
