@@ -105,6 +105,15 @@ class WPM_Settings_General extends WPM_Settings_Page {
 			),
 
 			array(
+				'title'   => esc_html__( 'Auto Slug Translation', 'wp-multilang' ),
+				/* translators: %s: url */
+				'desc'    => sprintf( __( 'This translates the slug automatically when you auto translate any post, page etc. <a href="%s" target="_blank">Learn More</a>', 'wp-multilang' ), esc_url( 'https://wp-multilang.com/docs/knowledge-base/how-to-translate-url-slugs-with-selective-languages/' ) ),
+				'id'      => 'wpm_auto_slug_translation',
+				'default' => 'no',
+				'type'    => 'checkbox',
+			),
+
+			array(
 				'title'   => esc_html__( 'Base Translation', 'wp-multilang' ),
 				/* translators: %s: url */
 				'desc'    => sprintf( __( 'Translate Categories, Product categories, Tags and Custom Taxonomies base. <a href="%s" target="_blank">Learn More</a>', 'wp-multilang' ), esc_url( 'https://wp-multilang.com/docs/knowledge-base/how-to-translate-taxonomy-bases-such-as-categories-and-tags-into-selective-languages-using-the-base-translation-option/' ) ),
