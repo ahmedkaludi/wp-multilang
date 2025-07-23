@@ -97,7 +97,7 @@ class WPM_Schema_Saswp {
 		$schema_id_array 	= json_decode( get_transient( 'saswp_transient_schema_ids' ), true ); 
     
 	    if ( ! $schema_id_array ) {
-	       $schema_id_array = saswp_get_saved_schema_ids();
+	       $schema_id_array = $this->get_saved_schema_ids();
 	    }
 
 	    $is_term 			=	0;
@@ -528,6 +528,42 @@ class WPM_Schema_Saswp {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Get published schema ids
+	 * @since 2.4.21
+	 * */
+	public function get_saved_schema_ids() {
+		global $wpdb;
+
+		$cache_key        = 'wpm_published_schema_ids';
+		$schema_id_array  = wp_cache_get( $cache_key );
+
+		if ( false === $schema_id_array ) {
+			
+			$schema_id_array = [];
+
+			$sql = $wpdb->prepare(
+				"SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND post_status = %s",
+				'saswp',
+				'publish'
+			);
+
+			$published_schemas = $wpdb->get_results( $sql );
+
+			if ( ! empty( $published_schemas ) && is_array( $published_schemas ) ) {
+				foreach ( $published_schemas as $schema ) {
+					if ( isset( $schema->ID ) ) {
+						$schema_id_array[] = (int) $schema->ID;
+					}
+				}
+			}
+
+			wp_cache_set( $cache_key, $schema_id_array );
+		}
+
+		return $schema_id_array;
 	}
 
 }
