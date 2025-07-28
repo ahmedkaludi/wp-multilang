@@ -533,6 +533,7 @@ class WPM_Schema_Saswp {
 	/**
 	 * Get published schema ids
 	 * @since 2.4.21
+	 * Solution for ticket https://github.com/ahmedkaludi/wp-multilang/issues/189
 	 * */
 	public function get_saved_schema_ids() {
 		global $wpdb;
