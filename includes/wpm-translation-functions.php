@@ -435,7 +435,7 @@ function wpm_translate_term( $term, $taxonomy, $lang = '' ) {
 function wpm_untranslate_post( $post ) {
 	if ( $post instanceof WP_Post ) {
 		global $wpdb;
-		$cache_key 	= 'wpm_posts_by_id_key';
+		$cache_key 	= 'wpm_posts_by_id_key_'.$post->ID;
 		$orig_post 		= wp_cache_get($cache_key);
 		if( false === $orig_post ){
 			//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery

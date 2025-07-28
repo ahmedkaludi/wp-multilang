@@ -108,10 +108,14 @@ class WPM_Admin_Posts {
 			$strings   = wpm_value_to_ml_array( $text );
 			$languages = wpm_get_lang_option();
 
+			$post_edit_link = get_edit_post_link( $post->ID );
+
 			foreach ( $languages as $code => $language ) {
 				if ( isset( $strings[ $code ] ) && ! empty( $strings[ $code ] ) ) {
 					// phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Reason Using built in function doesn't work in our case, so created custom function
-					$output[] = '<img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" alt="' . esc_attr( $language['name'] ) . '" title="' . $language['name'] . '">';
+					$edit_link_with_param = add_query_arg( 'edit_lang', $code, $post_edit_link );
+
+					$output[] = '<a href="'.$edit_link_with_param.'"><img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" alt="' . esc_attr( $language['name'] ) . '" title="' . $language['name'] . '"></a>';
 				}
 			}
 
