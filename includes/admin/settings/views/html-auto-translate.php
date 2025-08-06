@@ -16,6 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
         $published_post_count       =   0;
         $total_pages                =   0;
         $total_product              =   0;
+        $total_categories           =   0;
+        $total_tags                 =   0;
+        $total_product_categories   =   0;
         $total_post_arr             =   wp_count_posts( 'post' );
 
         if ( isset( $total_post_arr->publish ) ) {
@@ -40,7 +43,23 @@ if ( ! defined( 'ABSPATH' ) ) {
                 $total_product      =   0;
             }
         }
-        $total_record               =   $published_post_count + $total_pages + $total_product;
+
+        $count_categories           =   wp_count_terms('category');
+        if ( is_string( $count_categories ) && intval( $count_categories > 0 ) ) {
+            $total_categories       =   intval( $count_categories );       
+        }
+
+        $count_tags                 =   wp_count_terms('post_tag');
+        if ( is_string( $count_tags ) && intval( $count_tags > 0 ) ) {
+            $total_tags             =   intval( $count_tags );       
+        }
+
+        $count_pro_cats             =   wp_count_terms('product_cat');
+        if ( is_string( $count_pro_cats ) && intval( $count_pro_cats > 0 ) ) {
+            $total_product_categories =   intval( $count_pro_cats );       
+        }
+
+        $total_record               =   $published_post_count + $total_pages + $total_product + $total_categories + $total_tags + $total_product_categories;
         $source_language            =   wpm_get_user_language();
 
         foreach ( $languages as $code => $language ) { 
@@ -92,6 +111,24 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <label for="wpmpro-at-product-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Product Post Type', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_product ); ?>) </label>
                 </h4>
             </li>
+            <li>
+                <h4>
+                    <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="category" id="wpmpro-at-category-cb"/> 
+                    <label for="wpmpro-at-category-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Categories', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_categories ); ?>) </label>
+                </h4>
+            </li>
+            <li>
+                <h4>
+                    <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="post_tag" id="wpmpro-at-post_tag-cb"/> 
+                    <label for="wpmpro-at-post_tag-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Post Tags', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_tags ); ?>) </label>
+                </h4>
+            </li>
+            <li>
+                <h4>
+                    <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="product_cat" id="wpmpro-at-product_cat-cb"/> 
+                    <label for="wpmpro-at-product_cat-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Product Categories', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_product_categories ); ?>) </label>
+                </h4>
+            </li>
         </ul>
     </div>
 
@@ -123,6 +160,9 @@ $main_params = array(
     'published_post_count'              => $published_post_count,
     'total_pages'                       => $total_pages,
     'total_product'                     => $total_product,
+    'total_categories'                  => $total_categories,
+    'total_tags'                        => $total_tags,
+    'total_product_categories'          => $total_product_categories,
     'source_language'                   => $source_language,
     'wpmpro_autotranslate_nonce'        => wp_create_nonce( 'wpmpro-autotranslate-nonce' ),
 );
