@@ -261,6 +261,34 @@ class WPM_Acf {
 		                			}
 		                		}
 		              
+		                	} else if( is_array( $field ) && ! empty( $field[0] ) ) {
+		                		// Repeater fields
+		                		foreach ( $field as $r_key => $repeater ) {
+
+		                			foreach ( $repeater as $rs_key => $sub_repeater ) {
+		                				$repeater_key 	=	$field_key . '_' . $r_key . '_' . $rs_key;
+		                				$result 		=	$wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $value['id'], $repeater_key ), ARRAY_A );
+
+			                			if ( is_array( $result ) && ! empty( $result[0] ) && is_array( $result[0] ) ) {
+
+			                				if ( is_string( $result[0]['meta_value'] ) ) {
+					                			$field_array 						=	array();
+				                				$field_array['key'] 				=	$repeater_key;
+				                				$field_array['source_value'] 		=	wpm_translate_string( $result[0]['meta_value'], $default_lang );
+				                				$target_value 						=	wpm_translate_string( $result[0]['meta_value'], $current_lang );
+				                				$field_array['target_value'] 		=	'';
+				                				if ( $field_array['source_value'] !== $target_value ) {
+				                					$field_array['target_value'] 	=	$target_value;	
+				                				}
+												$data[$key]['acf'][] 	=	$field_array; 	
+											}
+			         
+			                			}
+		                			
+		                			}
+
+		                			
+		                		}
 		                	}
 
 		                }
@@ -270,7 +298,7 @@ class WPM_Acf {
         	} 
             
         }
-        
+
         return $data;
 	}
 }
