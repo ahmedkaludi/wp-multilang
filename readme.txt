@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.8
-Stable tag: 2.4.20
+Stable tag: 2.4.21
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -248,6 +248,15 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.21 =
+- fixed Rankmath title translation improvement #177
+- fixed Flag translation issue on products #185
+- fixed Memory size limit improvement #189
+- feature XLIFF export compatibility with ACF fields on post/pages #190
+- feature Added Bulk Translation Option for Tag and Categories #191
+- fixed Retranslation issue with Elementor pages #192
+- fixed Code improvement for duplicate queries #194
+
 = 2.4.20 =
 - feature Compatibility with SEOpress #170
 - feature Auto url slug translation #171
@@ -359,10 +368,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed Call to undefined function #65
 - feature Admin settings page UI/UX changes #67
 - feature Added Newsletter Form #68
-
-= 2.4.6 =
-- enhancement Updated website links like contact page and other info in plugin and wp.org #45
-- feature Adedd feedback popup on deactivation #54
-- feature Added compatibility with Elementor (Premium) 
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

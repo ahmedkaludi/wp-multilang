@@ -36,6 +36,7 @@ class WPM_Acf {
 		add_filter( 'wpm_acf_wysiwyg_config', '__return_empty_array' );
 		add_filter( 'wpm_acf_image_config', '__return_empty_array' );
 		add_filter( 'wpm_admin_pages', array( $this, 'add_dynamic_pages' ) );
+		add_filter( 'wpm_filter_xliff_data', array( $this, 'add_acf_fields_to_export' ), 10, 2 );
 
 	}
 
@@ -217,5 +218,87 @@ class WPM_Acf {
 		
 		return $config;
 
+	}
+
+	/**
+	 * Get acf field and value and add it into data for export
+	 * @param 	$data 	array
+	 * @param 	$post 	WP_Post
+	 * @return 	$data 	array
+	 * @since 	2.4.21
+	 * */
+	public function add_acf_fields_to_export( $data, $post ) {
+		// Get ACF fields
+        if ( function_exists( 'get_fields' ) && ! empty( $data ) ) {
+
+        	global $wpdb;
+        	$default_lang = wpm_get_default_language();
+        	$current_lang = wpm_get_language();
+
+        	foreach ( $data as $key => $value ) {
+        		if ( is_array( $value ) && ! empty( $value['id'] ) ) {
+        			$acf_fields     	=   get_fields( $value['id'] );
+		        	if( ! empty( $acf_fields ) ) {
+		                foreach ( $acf_fields as $field_key => $field ) {
+
+		                	if ( is_string( $field ) ) {
+
+		                		$result 		=	$wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $value['id'], $field_key ), ARRAY_A );
+
+		                		if ( is_array( $result ) && ! empty( $result[0] ) && is_array( $result[0] ) ) {
+		                			if ( ! empty( $result[0]['meta_value'] ) && is_string( $result[0]['meta_value'] ) ) {
+
+		                				$field_array 						=	array();
+		                				$field_array['key'] 				=	$field_key;
+		                				$field_array['source_value'] 		=	wpm_translate_string( $result[0]['meta_value'], $default_lang );
+		                				$target_value 						=	wpm_translate_string( $result[0]['meta_value'], $current_lang );
+		                				$field_array['target_value'] 		=	'';
+		                				if ( $field_array['source_value'] !== $target_value ) {
+		                					$field_array['target_value'] 	=	$target_value;	
+		                				}
+										$data[$key]['acf'][] 	=	$field_array; 	
+
+		                			}
+		                		}
+		              
+		                	} else if( is_array( $field ) && ! empty( $field[0] ) ) {
+		                		// Repeater fields
+		                		foreach ( $field as $r_key => $repeater ) {
+
+		                			foreach ( $repeater as $rs_key => $sub_repeater ) {
+		                				$repeater_key 	=	$field_key . '_' . $r_key . '_' . $rs_key;
+		                				$result 		=	$wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $value['id'], $repeater_key ), ARRAY_A );
+
+			                			if ( is_array( $result ) && ! empty( $result[0] ) && is_array( $result[0] ) ) {
+
+			                				if ( is_string( $result[0]['meta_value'] ) ) {
+					                			$field_array 						=	array();
+				                				$field_array['key'] 				=	$repeater_key;
+				                				$field_array['source_value'] 		=	wpm_translate_string( $result[0]['meta_value'], $default_lang );
+				                				$target_value 						=	wpm_translate_string( $result[0]['meta_value'], $current_lang );
+				                				$field_array['target_value'] 		=	'';
+				                				if ( $field_array['source_value'] !== $target_value ) {
+				                					$field_array['target_value'] 	=	$target_value;	
+				                				}
+												$data[$key]['acf'][] 	=	$field_array; 	
+											}
+			         
+			                			}
+		                			
+		                			}
+
+		                			
+		                		}
+		                	}
+
+		                }
+		            }
+        				
+        		}
+        	} 
+            
+        }
+
+        return $data;
 	}
 }

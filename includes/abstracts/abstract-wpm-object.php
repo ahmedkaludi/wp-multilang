@@ -51,7 +51,12 @@ abstract class WPM_Object {
 				break;
 
 			case 'term':
-				$term = get_term( $object_id );
+				$cache_key = 'wpm_get_term_meta_field_'.$object_id;
+				$term = wp_cache_get( $cache_key );
+				if ( false === $term ) {
+					$term = get_term( $object_id );
+                	wp_cache_set( $cache_key, $term );
+				}
 				if ( ! $term || null === wpm_get_taxonomy_config( $term->taxonomy ) ) {
 					return $value;
 				}
@@ -90,15 +95,16 @@ abstract class WPM_Object {
 
 		$column      = sanitize_key( $this->object_type . '_id' );
 		$id_column   = 'user' === $this->object_type ? 'umeta_id' : 'meta_id';
-		$meta_values = wp_cache_get( $object_id, $this->object_type . '_' . $meta_key . '_wpm_meta' );
+		$cache_key	 = 'wpm_meta_field_'.$meta_key.'_'.$object_id.'_'.$id_column;
+		$meta_values = wp_cache_get( $cache_key );
 		$values      = array();
 
-		if ( ! $meta_values ) {
+		if ( false === $meta_values ) {
 
 			//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$meta_values = $wpdb->get_results( $wpdb->prepare( "SELECT {$id_column}, meta_value FROM {$wpdb->{$this->object_table}} WHERE meta_key = %s AND {$column} = %d;", $meta_key, $object_id ), ARRAY_A );
 
-			wp_cache_set( $object_id, $meta_values, $this->object_type . '_' . $meta_key . '_wpm_meta' );
+			wp_cache_set( $cache_key, $meta_values );
 		}
 
 		if ( $meta_values ) {

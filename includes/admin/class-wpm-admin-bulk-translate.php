@@ -557,13 +557,28 @@ XLIFF;
 					<target>{$data["target_content"]}</target>
 				</trans-unit>
 XLIFF;
+            $unit_id++;
+
+            if ( is_array( $data['acf'] ) && ! empty( $data['acf'] ) ) {
+                foreach ( $data['acf'] as $acf ) {
+                    if ( is_array( $acf ) && ! empty( $acf['source_value'] ) ) {
+                        $xliff_template .= <<<XLIFF
+
+                        <trans-unit id="{$unit_id}" restype="x-acf" resname="{$acf['key']}">
+                            <source><![CDATA[{$acf['source_value']}]]></source>
+                            <target><![CDATA[{$acf['target_value']}]]></target>
+                        </trans-unit>
+XLIFF;
+                        $unit_id++;
+                    }
+                }
+            }
 
             $xliff_template .= <<<XLIFF
 
 				</group>
 XLIFF;
 
-            $unit_id++;
         }
 
         foreach ($formatted_data as $key => $data) {
@@ -707,10 +722,31 @@ XLIFF;
 					<target>{$data["target_content"]}</target>
 				</segment>
 			</unit>
+XLIFF;
+            
+            $unit_id++;
+
+            if ( is_array( $data['acf'] ) && ! empty( $data['acf'] ) ) {
+                foreach ( $data['acf'] as $acf ) {
+                    if ( is_array( $acf ) && ! empty( $acf['source_value'] ) ) {
+                        $xliff_template .= <<<XLIFF
+
+                        <unit id="{$unit_id}" type="x:acf" name="{$acf['key']}">
+                            <segment>
+                                <source><![CDATA[{$acf['source_value']}]]></source>
+                                <target><![CDATA[{$acf['target_value']}]]></target>
+                            </segment>
+                        </unit>
+XLIFF;
+                        $unit_id++;
+                    }
+                }
+            }
+
+            $xliff_template .= <<<XLIFF
 		</group> 
 XLIFF;
 
-            $unit_id++;
             $group_id++;
         }
 
@@ -832,6 +868,7 @@ XLIFF;
      * */
     public function import_data_from_file($filepath)
     {
+        global $wpdb;
         $post_data = [];
         $target_lang = "";
         $file_contents = file_get_contents($filepath);
@@ -931,6 +968,21 @@ XLIFF;
 
                         wp_update_post($update_data);
                     }
+
+                    if ( ! empty( $post["postmeta"] ) && is_array( $post["postmeta"] ) ) {
+                        foreach ( $post["postmeta"] as $meta_key => $meta_value ) {
+
+                            $result         =   $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $post_id, $meta_key ), ARRAY_A );
+
+                            if ( is_array( $result ) && ! empty( $result[0] ) && is_array( $result[0] ) ) {
+                                if ( ! empty( $result[0]['meta_value'] ) && is_string( $result[0]['meta_value'] ) ) {
+                                    $updated_meta   =   wpm_set_new_value( $result[0]['meta_value'], $meta_value, [], $lang );
+                                    update_post_meta( $post_id, $meta_key, $updated_meta );
+                                }
+                            }
+
+                        }
+                    }
                 }
                 return new \WP_Error(
                     "wpm_import_posts_success",
@@ -1000,6 +1052,9 @@ XLIFF;
                                             $restype = $trans->getAttribute(
                                                 "restype"
                                             );
+                                            $resname = $trans->getAttribute(
+                                                "resname"
+                                            );
                                             if ($restype == "x-post_title") {
                                                 $target = $trans->getElementsByTagName(
                                                     "target"
@@ -1032,6 +1087,22 @@ XLIFF;
                                                             ->nodeValue
                                                     );
                                                 }
+                                            }elseif (
+                                                $restype == "x-acf"
+                                            ) {
+                                                $target = $trans->getElementsByTagName(
+                                                    "target"
+                                                );
+                                                if (
+                                                    is_object($target) &&
+                                                    !empty($target->item(0))
+                                                ) {
+                                                    foreach ($target as $targetNode) {
+                                                        if ( ! empty( $targetNode->nodeValue ) && is_string( $targetNode->nodeValue ) ) {
+                                                            $post_data[$post_id]['postmeta'][$resname] = sanitize_text_field( wp_unslash( $targetNode->nodeValue ) );      
+                                                        }
+                                                    } 
+                                                }
                                             }
                                         }
                                     }
@@ -1042,7 +1113,7 @@ XLIFF;
                 }
             }
         }
-
+         
         return $post_data;
     }
 
@@ -1075,6 +1146,7 @@ XLIFF;
                         foreach ($units as $unit) {
                             $unit_type = $unit->getAttribute("type");
                             $segments = $unit->getElementsByTagName("segment");
+                            $unit_name = $unit->getAttribute( "name" );
                             if (is_object($segments) && !empty($segments)) {
                                 if ($unit_type == "x:post_title") {
                                     foreach ($segments as $segment) {
@@ -1106,14 +1178,30 @@ XLIFF;
                                             ] = $target->item(0)->nodeValue;
                                         }
                                     }
-                                }
+                                } elseif ($unit_type == "x:acf") {
+                                    foreach ($segments as $segment) {
+                                        $target = $segment->getElementsByTagName(
+                                            "target"
+                                        );
+                                        if (
+                                            is_object($target) &&
+                                            !empty($target->item(0))
+                                        ) {
+                                            foreach ($target as $targetNode) {
+                                                if ( ! empty( $targetNode->nodeValue ) && is_string( $targetNode->nodeValue ) ) {
+                                                    $post_data[$post_id]['postmeta'][$unit_name] = sanitize_text_field( wp_unslash( $targetNode->nodeValue ) );      
+                                                }
+                                            } 
+                                        }
+                                    }
+                                } 
                             }
                         }
                     }
                 }
             }
         }
-
+        
         return $post_data;
     }
 }

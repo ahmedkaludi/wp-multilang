@@ -30,7 +30,8 @@
     "redirection_url_to": {}
   },
   "admin_pages": [
-    "toplevel_page_rank-math"
+    "toplevel_page_rank-math",
+    "rank-math_page_rank-math-options-titles"
   ],
   "options": {
     "rank-math-options-titles": {
@@ -43,7 +44,24 @@
       "date_archive_title" : {},
       "date_archive_description" : {},
       "search_title" : {},
-      "404_title" : {}
+      "404_title" : {},
+      "pt_post_title": {},
+      "pt_post_description": {},
+      "pt_product_title": {},
+      "pt_product_description": {},
+      "pt_page_title": {},
+      "pt_page_description": {},
+      "tax_category_title": {},
+      "tax_category_description": {},
+      "tax_post_tag_title": {},
+      "tax_post_tag_description": {},
+      "tax_product_tag_title": {},
+      "tax_product_tag_description": {},
+      "tax_product_brand_title": {},
+      "tax_product_brand_description": {},
+      "tax_product_cat_title": {},
+      "tax_product_cat_description": {}
+
     },
     "rank-math-options-general": {
       "breadcrumbs_home_label" : {},

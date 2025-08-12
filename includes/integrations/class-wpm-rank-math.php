@@ -29,6 +29,7 @@ class WPM_Rank_Math {
 		add_action( 'rank_math/schema/update', array( $this, 'modify_schema_meta_data' ), 10, 3 );
 		add_filter( 'delete_post_metadata_by_mid', array( $this, 'delete_schema' ), 10, 2 );
 		add_filter( 'rank_math/json_data', array( $this, 'modify_json_data' ), 10, 2 );
+		add_filter( 'rank_math/vars/replacements', array( $this, 'translate_variables' ) );
 	}
 
 	/**
@@ -446,6 +447,29 @@ class WPM_Rank_Math {
 		
 		return $data;
 
+	}
+
+	/**
+	 * Translate variables
+	 * @param 	$vars 	array
+	 * @return 	$vars 	array
+	 * @since 	2.4.21
+	 * */
+	public function translate_variables( $vars ) {
+
+		if ( is_array( $vars ) && ! empty( $vars ) ) {
+
+			foreach ( $vars as $key => $value ) {
+				if ( is_array( $value ) && ! empty( $value['example'] ) ) {
+					if ( $key === 'title' || $key === 'seo_title' || $key === 'user_description'  ) {
+						$vars[$key]['example'] = wpm_translate_value( $value['example'] );	
+					}
+				}
+			}
+
+		}
+
+		return $vars;
 	}
 
 }
