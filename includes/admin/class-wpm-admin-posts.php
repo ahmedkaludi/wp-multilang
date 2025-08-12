@@ -115,7 +115,7 @@ class WPM_Admin_Posts {
 					// phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Reason Using built in function doesn't work in our case, so created custom function
 					$edit_link_with_param = add_query_arg( 'edit_lang', $code, $post_edit_link );
 
-					$output[] = '<a href="'.$edit_link_with_param.'"><img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" alt="' . esc_attr( $language['name'] ) . '" title="' . $language['name'] . '"></a>';
+					$output[] = '<a href="'.esc_url( $edit_link_with_param ).'"><img src="' . esc_url( wpm_get_flag_url( $language['flag'] ) ) . '" alt="' . esc_attr( $language['name'] ) . '" title="' . esc_attr( $language['name'] ) . '"></a>';
 				}
 			}
 
