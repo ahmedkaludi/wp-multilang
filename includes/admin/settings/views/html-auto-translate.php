@@ -94,40 +94,100 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </h4>
             </li>
             <li>
-                <h4>
-                    <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="post" id="wpmpro-at-post-cb"/> 
-                    <label for="wpmpro-at-post-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Post', 'wp-multilang' ); ?> (<?php echo esc_html( $published_post_count ); ?>) </label>
-                </h4>
+                <div class="wpm-auto-translate-item">
+                    <div class="wpm-checkbox-section">
+                        <h4>
+                            <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="post" id="wpmpro-at-post-cb"/> 
+                            <label for="wpmpro-at-post-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Post', 'wp-multilang' ); ?> (<?php echo esc_html( $published_post_count ); ?>) </label>
+                        </h4>
+                    </div>
+                    <div class="wpm-exclude-section">
+                        <div class="exclude-wrapper" style="display:none;">
+                            <label for="wpmpro-at-post-exclude" class="wpm-exclude-label"><?php echo esc_html__( 'Exclude Items:', 'wp-multilang' ); ?></label>
+                            <select class="exclude-select" id="wpmpro-at-post-exclude" data-type="post" style="width: 200px;" multiple="multiple" placeholder="<?php echo esc_attr__( 'Select items to exclude...', 'wp-multilang' ); ?>"></select>
+                        </div>
+                    </div>
+                </div>
             </li>
             <li>
-                <h4>
-                    <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="page" id="wpmpro-at-page-cb"/> 
-                    <label for="wpmpro-at-page-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Pages', 'wp-multilang' );?> (<?php echo esc_html( $total_pages ); ?>) </label>
-                </h4>
+                <div class="wpm-auto-translate-item">
+                    <div class="wpm-checkbox-section">
+                        <h4>
+                            <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="page" id="wpmpro-at-page-cb"/> 
+                            <label for="wpmpro-at-page-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Pages', 'wp-multilang' );?> (<?php echo esc_html( $total_pages ); ?>) </label>
+                        </h4>
+                    </div>
+                    <div class="wpm-exclude-section">
+                        <div class="exclude-wrapper" style="display:none;">
+                            <label for="wpmpro-at-page-exclude" class="wpm-exclude-label"><?php echo esc_html__( 'Exclude Items:', 'wp-multilang' ); ?></label>
+                            <select class="exclude-select" id="wpmpro-at-page-exclude" data-type="page" style="width: 200px;" multiple="multiple" placeholder="<?php echo esc_attr__( 'Select items to exclude...', 'wp-multilang' ); ?>"></select>
+                        </div>
+                    </div>
+                </div>
             </li>
             <li>
-                <h4>
-                    <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="product" id="wpmpro-at-product-cb"/> 
-                    <label for="wpmpro-at-product-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Product Post Type', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_product ); ?>) </label>
-                </h4>
+                <div class="wpm-auto-translate-item">
+                    <div class="wpm-checkbox-section">
+                        <h4>
+                            <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="product" id="wpmpro-at-product-cb"/> 
+                            <label for="wpmpro-at-product-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Product Post Type', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_product ); ?>) </label>
+                        </h4>
+                    </div>
+                    <div class="wpm-exclude-section">
+                        <div class="exclude-wrapper" style="display:none;">
+                            <label for="wpmpro-at-product-exclude" class="wpm-exclude-label"><?php echo esc_html__( 'Exclude Items:', 'wp-multilang' ); ?></label>
+                            <select class="exclude-select" id="wpmpro-at-product-exclude" data-type="product" style="width: 200px;" multiple="multiple" placeholder="<?php echo esc_attr__( 'Select items to exclude...', 'wp-multilang' ); ?>"></select>
+                        </div>
+                    </div>
+                </div>
             </li>
             <li>
-                <h4>
-                    <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="category" id="wpmpro-at-category-cb"/> 
-                    <label for="wpmpro-at-category-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Categories', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_categories ); ?>) </label>
-                </h4>
+                <div class="wpm-auto-translate-item">
+                    <div class="wpm-checkbox-section">
+                        <h4>
+                            <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="category" id="wpmpro-at-category-cb"/> 
+                            <label for="wpmpro-at-category-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Categories', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_categories ); ?>) </label>
+                        </h4>
+                    </div>
+                    <div class="wpm-exclude-section">
+                        <div class="exclude-wrapper" style="display:none;">
+                            <label for="wpmpro-at-category-exclude" class="wpm-exclude-label"><?php echo esc_html__( 'Exclude Items:', 'wp-multilang' ); ?></label>
+                            <select class="exclude-select" id="wpmpro-at-category-exclude" data-type="category" style="width: 200px;" multiple="multiple" placeholder="<?php echo esc_attr__( 'Select items to exclude...', 'wp-multilang' ); ?>"></select>
+                        </div>
+                    </div>
+                </div>
             </li>
             <li>
-                <h4>
-                    <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="post_tag" id="wpmpro-at-post_tag-cb"/> 
-                    <label for="wpmpro-at-post_tag-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Post Tags', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_tags ); ?>) </label>
-                </h4>
+                <div class="wpm-auto-translate-item">
+                    <div class="wpm-checkbox-section">
+                        <h4>
+                            <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="post_tag" id="wpmpro-at-post_tag-cb"/> 
+                            <label for="wpmpro-at-post_tag-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Post Tags', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_tags ); ?>) </label>
+                        </h4>
+                    </div>
+                    <div class="wpm-exclude-section">
+                        <div class="exclude-wrapper" style="display:none;">
+                            <label for="wpmpro-at-post_tag-exclude" class="wpm-exclude-label"><?php echo esc_html__( 'Exclude Items:', 'wp-multilang' ); ?></label>
+                            <select class="exclude-select" id="wpmpro-at-post_tag-exclude" data-type="post_tag" style="width: 200px;" multiple="multiple" placeholder="<?php echo esc_attr__( 'Select items to exclude...', 'wp-multilang' ); ?>"></select>
+                        </div>
+                    </div>
+                </div>
             </li>
             <li>
-                <h4>
-                    <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="product_cat" id="wpmpro-at-product_cat-cb"/> 
-                    <label for="wpmpro-at-product_cat-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Product Categories', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_product_categories ); ?>) </label>
-                </h4>
+                <div class="wpm-auto-translate-item">
+                    <div class="wpm-checkbox-section">
+                        <h4>
+                            <input type="checkbox" class="wpmpro-what-list wpm-free-translation-cb" value="product_cat" id="wpmpro-at-product_cat-cb"/> 
+                            <label for="wpmpro-at-product_cat-cb" class="wpm-cursor-pointer"> <?php echo esc_html__( 'Product Categories', 'wp-multilang' ); ?>  (<?php echo esc_html( $total_product_categories ); ?>) </label>
+                        </h4>
+                    </div>
+                    <div class="wpm-exclude-section">
+                        <div class="exclude-wrapper" style="display:none;">
+                            <label for="wpmpro-at-product_cat-exclude" class="wpm-exclude-label"><?php echo esc_html__( 'Exclude Items:', 'wp-multilang' ); ?></label>
+                            <select class="exclude-select" id="wpmpro-at-product_cat-exclude" data-type="product_cat" style="width: 200px;" multiple="multiple" placeholder="<?php echo esc_attr__( 'Select items to exclude...', 'wp-multilang' ); ?>"></select>
+                        </div>
+                    </div>
+                </div>
             </li>
         </ul>
     </div>
