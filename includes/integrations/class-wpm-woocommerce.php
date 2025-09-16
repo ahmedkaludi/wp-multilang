@@ -71,7 +71,9 @@ class WPM_WooCommerce {
 		add_filter( 'rest_post_dispatch', array( $this, 'wpm_translate_filter_attribute_widget' ), 10, 3);
 
 		add_filter( 'woocommerce_dropdown_variation_attribute_options_args', array( $this, 'translate_variation_attribute_options_args' ) );
-		add_filter( 'get_term', array( $this, 'translate_product_variation_metadata' ), 10, 2 );
+		if ( ! is_admin() ) {
+			add_filter( 'get_term', array( $this, 'translate_product_variation_metadata' ), 10, 2 );
+		}
 		add_filter( 'woocommerce_product_export_product_column_name', array( $this, 'modify_product_export_data' ), 10, 3 );
 		add_filter( 'woocommerce_product_export_product_column_short_description', array( $this, 'modify_product_export_data' ), 10, 3 );
 		add_filter( 'woocommerce_product_export_product_column_description', array( $this, 'modify_product_export_data' ), 10, 3 );
