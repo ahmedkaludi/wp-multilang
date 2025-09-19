@@ -226,6 +226,13 @@ class WPM_REST_Settings {
 					$response->data['link'] = wpm_translate_url($response_data['link']);
 				}
 
+				// Get latest thumbnail ID directly from request param
+    			$featured_media = $request->get_param( 'featured_media' );
+    			if ( ! empty( $featured_media ) && ! empty( $response_data['featured_media'] ) ) {
+    				// Override response with the latest selected image
+			        $response->data['featured_media'] = (int) $featured_media;
+    			}
+
 			}
 
 		}
