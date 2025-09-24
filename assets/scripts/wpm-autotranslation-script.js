@@ -10,8 +10,20 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 		if($(this).is(':checked')){
 			$("label[for='" + $(this).attr('id') + "']").after(proBtn);
+			
+			// Show exclude section if it exists for this checkbox
+			var excludeWrapper = $(this).closest('.wpm-auto-translate-item').find('.exclude-wrapper');
+			if (excludeWrapper.length > 0) {
+				excludeWrapper.show();
+			}
 		}else{
 			$('.wpm-upgrade-to-pro-note').remove();
+			
+			// Hide exclude section if it exists for this checkbox
+			var excludeWrapper = $(this).closest('.wpm-auto-translate-item').find('.exclude-wrapper');
+			if (excludeWrapper.length > 0) {
+				excludeWrapper.hide();
+			}
 		}
 	});
 
