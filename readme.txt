@@ -252,7 +252,7 @@ If you have opened several browser tabs for editing this post in different langu
 - enhancement Fixed woocommerce attribute translation issue for third language #175
 - fixed Auto Translate style issue on product taxanomies/terms #196
 - enhancement Added re-translate option for taxonomies #197
-- feature Added an option to exclude page/post from auto translation #200
+- feature Added an option to exclude page/post from auto translation #200 (Pro)
 - fixed Featured image issue on block editor #203
 
 = 2.4.21 =
