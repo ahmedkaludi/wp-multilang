@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.8
-Stable tag: 2.4.21
+Stable tag: 2.4.22
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -248,6 +248,13 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.22 =
+- enhancement Fixed woocommerce attribute translation issue for third language #175
+- fixed Auto Translate style issue on product taxanomies/terms #196
+- enhancement Added re-translate option for taxonomies #197
+- feature Added an option to exclude page/post from auto translation #200
+- fixed Featured image issue on block editor #203
+
 = 2.4.21 =
 - fixed Rankmath title translation improvement #177
 - fixed Flag translation issue on products #185
@@ -363,10 +370,5 @@ If you have opened several browser tabs for editing this post in different langu
 - feature Woocommerce product attributes translation issue #70
 - fixed Issue with CF7 form #73
 - fixed Language switch button interface Guternberg block button  #74
-
-= 2.4.7 =
-- fixed Call to undefined function #65
-- feature Admin settings page UI/UX changes #67
-- feature Added Newsletter Form #68
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
