@@ -338,7 +338,12 @@
   margin: 0;
   padding: 0;
   line-height: 1.4;
-  width: 200px;
+  width: auto;
+}
+
+.wpm-auto-translate-item .wpm-checkbox-section label{
+  width: 150px;
+  display: inline-block;
 }
 
 .wpm-auto-translate-item .wpm-exclude-section {

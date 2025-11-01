@@ -180,6 +180,9 @@ final class WP_Multilang {
 		new WPM_Comments();
 		new WPM_Shortcodes();
 		new WPM_Custom_Post_Types();
+		if( class_exists( 'WPM\Includes\Admin\Settings\WPM_Settings_Auto_Translate_Pro' ) ) {
+			new \WPM\Includes\Admin\Settings\WPM_Settings_Auto_Translate_Pro();
+		}
 
 		if ( $this->is_request( 'admin' ) ) {
 			new Admin\WPM_Admin();

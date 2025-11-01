@@ -73,7 +73,7 @@ class WPM_Acf {
 
 		$old_field = maybe_unserialize( get_post_field( 'post_content', $field['ID'], 'edit' ) );
 
-		if ( ! $old_field ) {
+		if ( ! $old_field && ! is_array( $old_field ) ) {
 			return $field;
 		}
 

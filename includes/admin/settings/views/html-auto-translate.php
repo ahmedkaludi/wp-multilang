@@ -223,7 +223,9 @@ $main_params = array(
     'total_categories'                  => $total_categories,
     'total_tags'                        => $total_tags,
     'total_product_categories'          => $total_product_categories,
-    'source_language'                   => $source_language,
+    'source_language' => function_exists('wpm_get_user_language') ? wpm_get_user_language() : 'en',
+    'target_language' => function_exists('wpm_get_language') ? wpm_get_language() : 'en',
+    'is_pro_active'                 =>  wpm_is_pro_active(),
     'wpmpro_autotranslate_nonce'        => wp_create_nonce( 'wpmpro-autotranslate-nonce' ),
 );
 $main_params    =   apply_filters( 'wpm_localize_autotranslate_params', $main_params );

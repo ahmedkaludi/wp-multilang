@@ -57,6 +57,7 @@ class WPM_Admin {
 		new WPM_Admin_Qtranslate();
 		new WPM_Deactivate_Feedback_Form();
 		new WPM_Bulk_Translate();
+		new WPM_OpenAI();
 	}
 
 	/**

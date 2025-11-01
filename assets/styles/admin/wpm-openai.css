@@ -1,0 +1,28 @@
+.wpm-opeai-provider-note{
+	margin-left: 50px; 
+	font-weight: 500;
+	display: none;
+}
+
+#wpm-secret-key-error{
+	display: none; 
+	color: red; 
+	font-weight: 400; 
+	margin-top: 5px;
+}
+
+.wpm-openai-api-success-note{
+	display: none;
+	color: green;
+	font-weight: 600;
+	margin-top: 5px;
+}
+
+.wpm-openai-provider-note{
+	font-weight: 500;
+	margin-left: 50px;
+}
+
+#wpm-save-openai-settings-td{
+	padding-left: 0px;
+}

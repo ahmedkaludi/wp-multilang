@@ -106,6 +106,13 @@ class WPM_Admin_Meta_Boxes {
 		if ( 'comment' === $screen_id && isset( $_GET['c'] ) ) {
 			add_meta_box( 'wpm-comment-languages', __( 'Languages', 'wp-multilang' ), __NAMESPACE__ . '\Meta_Boxes\WPM_Meta_Box_Comment_Languages::output', 'comment', 'normal' );
 		}
+
+		$current_lang = wpm_get_language(); 
+		$default_lang = wpm_get_default_language();
+
+		if ( ( 'attachment' !== $post_type ) && null !== wpm_get_post_config( $post_type ) && ( $current_lang !== $default_lang ) ) {
+			add_meta_box( "wpm-{$post_type}-auto_translate", esc_html__( 'Auto Translation', 'wp-multilang' ), array( __NAMESPACE__ . '\Settings\WPM_Settings_Auto_Translate_Pro', 'auto_translate_metabox_output' ), $post_type, 'side' );
+		}
 	}
 
 	/**
