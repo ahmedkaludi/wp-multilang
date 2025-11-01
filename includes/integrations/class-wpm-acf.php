@@ -77,6 +77,14 @@ class WPM_Acf {
 			return $field;
 		}
 
+		if ( ! empty( $old_field ) && is_string( $old_field ) ) {
+			$old_field 	=	wpm_translate_string( $old_field );
+			$old_field 	=	maybe_unserialize( $old_field );
+			if ( ! is_array( $old_field ) ) {
+				return $field;
+			}	
+		}
+
 		$old_field          = wpm_array_merge_recursive( $field, $old_field );
 		$old_field          = wpm_value_to_ml_array( $old_field );
 		$field_name         = get_post_field( 'post_title', $field['ID'], 'edit' );
