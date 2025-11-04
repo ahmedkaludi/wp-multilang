@@ -1,0 +1,12 @@
+{
+	"post_types": {
+		"advanced_ads": {},
+		"advanced_ads_plcmnt": {}
+	},
+	"post_fields":{
+		"advanced_ads_ad_options": {},
+		"type": {},
+		"item": {},
+		"options": {}
+	}
+}

@@ -546,6 +546,7 @@ class WPM_Setup {
 			'forminator' 				 => __NAMESPACE__ . '\Integrations\WPM_Forminator',
 			'gravityforms' 				 => __NAMESPACE__ . '\Integrations\WPM_Gravityforms',
 			'ultimate-member' 			 => __NAMESPACE__ . '\Integrations\WPM_Ultimate_Member',
+			'advanced-ads' 			 	 => __NAMESPACE__ . '\Integrations\WPM_Advanced_Ads',
 		) );
 
 		$active_plugins = wp_cache_get( 'active_plugins', 'wpm' );

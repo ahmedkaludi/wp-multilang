@@ -61,6 +61,7 @@ $class_map_array =  array(
     'WPM\\Includes\\Integrations\\WPM_Forminator' => $baseDir . '/includes/integrations/class-wpm-forminator.php',
     'WPM\\Includes\\Integrations\\WPM_Gravityforms' => $baseDir . '/includes/integrations/class-wpm-gravityforms.php',
     'WPM\\Includes\\Integrations\\WPM_Ultimate_Member' => $baseDir . '/includes/integrations/class-wpm-ultimate-member.php',
+    'WPM\\Includes\\Integrations\\WPM_Advanced_Ads' => $baseDir . '/includes/integrations/class-wpm-advanced-ads.php',
     'WPM\\Includes\\Libraries\\WPM_Walker_Nav_Menu_Edit' => $baseDir . '/includes/libraries/class-wpm-walker-nav-menu-edit.php',
     'WPM\\Includes\\Libraries\\WP_Async_Request' => $baseDir . '/includes/libraries/abstract-wp-async-request.php',
     'WPM\\Includes\\Libraries\\WP_Background_Process' => $baseDir . '/includes/libraries/abstract-wp-background-process.php',
