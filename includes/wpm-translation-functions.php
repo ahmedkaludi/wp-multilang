@@ -542,8 +542,10 @@ function wpm_set_new_value( $old_value, $new_value, $config = array(), $lang = '
 
 	if ( wpm_is_ml_array( $old_value ) ) {
 		foreach ($old_value as $key => $lang_value) {
-			if ( strpos($lang_value, '{"') || strpos($lang_value, ':{"') || strpos($lang_value, '""')  || strpos($lang_value, '":"') ) {
-				$old_value[ $key ] = wp_slash( $lang_value );
+			if ( is_string( $lang_value ) ) {
+				if ( strpos($lang_value, '{"') || strpos($lang_value, ':{"') || strpos($lang_value, '""')  || strpos($lang_value, '":"') ) {
+					$old_value[ $key ] = wp_slash( $lang_value );
+				}
 			}
 		}
 	}
