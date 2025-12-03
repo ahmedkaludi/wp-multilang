@@ -10,6 +10,7 @@
 
 namespace WPM\Includes\Admin\Settings;
 use WPM\Includes\Admin\WPM_OpenAI;
+use WPM\Includes\Admin\Settings\WPM_Settings_AI_Integration;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -105,8 +106,9 @@ class WPM_Settings_Auto_Translate_Pro {
 			$main_params['license_status'] 	= 	$license['pro']['license_key_status'];
 		}
 
-		$ai_settings 		=	WPM_OpenAI::get_settings();
+		$ai_settings 		=	WPM_Settings_AI_Integration::get_openai_settings();
 		$main_params['ai_settings'] 	=	$ai_settings;
+
 
 		$is_pro_active = wpm_is_pro_active();
 
@@ -988,19 +990,15 @@ class WPM_Settings_Auto_Translate_Pro {
 		$params 	=	array();
 		$params 	=	self::filter_js_params( $params );
 		
-		if ( wpm_is_pro_active() && $params['license_status'] !== 'active' && ( empty( $params['ai_settings']['api_provider'] ) || $params['ai_settings']['api_provider'] === 'multilang' ) ) {
+		if ( wpm_is_pro_active() && $params['license_status'] !== 'active' ) {
 
 		?>
 			<p class="wpm-license-error-note" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'Your license key is inactive or expired, please check', 'wp-multilang' ); ?><a href="<?php echo esc_attr( admin_url( 'admin.php?page=wpm-settings&tab=license' ) ) ?>"><?php echo esc_html__( ' here' ); ?></a></p>
 		<?php	
-		}else if ( empty( $params['ai_settings']['model'] ) && ! empty( $params['ai_settings']['api_provider'] ) && $params['ai_settings']['api_provider'] !== 'multilang' ) {
+		}else if ( ! wpm_is_pro_active() &&  ( empty( $params['ai_settings']['wpm_openai_integration'] ) || $params['ai_settings']['wpm_openai_integration'] == 0 ||  empty( $params['ai_settings']['model'] ) || empty( $params['ai_settings']['api_provider'] ) ) ) {
 		?>
-			<p class="wpm-license-error-note" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'Please configure OpenAI settings', 'wp-multilang' ); ?><a href="<?php echo esc_attr( admin_url( 'admin.php?page=wpm-settings&tab=autotranslate' ) ) ?>" target="_blank"><?php echo esc_html__( ' here' ); ?></a></p>
+			<p class="wpm-license-error-note" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'Set up', 'wp-multilang' ); ?><a href="<?php echo esc_attr( admin_url( 'admin.php?page=wpm-settings&tab=ai_integration' ) ); ?>"><?php echo esc_html__( ' AI integration' ); ?></a><?php echo esc_html__( ' to use auto-translation in the free plan, or', 'wp-multilang' ); ?><a href="<?php echo esc_url( 'https://wp-multilang.com/pricing/' ); ?>" target="_blank"><?php echo esc_html__( ' upgrade to Pro' ); ?></a><?php echo esc_html__( ' for automatic translation.', 'wp-multilang' ) ?></p>
 		<?php	
-		}else if ( ! wpm_is_pro_active() &&  ( $params['ai_settings']['api_provider'] === 'multilang' || empty( $params['ai_settings']['api_provider'] ) ) ) {
-		?>
-			<p class="wpm-license-error-note" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'This feature requires the ', 'wp-multilang' ); ?><a href="https://wp-multilang.com/pricing/#pricings"><?php echo esc_html__( ' Premium Version' ); ?></a></p>
-		<?php
 		}else{
 		?>
 			<p class="wpm-license-error-note wpm-hide" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'This feature requires the ', 'wp-multilang' ); ?><a href="https://wp-multilang.com/pricing/#pricings"><?php echo esc_html__( ' Premium Version' ); ?></a></p>

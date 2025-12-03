@@ -1,0 +1,294 @@
+<?php
+/**
+ * WP Multilang AI Integration settings
+ */
+
+namespace WPM\Includes\Admin\Settings;
+use WPM\Includes\Admin\WPM_OpenAI;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+/**
+ * WPM_Settings_AI_Integration.
+ * @since 	2.4.23
+ */
+class WPM_Settings_AI_Integration extends WPM_Settings_Page {
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		$this->id    = 'ai_integration';
+		$this->label = esc_html__( 'AI Integration', 'wp-multilang' );
+
+		parent::__construct();
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_scripts_and_styles' ) );
+		add_action( 'wpm_openai_settings', array( $this,'output' ) );
+	}
+
+	/**
+	 * Get API configurations
+	 * @since 	2.4.23
+	 * */
+	public static function get_openai_settings() {
+
+		$defaults 		=	[
+								'api_keys' 				=>	[],
+								'api_provider'			=>	'',
+								'model'					=>	'',
+								'api_available_models'	=>	[],
+							];
+		$ai_settings 	=	get_option( 'wpm_openai_settings', $defaults );
+		$ai_settings['wpm_openai_integration'] = get_option( 'wpm_openai_integration' );
+		return $ai_settings;
+
+	}
+
+	/**
+	 * Return api privider details
+	 * @since 	2.4.23
+	 * */
+	public static function get_api_providers(){
+		
+		return [
+            'openai' => [
+                'name' => 'OpenAI',
+                'endpoint' => 'https://api.openai.com/v1/',
+                'url' => 'https://platform.openai.com/'
+            ],
+        ];
+
+	}
+
+	/**
+	 * Get provider endpoint URL
+	 * @since 	2.4.23
+	 * */
+	public static function get_provider_endpoint( $provider ){
+		
+		$providers 	=	self::get_api_providers();
+
+		return $providers[$provider]['endpoint'];
+
+	}
+
+	/**
+	 * Load admin scripts and styles
+	 * @since 	2.4.23
+	 * */
+	public function load_admin_scripts_and_styles( $hook ) {
+		
+		if ( $hook === 'toplevel_page_wpm-settings' ) {
+
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			wp_register_script( 'wpm_openai', wpm_asset_path( 'scripts/admin-openai' . $suffix . '.js' ), array(), WPM_VERSION, true );
+			$translator_params = array(
+				'languages'                 	=>	array_keys( wpm_get_languages() ),
+				'default_language'          	=>	wpm_get_default_language(),
+				'language'                  	=>	wpm_get_language(),
+				'wpmpro_openai_nonce'			=>	wp_create_nonce( 'wpmpro-openai-nonce' ),
+				'is_pro_active'					=>	wpm_is_pro_active(),
+			);
+			$translator_params 	= 	WPM_Settings_Auto_Translate_Pro::filter_js_params( $translator_params );	
+			wp_localize_script( 'wpm_openai', 'wpm_openai_params', $translator_params );
+			wp_enqueue_script( 'wpm_openai' );
+
+			wp_enqueue_style( 'wpm-openai-css', wpm_asset_path( 'styles/admin/wpm-openai' . $suffix . '.css' ), array(), WPM_VERSION );
+
+		}
+
+	}
+
+	public function output() {
+		
+		$GLOBALS['hide_save_button'] = true;
+
+		$providers 		=	self::get_api_providers();
+		$ai_settings 	=	self::get_openai_settings();
+		$provider 		=	$ai_settings['api_provider'];
+		$secret_key 	=	'';
+		if ( ! empty( $ai_settings['api_keys'] ) && ! empty( $ai_settings['api_keys'][$provider] ) ) {
+			$secret_key =	$ai_settings['api_keys'][$provider];	
+		}
+		$models 		=	[];
+		if ( ! empty( $ai_settings['api_available_models'] ) && ! empty( $ai_settings['api_available_models'][$provider] ) ) {
+			$models 	=	$ai_settings['api_available_models'][$provider];
+		}
+		$selected_model	=	'';
+		if ( ! empty( $ai_settings['model'] ) && ! empty( $ai_settings['model'] ) ) {
+			$selected_model =	$ai_settings['model'];
+		}	
+
+		$wpm_openai_integration = get_option( 'wpm_openai_integration', '0' );
+
+		$hide_class 	=	'';
+		$hide_child 	=	'wpm-hide';
+		if ( $ai_settings['api_provider'] === 'multilang' || empty( $ai_settings['api_provider'] ) || empty( $ai_settings['model'] ) || empty( $models ) )  {
+			$hide_class 	=	'wpm-hide';
+		}
+
+		if ( $wpm_openai_integration === '1' )
+			$hide_child 	=	'';
+		?>
+		<div>
+			<h2><?php echo esc_html__( 'AI Integration' ); ?></h2>
+			<p><?php echo sprintf( __( 'Read <a href="%s" target="_blank">AI Integration Docs</a>', 'wp-multilang' ), esc_url( 'https://wp-multilang.com/docs' ) ) ?></p>
+			<table class="form-table">
+				<tbody>
+					<tr valign="top">
+						<th scope="row" class="titledesc">
+							<label class="wpm-label-cursor" style="cursor:pointer;" for="wpm_openai_integration"><?php echo esc_html__( 'OpenAI Integration', 'wp-multilang' ); ?></label>
+						</th>
+						<td class="forminp forminp-checkbox">
+							<fieldset>
+								<label for="wpm_openai_integration">
+									<input name="wpm_openai_integration" id="wpm_openai_integration" type="checkbox" value="1" <?php checked( $wpm_openai_integration, '1' ); ?>> 
+								</label> 
+							</fieldset>
+						</td>
+					</tr>
+					<tr valign="top" class="wpm-hide-openai-wrapper wpm-openai-children <?php echo esc_attr( $hide_child ) ?> ">
+						<th scope="row" class="titledesc wpm-pl-20">
+							<label for="wpm-openai-secretkey"><?php echo esc_html__( 'Secret key', 'wp-multilang' ) ?></label>
+						</th>	
+						<td class="wpm-pl-20">
+							<input class="regular-text" type="password" id="wpm-openai-secretkey" name="wpm_openai_secretkey" value="<?php echo esc_attr( $secret_key ); ?>">
+							<button type="button" id="wpm-validate-openai-key" class="button"><?php echo esc_html__( 'Validate API Key', 'wp-multilang' ); ?></button>
+							<span class="description" style="padding-left: 10px;"><a href="https://platform.openai.com/" target="__blank"><?php echo esc_html__( 'Get API Key.' ); ?></a></span>
+							<div id="wpm-secret-key-error"><?php echo esc_html__('Secret key cannot be blank', 'wp-multilang'); ?></div>
+							<div class="wpm-openai-api-success-note"></div>
+							<div class="wpm-openai-api-error-note"></div>
+						</td>	
+					</tr>
+
+					<tr valign="top" id="wpm-hide-openai-models-wrapper" class="wpm-hide-openai-wrapper wpm-openai-children <?php echo esc_attr( $hide_class ) . ' ' . esc_attr( $hide_child ); ?>">
+						<th scope="row" class="titledesc wpm-pl-20">
+							<label for="wpm-openai-models"><?php echo esc_html__( 'Translation Models', 'wp-multilang' ) ?></label>
+						</th>			
+						<td class="wpm-pl-20">
+							<select name="wpm_openai_models" id="wpm-openai-models">
+								<?php 
+								if ( ! empty( $models ) && is_array( $models ) ) {
+									foreach ( $models as $model ) {
+										$selected = '';
+										if ( $model === $selected_model ) {
+											$selected 	=	'selected';
+										}
+									?>
+										<option value="<?php echo esc_attr( $model ); ?>" <?php echo esc_attr( $selected ); ?>><?php echo esc_html( $model ); ?></option>
+									<?php
+									}
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+					<tr valign="top">
+					    <th scope="row" class="titledesc">
+					        <label class="wpm-label-cursor" for="wpm_gemini_integration">Gemini Integration</label>
+					    </th>
+					    <td class="forminp forminp-checkbox">
+					        <fieldset style="display:flex;align-items:center;gap:10px;">
+					            <label for="wpm_gemini_integration" style="margin:0;">
+					                <input name="wpm_gemini_integration" id="wpm_gemini_integration" 
+					                       type="checkbox" value="1" checked disabled />
+					            </label>
+
+								<span class="wpm-coming-soon" >
+								    🚀 Coming Soon
+								</span>
+					        </fieldset>
+					    </td>
+					</tr>
+
+					<tr valign="top">
+					    <th scope="row" class="titledesc">
+					        <label class="wpm-label-cursor" for="wpm_deepseek_integration">DeepSeek Integration</label>
+					    </th>
+					    <td class="forminp forminp-checkbox">
+					        <fieldset style="display:flex;align-items:center;gap:10px;">
+					            <label for="wpm_deepseek_integration" style="margin:0;">
+					                <input name="wpm_deepseek_integration" id="wpm_deepseek_integration" 
+					                       type="checkbox" value="1" checked disabled />
+					            </label>
+
+					            <span class="wpm-coming-soon" >
+								    🚀 Coming Soon
+								</span>
+					        </fieldset>
+					    </td>
+					</tr>
+
+					<tr valign="top">
+						<td id="wpm-save-openai-settings-td">
+							<button class="button button-primary" id="wpm-save-openai-settings" type="button" ><?php echo esc_html__( 'Save Changes', 'wp-multilang' ); ?></button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<?php
+
+	}
+
+	/**
+	 * Save open ai settings
+	 * @since 2.4.23
+	 * */
+	public static function save_settings() {
+		
+		$provider 	=	sanitize_text_field( wp_unslash( $_POST['provider'] ) );
+		$model 		=	'';
+		if ( $provider !== 'multilang' ) {
+			$model 	=	sanitize_text_field( wp_unslash( $_POST['model'] ) );
+		}
+
+		$api_settings 	=	self::get_openai_settings();
+
+		$api_settings['api_provider']	=	$provider;
+		$api_settings['model']			=	$model;
+
+		update_option( 'wpm_openai_settings', $api_settings );
+
+		$wpm_openai_integration = isset( $_POST['wpm_openai_integration'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_openai_integration'] ) ) : '0';
+
+		update_option( 'wpm_openai_integration', $wpm_openai_integration );
+
+	}
+
+	/**
+	 * Check quota
+	 * @since 	2.4.23
+	 * */
+	public static function check_ai_platform_quota() {
+
+		$response['status'] = false;
+		$response['message'] = '';
+
+		$api_resp = [];
+
+		$provider 	=	sanitize_text_field( wp_unslash( $_POST['provider'] ) );
+		$api_settings 	=	self::get_openai_settings();
+		$api_key 	=	'';
+		if ( ! empty( $api_settings['api_keys'] ) && is_array( $api_settings['api_keys'] ) && ! empty( $api_settings['api_keys']['openai'] ) ) {
+			$api_key 	=	$api_settings['api_keys']['openai'];
+		}
+
+		if ( empty( $api_key ) ) {
+			return $response;
+		}
+
+		switch( $provider ) {
+
+			case 'openai':
+				$api_resp 	=	WPM_OpenAI::check_ai_platform_quota( $api_key );
+				break;
+
+		}
+
+		return $api_resp;
+	}
+}

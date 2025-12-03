@@ -47,6 +47,8 @@ class WPM_Admin_Taxonomies {
 			add_filter( "manage_{$taxonomy}_custom_column", array( $this, 'render_language_column' ), 10, 3 );
 			add_action( "{$taxonomy}_add_form_fields", array( $this, 'add_taxonomy_fields' ) );
 			add_action( "{$taxonomy}_edit_form_fields", array( $this, 'edit_taxonomy_fields' ), 10 );
+			add_action( "{$taxonomy}_add_form_fields", array( $this, 'add_autotranslate' ), 99 );
+			add_action( "{$taxonomy}_edit_form_fields", array( $this, 'add_autotranslate' ), 99 );
 		}
 	}
 
@@ -185,5 +187,31 @@ class WPM_Admin_Taxonomies {
 	 */
 	public function translate_term_link( $termlink ) {
 		return wpm_translate_url( $termlink, wpm_get_language() );
+	}
+
+	/**
+	 * Display autotranslate button on category edit page
+	 * @since 	1.10
+	 * */
+	public function add_autotranslate() {
+		
+		wp_enqueue_script( 'wpmpro-singular-autotranslate' );
+
+		$default_lang 	=	wpm_get_default_language();
+		$current_lang 	=	wpm_get_language();
+		if ( $default_lang !== $current_lang ) {
+
+	?>
+			<tr class="wpm-term-auto-translate-wrapper">
+				<th><?php echo esc_html__( 'Auto Translate', 'wp-multilang' ); ?></th>
+				<td>
+					<button type="button" id="wpm-auto-translate-term-btn" class="button button-primary"><p><?php echo esc_html__( ' Auto translate', 'wp-multilang' ) ?></p></button>
+					<div class="description"><?php echo esc_html__( 'Click on Auto translate button to translate the content', 'wp-multilang' ); ?></div>
+					<?php do_action( 'wpm_display_license_status_msg' ); ?>
+				</td>
+			</tr>
+	<?php
+		}
+
 	}
 }

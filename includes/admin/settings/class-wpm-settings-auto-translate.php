@@ -98,7 +98,7 @@ class WPM_Settings_Auto_Translate extends WPM_Settings_Page {
 	 * @since 2.4.11
 	 */
 	public function get_autotranslate( $value ) {
-		do_action( 'wpm_openai_settings' );
+		
 		$GLOBALS['hide_save_button'] = true;
 
 		$languages = get_option( 'wpm_languages', array() );

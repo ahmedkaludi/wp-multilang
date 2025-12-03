@@ -13,6 +13,7 @@ $class_map_array =  array(
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Additional' => $baseDir . '/includes/admin/settings/class-wpm-settings-additional.php',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_General' => $baseDir . '/includes/admin/settings/class-wpm-settings-general.php',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Languages' => $baseDir . '/includes/admin/settings/class-wpm-settings-languages.php',
+    'WPM\\Includes\\Admin\\Settings\\WPM_Settings_AI_Integration' => $baseDir . '/includes/admin/settings/class-wpm-settings-ai-integration',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Support' => $baseDir . '/includes/admin/settings/class-wpm-settings-support.php',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Premium' => $baseDir . '/includes/admin/settings/class-wpm-settings-premium.php',
     'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Upgrade_Pro' => $baseDir . '/includes/admin/settings/class-wpm-settings-upgradepro.php',

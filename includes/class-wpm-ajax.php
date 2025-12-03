@@ -4,6 +4,7 @@ namespace WPM\Includes;
 use WPM\Includes\Admin\WPM_Reset_Settings;
 use WPM\Includes\Admin\WPM_OpenAI;
 use WPM\Includes\Admin\Settings\WPM_Settings_Auto_Translate_Pro;
+use WPM\Includes\Admin\Settings\WPM_Settings_AI_Integration;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -116,6 +117,7 @@ class WPM_AJAX {
 			'singlular_auto_translate_term' => false,
 			'get_translation_node_count' => false,
 			'process_batch_translation' => false,
+			'check_ai_platform_quota' => false,
 		);
 		
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
@@ -545,14 +547,14 @@ class WPM_AJAX {
     	if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( -1 );    
         }
-
+     
         try {
         	$result 	=	WPM_OpenAI::validate_secret_key();
         	if ( ! empty( $result['models'] ) ) {
         		$models 		=	$result['models'];
         		$provider 		=	$result['provider'];
 
-	        	$api_settings 	=	WPM_OpenAI::get_settings();
+	        	$api_settings 	=	WPM_Settings_AI_Integration::get_openai_settings();
 		        $api_settings['api_keys'][$provider] 					=	$result['api_key'];
 		        $api_settings['api_provider'] 							=	$provider;
 		        $api_settings['api_available_models'][$provider] 		=	$models;
@@ -580,7 +582,7 @@ class WPM_AJAX {
             wp_die( -1 );    
         }
 
-        WPM_OpenAI::save_settings();
+        WPM_Settings_AI_Integration::save_settings();
     }
 
 
@@ -1121,4 +1123,22 @@ class WPM_AJAX {
 		wp_send_json($response);
 	}
 
+	/**
+	 * Check ai platform api key quota
+	 * @since 	2.4.23
+	 * */
+	public static function check_ai_platform_quota() {
+
+		if ( ! wp_verify_nonce( $_POST['wpmpro_autotranslate_nonce'], 'wpmpro-autotranslate-nonce' ) ) {
+			wp_send_json_error( array( 'message' => esc_html__( 'security nonce not verify', 'wp-multilang' ) ) );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+		    wp_send_json_error( array( 'message' => esc_html__( 'not authorized', 'wp-multilang' ) ) );
+		}
+
+		$response 	=	WPM_Settings_AI_Integration::check_ai_platform_quota();
+
+		wp_send_json($response);
+	}
 }

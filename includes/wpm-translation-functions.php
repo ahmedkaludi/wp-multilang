@@ -11,6 +11,7 @@
  */
 use WPM\Includes\WPM_Custom_Post_Types;
 use WPM\Includes\Admin\WPM_OpenAI;
+use WPM\Includes\Admin\Settings\WPM_Settings_AI_Integration;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -739,25 +740,31 @@ if ( ! function_exists( 'wpm_ml_auto_fetch_translation' ) ) {
 		}
 
 
+		if ( wpm_is_pro_active() ) {
+			$string 	=	apply_filters( 'wpmpro_auto_translate_content', $string, $source, $target );
+			return $string;
+		}
+		
 		$ai_settings 	=	array();
-		$ai_settings 	=	WPM_OpenAI::get_settings();
+		$ai_settings 	=	WPM_Settings_AI_Integration::get_openai_settings();
+		$enable_logging = apply_filters( 'wpm_ml_translation_debug_log', true );
 
 		switch ( $ai_settings['api_provider'] ) {
 
 			case 'openai':
 
 				if ( ! empty( $ai_settings['api_keys']['openai'] ) ) {
-					$string 	=	WPM_OpenAI::translate_content( $string, $source, $target, $ai_settings );
+					try {
+						$string 	=	WPM_OpenAI::translate_content( $string, $source, $target, $ai_settings );
+					} catch ( \Throwable $e ) {
+						if ( $enable_logging ) {
+	                        wpm_ml_log_message( sprintf('Error in openAI translation: %s', $e->getMessage()), 'error' );
+	                    }
+					}
 				}
 				
 			break;
 
-			case 'multilang':
-			default:
-
-				$string 	=	apply_filters( 'wpmpro_auto_translate_content', $string, $source, $target );
-
-			break;
 		}
 
 		return $string;

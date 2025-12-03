@@ -10,7 +10,7 @@ jQuery(document).ready(function($){
 
     $('#wpmpro-what-all-opt').change(() => {
 
-        const selectedProvider = $('#wpm-openai-provider').val();
+        const selectedProvider = wpmpro_autotranslate_localize_data.ai_settings.api_provider;
 
         let qs = document.querySelectorAll('.wpmpro-what-list');
 
@@ -20,7 +20,7 @@ jQuery(document).ready(function($){
                 const element = qs[index];
                 element.checked = true;
                 
-                if ( ( wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.license_status === 'active' && ( selectedProvider === 'multilang' ) ) 
+                if ( ( wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.license_status === 'active' ) 
                     || ( selectedProvider === 'openai' && wpmpro_autotranslate_localize_data.ai_settings.model.length > 0 )  ) {
                     // Show exclude wrapper for this item
                     const excludeWrapper = $(element).closest('li').find('.exclude-wrapper');
@@ -29,16 +29,11 @@ jQuery(document).ready(function($){
                     }
                 }
             }
-            $('.wpmpro-what-list').each(function() {
-                if ( wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.license_status !== 'active' && selectedProvider === 'multilang' ) {
-                    $(this).next('label').after(licenseKeyError);
-                } else if ( ( ! wpmpro_autotranslate_localize_data.is_pro_active && selectedProvider === 'multilang' ) ||  wpmpro_autotranslate_localize_data.license_status !== 'active' && ( selectedProvider === 'multilang' ) ) {
-                    $(this).next('label').next('span.wpm-upgrade-to-pro-note').remove();
-                    $(this).next('label').after(proBtn);
-                }else if( selectedProvider === 'openai' && wpmpro_autotranslate_localize_data.ai_settings.model.length === 0 ) {
-                    // $(this).next('label').after(openAINote);
-                }
-            });
+            // $('.wpmpro-what-list').each(function() {
+            //     if ( wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.license_status !== 'active' ) {
+            //         $(this).next('label').after(licenseKeyError);
+            //     }
+            // });
 
         } else {
 
@@ -64,20 +59,16 @@ jQuery(document).ready(function($){
     $(document).on('change', '.wpmpro-what-list', function(){
         let total_len = 0;
         let checked_len = 0;
-        const selectedProvider = $('#wpm-openai-provider').val();
+        const selectedProvider = wpmpro_autotranslate_localize_data.ai_settings.api_provider;
 
         // Show/hide exclude wrapper
         const excludeWrapper = $(this).closest('li').find('.exclude-wrapper');
         if ($(this).is(':checked')) {
-            if ( wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.license_status !== 'active' && selectedProvider === 'multilang' ) {
-                    $(this).next('label').after(licenseKeyError);
-            }else if ( ( ! wpmpro_autotranslate_localize_data.is_pro_active && selectedProvider === 'multilang' ) || wpmpro_autotranslate_localize_data.license_status !== 'active' && ( selectedProvider === 'multilang' ) ) {
-                $("label[for='" + $(this).attr('id') + "']").after(proBtn);selectedProvider
-            }else if( selectedProvider === 'openai' && wpmpro_autotranslate_localize_data.ai_settings.model.length === 0 ) {
-                // $("label[for='" + $(this).attr('id') + "']").after(openAINote);
-            }
-            if ( ( wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.license_status === 'active' && ( selectedProvider === 'multilang' ) ) 
-                    || ( selectedProvider === 'openai' && wpmpro_autotranslate_localize_data.ai_settings.model.length > 0 ) ) {
+            // if ( wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.license_status !== 'active' ) {
+            //         $(this).next('label').after(licenseKeyError);
+            // }
+            if ( ( wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.license_status === 'active' ) 
+                    || ( selectedProvider === 'openai' && wpmpro_autotranslate_localize_data.ai_settings.model.length > 0 )  ) {
                 excludeWrapper.show();
             }
         } else {
@@ -189,8 +180,10 @@ jQuery(document).ready(function($){
     }
 
     $("#wpmpro-translate").on("click", async function () {
+
+        $('#wpmpro-translation-error-message').hide();
         let target_langs = [];
-        const selectedProvider = $('#wpm-openai-provider').val();
+        const selectedProvider = wpmpro_autotranslate_localize_data.ai_settings.api_provider;
         $(".wpmpro-language-cb").each(function () {
             if ($(this).is(":checked")) {
                 target_langs.push($(this).val());
@@ -229,12 +222,16 @@ jQuery(document).ready(function($){
             alert("Please select what you want to translate");
             return false;
         }
-        
-        if ( ( ! wpmpro_autotranslate_localize_data.is_pro_active && selectedProvider === 'multilang' ) || ( wpmpro_autotranslate_localize_data.license_status !== 'active' && ( selectedProvider === 'multilang' || wpmpro_autotranslate_localize_data.ai_settings.api_provider.length === 0 ) ) ) {
+        console.log('wpm_openai_integration ', wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration);
+        if( ! wpmpro_autotranslate_localize_data.is_pro_active && ( wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration.length === 0 || wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration == '0' ) ) {
             return false;
-        }
-        if( selectedProvider === 'openai' && wpmpro_autotranslate_localize_data.ai_settings.model.length === 0 ) {
+        } 
+        if( ! wpmpro_autotranslate_localize_data.is_pro_active && ( selectedProvider.length === 0 || wpmpro_autotranslate_localize_data.ai_settings.model.length === 0 ) ) {
             return false
+        }
+        
+        if ( ( wpmpro_autotranslate_localize_data.is_pro_active ) && wpmpro_autotranslate_localize_data.license_status !== 'active' ) {
+            return false;
         }
 
         // Prevent multiple simultaneous translations
@@ -243,6 +240,12 @@ jQuery(document).ready(function($){
             return false;
         }
         
+        // Check AI quota before translating
+        const aiQuotaStatus = await wpmHandleAITranslationCheck(selectedProvider);
+        if (!aiQuotaStatus) {
+            return false;
+        }
+
         translationInProgress = true;
         progressDoneCalled = false;
         
@@ -675,6 +678,60 @@ jQuery(document).ready(function($){
         build_time_format +=' remaing...';
         return build_time_format;
 
+    }
+
+    // Handle Ajax request to check quota
+    async function wpmHandleAITranslationCheck(selectedProvider) {
+        let openAIStatus = true;
+
+        if (!wpmpro_autotranslate_localize_data.is_pro_active &&
+            selectedProvider === 'openai' &&
+            wpmpro_autotranslate_localize_data.ai_settings.model.length > 0 &&
+            wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration == '1'
+        ) {
+
+            $("#wpmpro-translate").hide();
+            $("#wpmpro-translate-hide").show();
+
+            try {
+                const response = await wpmCheckAIQuota(selectedProvider);
+
+                if (response.status === false) {
+                    $('#wpmpro-translation-error-message').show();
+                    $('#wpm-ai-translate-error').text('AI Translation Error: ' + response.message);
+                    $("#wpmpro-translate").show();
+                    $("#wpmpro-translate-hide").hide();
+                    openAIStatus = false;
+                }
+
+            } catch(err) {
+                console.error("Quota check failed:", err);
+                openAIStatus = false;
+            }
+        }
+
+        return openAIStatus;
+    }
+
+    // Check AI quota through ajax
+    function wpmCheckAIQuota(selectedProvider) {
+        return new Promise(function(resolve, reject) {
+            jQuery.ajax({
+                type: "POST",
+                url: wpmpro_autotranslate_localize_data.ajax_url,
+                data: {
+                    action: "wpm_check_ai_platform_quota",
+                    provider: selectedProvider,
+                    wpmpro_autotranslate_nonce: wpmpro_autotranslate_localize_data.wpmpro_autotranslate_nonce
+                },
+                success: function(response) {
+                    resolve(response);
+                },
+                error: function(xhr) {
+                    reject(xhr);
+                }
+            });
+        });
     }
 
 });

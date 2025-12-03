@@ -196,6 +196,11 @@ if ( ! defined( 'ABSPATH' ) ) {
         <h2 style="color:green"><?php echo esc_html__( 'Translation Successful', 'wp-multilang' ); ?></h2>
     </div>
 
+    <div id="wpmpro-translation-error-message" style="display:none">
+        <h4><?php echo esc_html__( 'Translation Failed', 'wp-multilang' ); ?></h4>
+        <div id="wpm-ai-translate-error"></div>
+    </div>
+
     <div style="height:10px;background:#ebebeb;border-radius: 5px;margin-bottom:10px;text-align:center;display:none" id="wpmpro-parent-progress-bar">
         <div style="height:10px;background:green;border-radius: 5px;width:0%" id="wpmpro-child-progress-bar">
             

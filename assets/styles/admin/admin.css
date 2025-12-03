@@ -386,6 +386,19 @@
   margin-top: 0;
 }
 
+#wpmpro-translation-error-message{
+  background: #edd6d4;
+  border: 1px solid #e6c8c3;
+  color: #3c434a;
+  padding: 15px;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+#wpmpro-translation-error-message h4{
+  color: #e41a1a;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .wpm-auto-translate-item {

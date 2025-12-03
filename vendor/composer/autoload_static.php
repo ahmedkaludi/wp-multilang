@@ -24,6 +24,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Additional' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-additional.php',
         'WPM\\Includes\\Admin\\Settings\\WPM_Settings_General' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-general.php',
         'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Languages' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-languages.php',
+        'WPM\\Includes\\Admin\\Settings\\WPM_Settings_AI_Integration' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-ai-integration',
         'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Support' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-support.php',
         'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Premium' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-premium.php',
         'WPM\\Includes\\Admin\\Settings\\WPM_Settings_Upgrade_Pro' => __DIR__ . '/../..' . '/includes/admin/settings/class-wpm-settings-upgradepro.php',

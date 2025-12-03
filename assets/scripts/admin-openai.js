@@ -13,15 +13,16 @@ jQuery(document).ready(function($){
 	$(document).on('click', '#wpm-validate-openai-key', function(e) {
 		e.preventDefault();
 		const rawSecretKey = $('#wpm-openai-secretkey').val();
-		const provider = $('#wpm-openai-provider').val();
 		const secretKey = rawSecretKey.trim();
 		if ( secretKey.length === 0 ) {
 			$('#wpm-secret-key-error').show();
 			return;
 		}
+		provider = 'openai';
 
 		$('#wpm-secret-key-error').hide();
 		$('.wpm-openai-api-success-note').hide();
+		$('.wpm-openai-api-error-note').hide();
 		$('.wpm-openai-provider-note').hide();
 		$(this).addClass('updating-message');
 		$.ajax({
@@ -37,89 +38,74 @@ jQuery(document).ready(function($){
 					$.each(models, function(index, value) {
 						optionsHtml += `<option value="${value}">${value}</option>`;
 					});
+					$('#wpm-hide-openai-models-wrapper').show();
 					$('#wpm-openai-models').html(optionsHtml);
 					$('.wpm-openai-api-success-note').show();
 					$('.wpm-openai-api-success-note').text( response.data.message );
 				} else {
 					if ( response.data && response.data.message ) {
-						$('.wpm-openai-api-success-note').show();
-						$('.wpm-openai-api-success-note').text( response.data.message );
+						$('.wpm-openai-api-error-note').show();
+						$('.wpm-openai-api-error-note').text( response.data.message );
 					}	
 				}
 			}
 		});
-	});
-
-	$(document).on('change', '#wpm-openai-provider', function(e) {
-		e.preventDefault();
-		$('#wpm-secret-key-error').hide();
-		$('.wpm-openai-api-success-note').hide();
-		$('.wpm-openai-provider-note').hide();
-		if ( $('#wpm-openai-secretkey').length > 0 ) {
-			$('#wpm-openai-secretkey').val('');
-		}
-		if ( $('#wpm-openai-models').length > 0 ) {
-			$('#wpm-openai-models').html('<option value="">Models Not Available</option>');
-		}
-		const provider = $(this).val();
-
-		if ( provider === 'multilang') {
-			$('.wpm-hide-openai-wrapper').hide();
-			if ( ! wpm_openai_params.is_pro_active ) {
-				$('.wpm-openai-provider-note').show();
-				$('.wpm-license-error-note').html(wpmpProBtn);
-			}else if(wpm_openai_params.is_pro_active && wpm_openai_params.license_status !== 'active'){
-				$('.wpm-openai-provider-note').show();
-				$('.wpm-license-error-note').html(wpmLicenseKeyError);
-			}else{
-				$('.wpm-openai-provider-note').hide();
-			}
-		}else{
-			
-			if ( wpm_openai_params.ai_settings.model.length === 0 ) {
-				$('.wpm-license-error-note').html(wpmOpenAINote);	
-				$('.wpm-license-error-note').show();
-			}
-			$('.wpm-hide-openai-wrapper').show();
-			$('.wpm-openai-provider-note').hide();
-		}
-
-		$('#wpmpro-what-all-opt').prop('checked', false).trigger('change');
-		$('.wpmpro-language-cb').prop('checked', false).trigger('change');
-	
 	}); 
 
 	$(document).on('click', '#wpm-save-openai-settings', function(e) {
 		e.preventDefault();
 
-		const provider = $('#wpm-openai-provider').val().trim();
-		const model = $('#wpm-openai-models').val().trim();
+		$('#wpm-secret-key-error').hide();
+		const provider = 'openai';
+		let model = '';
+		if ( $('#wpm-openai-models').length > 0 ) {
+			model = $('#wpm-openai-models').val();
+			if ( model ) {
+				model = model.trim(); 
+			}
+		}
+		let enabled = '0';
+		if ( $('#wpm_openai_integration').is(':checked') ) {
+			enabled = '1';
+		}
 		console.log('provider ', provider);
 		console.log('model ', model);
+		let $button = $('#wpm-save-openai-settings');
 
-		if ( provider === 'multilang' && ! wpm_openai_params.is_pro_active ) {
-			return;
-		}
+		if ( provider === 'openai' ) {
+			// if ( model.length === 0 ) {
+			// 	alert('Please validate api key and select model');
+			// 	return;
+			// }
 
-		if ( provider === 'multilang' || provider === 'openai' ) {
-			if ( provider === 'openai' &&  model.length === 0 ) {
-				alert('Please validate api key and select model');
-				return;
-			}
+			$($button).prop('disabled', true).text('Saving Changes...');
 
 			$.ajax({
 				url: ajaxurl,
 				type: 'POST',
-				data: {action: 'wpm_save_openai_settings', provider: provider, model: model, security: wpm_openai_params.wpmpro_openai_nonce},
+				data: {action: 'wpm_save_openai_settings', provider: provider, model: model, wpm_openai_integration: enabled, security: wpm_openai_params.wpmpro_openai_nonce},
 				success: function(response) {
 					window.location.reload(true);
 				}
 			});
+
 
 		}else{
 			alert('Please select provider');
 			return;
 		}
 	})
+
+	$(document).on('click', '#wpm_openai_integration', function(e) {
+		if($(this).is(':checked')) {
+			const provider = 'openai';
+			$('.wpm-openai-children').show();
+			if( wpm_openai_params.ai_settings.model.length === 0) {
+				$('#wpm-hide-openai-models-wrapper').hide();
+			}
+		}else{
+			$('.wpm-openai-children').hide();
+		}
+	});
 
 });

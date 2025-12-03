@@ -10,11 +10,15 @@ jQuery(document).ready(function($){
      * */
     $(document).on('click', '#wpm-auto-translate-btn', function(e){
 
-        if ( ( ! wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.ai_settings.api_provider === 'multilang' ) || ( wpmpro_autotranslate_localize_data.license_status !== 'active' && ( wpmpro_autotranslate_localize_data.ai_settings.api_provider === 'multilang' || wpmpro_autotranslate_localize_data.ai_settings.api_provider.length === 0 ) ) ) {
+        if( ! wpmpro_ats_localize_data.is_pro_active && ( wpmpro_ats_localize_data.ai_settings.wpm_openai_integration.length === 0 || wpmpro_ats_localize_data.ai_settings.wpm_openai_integration === '0' ) ) {
             return false;
-        }
-        if( wpmpro_autotranslate_localize_data.ai_settings.api_provider !== 'multilang' && wpmpro_autotranslate_localize_data.ai_settings.model.length === 0 ) {
+        } 
+        if( ! wpmpro_ats_localize_data.is_pro_active && ( selectedProvider.length === 0 || wpmpro_ats_localize_data.ai_settings.model.length === 0 ) ) {
             return false
+        }
+        
+        if ( ( wpmpro_ats_localize_data.is_pro_active ) && wpmpro_ats_localize_data.license_status !== 'active' ) {
+            return false;
         }
 
         //ask for conformation 
@@ -206,7 +210,19 @@ jQuery(document).ready(function($){
      * */
     $(document).on('click', '#wpm-auto-translate-term-btn', function(e){
 
-        if ( wpmpro_ats_localize_data.license_status !== 'active' ) {
+        if( ! wpmpro_ats_localize_data.is_pro_active && ( wpmpro_ats_localize_data.ai_settings.wpm_openai_integration.length === 0 || wpmpro_ats_localize_data.ai_settings.wpm_openai_integration == '0' ) ) {
+            return false;
+        } 
+        if( ! wpmpro_ats_localize_data.is_pro_active && ( selectedProvider.length === 0 || wpmpro_ats_localize_data.ai_settings.model.length === 0 ) ) {
+            return false
+        }
+        
+        if ( ( wpmpro_ats_localize_data.is_pro_active ) && wpmpro_ats_localize_data.license_status !== 'active' ) {
+            return false;
+        }
+
+        //ask for conformation 
+        if ( !confirm( wpmpro_ats_localize_data.confirmation_message ) ) {
             return false;
         }
 
