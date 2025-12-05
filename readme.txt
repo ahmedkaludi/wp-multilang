@@ -4,8 +4,8 @@ Contributors: magazine3
 Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
-Tested up to: 6.8
-Stable tag: 2.4.23
+Tested up to: 6.9
+Stable tag: 2.4.24
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -248,6 +248,12 @@ If you have opened several browser tabs for editing this post in different langu
 5. Post edit page
 
 == Changelog ==
+
+= 2.4.25 =
+- Added: Promotion Banner BFCM #221
+- Added: OpenAI Integration for Automatic Neural Network Translation #207
+- fixed: Wrong url was added in switcher #220
+- Tested: WordPress version upto 6.9.
 
 = 2.4.23 =
 - feature Compatibility Ultimate Member Forms #208
