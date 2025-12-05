@@ -126,7 +126,7 @@ function wp_multilang_enqueue_bfcm_assets($hook) {
         'wpm-bfcm-style', 
         plugin_dir_url(__FILE__) . 'assets/styles/bfcm-style.css', 
         array(), 
-        '1.0'
+        WPM_VERSION
     );
 
     // 5. Register & Enqueue JS
@@ -134,7 +134,7 @@ function wp_multilang_enqueue_bfcm_assets($hook) {
         'wpm-bfcm-script', 
         plugin_dir_url(__FILE__) . 'assets/scripts/bfcm-script.js', 
         array('jquery'), // jQuery dependency
-        '1.0', 
+        WPM_VERSION, 
         true // Footer me load hoga
     );
 

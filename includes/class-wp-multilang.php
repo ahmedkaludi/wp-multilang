@@ -21,7 +21,7 @@ final class WP_Multilang {
 	 *
 	 * @var string
 	 */
-	public $version = '2.4.23';
+	public $version = '2.4.24';
 
 	/**
 	 * The single instance of the class.
