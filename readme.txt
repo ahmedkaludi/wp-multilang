@@ -249,7 +249,7 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
-= 2.4.25 =
+= 2.4.24 =
 - Added: Promotion Banner BFCM #221
 - Added: OpenAI Integration for Automatic Neural Network Translation #207
 - fixed: Wrong url was added in switcher #220
@@ -368,11 +368,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed issue with canonical and href URL as per the language. #85
 - fixed issue with Language switcher block in site editor #86
 - fixed Compatibility with WordPress 6.6 and updated readme.txt
-
-= 2.4.9 =
-- feature WordPress full site editing support #46
-- fixed Conflicts with the Newsletter plugin #61
-- enhancement Changed premium tab to Premium Features in readme.txt #80
-- feature Added Language Switcher Gutenberg Block #82
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
