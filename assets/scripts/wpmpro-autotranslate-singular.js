@@ -10,6 +10,8 @@ jQuery(document).ready(function($){
      * */
     $(document).on('click', '#wpm-auto-translate-btn', function(e){
 
+        const selectedProvider = wpmpro_ats_localize_data.ai_settings.api_provider;
+
         if( ! wpmpro_ats_localize_data.is_pro_active && ( wpmpro_ats_localize_data.ai_settings.wpm_openai_integration.length === 0 || wpmpro_ats_localize_data.ai_settings.wpm_openai_integration === '0' ) ) {
             return false;
         } 
@@ -209,6 +211,8 @@ jQuery(document).ready(function($){
      * @since   1.10
      * */
     $(document).on('click', '#wpm-auto-translate-term-btn', function(e){
+
+        const selectedProvider = wpmpro_ats_localize_data.ai_settings.api_provider;
 
         if( ! wpmpro_ats_localize_data.is_pro_active && ( wpmpro_ats_localize_data.ai_settings.wpm_openai_integration.length === 0 || wpmpro_ats_localize_data.ai_settings.wpm_openai_integration == '0' ) ) {
             return false;

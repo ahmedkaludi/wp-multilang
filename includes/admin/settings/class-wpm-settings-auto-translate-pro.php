@@ -110,7 +110,7 @@ class WPM_Settings_Auto_Translate_Pro {
 		$main_params['ai_settings'] 	=	$ai_settings;
 
 
-		$is_pro_active = wpm_is_pro_active();
+		$main_params['is_pro_active'] = wpm_is_pro_active();
 
 		return $main_params;
 
