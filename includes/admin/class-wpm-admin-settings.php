@@ -48,6 +48,7 @@ class WPM_Admin_Settings {
 
 			$settings[] = new Settings\WPM_Settings_General();
 			$settings[] = new Settings\WPM_Settings_Languages();
+			$settings[] = new Settings\WPM_Settings_AI_Integration();
 			$settings[] = new Settings\WPM_Settings_Auto_Translate();
 			$settings[] = new Settings\WPM_Settings_Additional();
 			$settings[] = new Settings\WPM_Settings_Premium();
@@ -287,7 +288,7 @@ class WPM_Admin_Settings {
 								class="<?php echo esc_attr( $value['class'] ); ?>"
 								placeholder="<?php echo esc_attr( $value['placeholder'] ); ?>"
 								<?php 
-									$implode_cs_escaped = $implode( ' ', $custom_attributes );
+									$implode_cs_escaped = ! empty( $custom_attributes ) ? $implode( ' ', $custom_attributes ) : '';
 									// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Reason: Escaping is done just above
 									echo $implode_cs_escaped; 
 								?>

@@ -196,6 +196,11 @@ if ( ! defined( 'ABSPATH' ) ) {
         <h2 style="color:green"><?php echo esc_html__( 'Translation Successful', 'wp-multilang' ); ?></h2>
     </div>
 
+    <div id="wpmpro-translation-error-message" style="display:none">
+        <h4><?php echo esc_html__( 'Translation Failed', 'wp-multilang' ); ?></h4>
+        <div id="wpm-ai-translate-error"></div>
+    </div>
+
     <div style="height:10px;background:#ebebeb;border-radius: 5px;margin-bottom:10px;text-align:center;display:none" id="wpmpro-parent-progress-bar">
         <div style="height:10px;background:green;border-radius: 5px;width:0%" id="wpmpro-child-progress-bar">
             
@@ -223,7 +228,9 @@ $main_params = array(
     'total_categories'                  => $total_categories,
     'total_tags'                        => $total_tags,
     'total_product_categories'          => $total_product_categories,
-    'source_language'                   => $source_language,
+    'source_language' => function_exists('wpm_get_user_language') ? wpm_get_user_language() : 'en',
+    'target_language' => function_exists('wpm_get_language') ? wpm_get_language() : 'en',
+    'is_pro_active'                 =>  wpm_is_pro_active(),
     'wpmpro_autotranslate_nonce'        => wp_create_nonce( 'wpmpro-autotranslate-nonce' ),
 );
 $main_params    =   apply_filters( 'wpm_localize_autotranslate_params', $main_params );

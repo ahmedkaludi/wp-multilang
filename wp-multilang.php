@@ -10,7 +10,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wp-multilang
  * Domain Path:       /languages
- * Version:           2.4.22
+ * Version:           2.4.24
  * Copyright:         © 2017-2019 Valentyn Riaboshtan
  *
  * @package  WPM
@@ -94,3 +94,53 @@ function wpm_activation_admin_notices() {
 	}
 }
 add_action( 'admin_notices', 'wpm_activation_admin_notices' );
+
+
+/* * BFCM Banner Integration
+ * Loads assets from assets/css and assets/js
+ */
+add_action('admin_enqueue_scripts', 'wp_multilang_enqueue_bfcm_assets');
+
+function wp_multilang_enqueue_bfcm_assets($hook) { 
+ 
+    //var_dump($hook);
+    if ( $hook !== 'toplevel_page_wpm-settings' ) {
+        return;
+    }
+    
+    /*if ( ! isset($_GET['page']) || $_GET['page'] !== 'setting_page_check-email-dashboard' ) {
+        return;
+    }*/
+
+    // 2. define settings
+    $expiry_date_str = '2025-12-25 23:59:59'; 
+    $offer_link      = 'https://wp-multilang.com/bfcm-2025/';
+
+    // 3. Expiry Check (Server Side)
+    if ( current_time('timestamp') > strtotime($expiry_date_str) ) {
+        return; 
+    }
+
+    // 4. Register & Enqueue CSS    
+    wp_enqueue_style(
+        'wpm-bfcm-style', 
+        plugin_dir_url(__FILE__) . 'assets/styles/bfcm-style.css', 
+        array(), 
+        WPM_VERSION
+    );
+
+    // 5. Register & Enqueue JS
+    wp_enqueue_script(
+        'wpm-bfcm-script', 
+        plugin_dir_url(__FILE__) . 'assets/scripts/bfcm-script.js', 
+        array('jquery'), // jQuery dependency
+        WPM_VERSION, 
+        true // Footer me load hoga
+    );
+
+    // 6. Data Pass (PHP to JS)
+    wp_localize_script('wpm-bfcm-script', 'bfcmData', array(
+        'targetDate' => $expiry_date_str,
+        'offerLink'  => $offer_link
+    ));
+}

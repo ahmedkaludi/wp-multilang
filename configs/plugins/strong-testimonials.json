@@ -1,0 +1,22 @@
+{
+	"post_types": {
+		"wpm-testimonial": {}
+	},
+	"post_fields": {
+		"client_name": {},
+		"email": {},
+		"company_name": {},
+		"company_website": {},
+		"star_rating": {}
+	},
+	"taxonomies": {
+	    "wpm-testimonial-category" : {}
+  	},
+  	"options": {
+  		"wpmtst_custom_forms": {},
+  		"wpmtst_form_options": {}	
+  	},
+  	"admin_pages": [
+  		"wpm-testimonial_page_testimonial-fields"	
+  	]
+}

@@ -9,6 +9,7 @@
 
 namespace WPM\Includes\Admin\Settings;
 use WPM\Includes\Admin\WPM_Admin_Notices;
+use WPM\Includes\Admin\Settings\WPM_Settings_Auto_Translate_Pro;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -37,7 +38,22 @@ class WPM_Settings_Auto_Translate extends WPM_Settings_Page {
 
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			$dir_path = plugin_dir_url(__DIR__);
-			wp_enqueue_script( 'wpm_translation_settings', wpm_asset_path( 'scripts/wpm-autotranslation-script' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
+
+			wp_register_script( 'wpm_translation_settings', wpm_asset_path( 'scripts/wpm-autotranslation-script' . $suffix . '.js' ), array( 'jquery' ), WPM_VERSION, true );
+
+			// Generate and localize data for autotranslate script
+			$main_params = array(
+				'source_language' => function_exists('wpm_get_user_language') ? wpm_get_user_language() : 'en',
+				'target_language' => function_exists('wpm_get_language') ? wpm_get_language() : 'en',
+				'is_pro_active'					=>	wpm_is_pro_active(),
+				'wpmpro_autotranslate_nonce' => wp_create_nonce('wpmpro-autotranslate-nonce'),
+				
+			);
+			
+			$main_params = WPM_Settings_Auto_Translate_Pro::filter_js_params( $main_params );
+			
+			wp_localize_script('wpm_translation_settings', 'wpm_autotranslate_localize_data', $main_params);
+			wp_enqueue_script( 'wpm_translation_settings' );
 		}
 	}
 
@@ -82,7 +98,7 @@ class WPM_Settings_Auto_Translate extends WPM_Settings_Page {
 	 * @since 2.4.11
 	 */
 	public function get_autotranslate( $value ) {
-
+		
 		$GLOBALS['hide_save_button'] = true;
 
 		$languages = get_option( 'wpm_languages', array() );

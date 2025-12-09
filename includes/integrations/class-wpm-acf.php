@@ -73,8 +73,16 @@ class WPM_Acf {
 
 		$old_field = maybe_unserialize( get_post_field( 'post_content', $field['ID'], 'edit' ) );
 
-		if ( ! $old_field ) {
+		if ( ! $old_field && ! is_array( $old_field ) ) {
 			return $field;
+		}
+
+		if ( ! empty( $old_field ) && is_string( $old_field ) ) {
+			$old_field 	=	wpm_translate_string( $old_field );
+			$old_field 	=	maybe_unserialize( $old_field );
+			if ( ! is_array( $old_field ) ) {
+				return $field;
+			}	
 		}
 
 		$old_field          = wpm_array_merge_recursive( $field, $old_field );

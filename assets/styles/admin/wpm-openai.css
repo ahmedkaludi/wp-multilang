@@ -1,0 +1,49 @@
+.wpm-opeai-provider-note{
+	margin-left: 50px; 
+	font-weight: 500;
+	display: none;
+}
+
+#wpm-secret-key-error{
+	display: none; 
+	color: red; 
+	font-weight: 400; 
+	margin-top: 5px;
+}
+
+.wpm-openai-api-success-note{
+	display: none;
+	color: green;
+	font-weight: 600;
+	margin-top: 5px;
+}
+
+.wpm-openai-api-error-note{
+	display: none;
+	color: red;
+	font-weight: 600;
+	margin-top: 5px;
+}
+
+.wpm-openai-provider-note{
+	font-weight: 500;
+	margin-left: 50px;
+}
+
+#wpm-save-openai-settings-td{
+	padding-left: 0px;
+}
+
+.wpm-pl-20{
+  padding-left: 20px !important;
+}
+
+.wpm-coming-soon{
+	padding:4px 12px;
+    background:#0099E7;
+    color:#fff;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+    box-shadow:0 2px 5px rgba(0,0,0,0.15);
+}

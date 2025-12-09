@@ -4,8 +4,8 @@ Contributors: magazine3
 Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
-Tested up to: 6.8
-Stable tag: 2.4.22
+Tested up to: 6.9
+Stable tag: 2.4.24
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -84,6 +84,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Schema & Structured Data for WP & AMP
 * Forminator Forms
 * Gravity Forms
+* Ultimate Member Form
 
 == Advance Woocommerce Support ==
 * Send emails in customer's selected language
@@ -248,6 +249,17 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.24 =
+- Added: Promotion Banner BFCM #221
+- Added: OpenAI Integration for Automatic Neural Network Translation #207
+- fixed: Wrong url was added in switcher #220
+- Tested: WordPress version upto 6.9.
+
+= 2.4.23 =
+- feature Compatibility Ultimate Member Forms #208
+- fixed Error while adding ACF pro repeater fields #209
+- fixed Critical error while translation #217
+
 = 2.4.22 =
 - enhancement Fixed woocommerce attribute translation issue for third language #175
 - fixed Auto Translate style issue on product taxanomies/terms #196
@@ -356,19 +368,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed issue with canonical and href URL as per the language. #85
 - fixed issue with Language switcher block in site editor #86
 - fixed Compatibility with WordPress 6.6 and updated readme.txt
-
-= 2.4.9 =
-- feature WordPress full site editing support #46
-- fixed Conflicts with the Newsletter plugin #61
-- enhancement Changed premium tab to Premium Features in readme.txt #80
-- feature Added Language Switcher Gutenberg Block #82
-
-= 2.4.8 =
-- fixed admin_html_tags leaving empty fields #41
-- feature Gutenberg view post should redirect to current language post #55
-- fixed Conflicts with the Newsletter plugin #61
-- feature Woocommerce product attributes translation issue #70
-- fixed Issue with CF7 form #73
-- fixed Language switch button interface Guternberg block button  #74
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

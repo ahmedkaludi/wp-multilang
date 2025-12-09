@@ -1,0 +1,18 @@
+{
+	"post_types": {
+		"um_form": {}
+	},
+	"post_fields": {
+		"_um_custom_fields": {},
+		"_um_register_primary_btn_word": {},
+		"_um_register_secondary_btn_word": {},
+		"_um_register_use_gdpr_toggle_show": {},
+		"_um_register_use_gdpr_toggle_hide": {},
+		"_um_register_use_gdpr_agreement": {},
+		"_um_register_use_gdpr_error_text": {},
+		"_um_login_primary_btn_word": {},
+		"_um_login_secondary_btn_word": {},
+		"_um_profile_primary_btn_word": {},
+		"_um_profile_secondary_btn_word": {}
+	}
+}

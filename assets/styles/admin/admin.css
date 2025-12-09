@@ -338,7 +338,12 @@
   margin: 0;
   padding: 0;
   line-height: 1.4;
-  width: 200px;
+  width: auto;
+}
+
+.wpm-auto-translate-item .wpm-checkbox-section label{
+  width: 150px;
+  display: inline-block;
 }
 
 .wpm-auto-translate-item .wpm-exclude-section {
@@ -379,6 +384,19 @@
 /* Ensure proper alignment for the "All" option */
 .wpm-auto-translate-item:first-of-type {
   margin-top: 0;
+}
+
+#wpmpro-translation-error-message{
+  background: #edd6d4;
+  border: 1px solid #e6c8c3;
+  color: #3c434a;
+  padding: 15px;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+#wpmpro-translation-error-message h4{
+  color: #e41a1a;
 }
 
 /* Responsive adjustments */

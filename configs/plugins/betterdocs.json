@@ -1,0 +1,18 @@
+{
+	"post_types": {
+		"docs": {},
+		"betterdocs_faq": {}
+	},
+	"taxonomies": {
+	    "doc_category" : {},
+	    "doc_tag" : {},
+	    "betterdocs_faq_category" : {}
+  	},
+  	"term_fields": {
+  		"doc_category_image-id" : {}
+  	},
+  	"admin_pages": [
+	    "betterdocs_page_betterdocs-faq",
+	    "betterdocs_page_betterdocs-admin"
+  	]
+}
