@@ -66,7 +66,7 @@ class WPM_Options {
 		$old_value = get_option( $option );
 		add_filter( "option_{$option}", 'wpm_translate_value', 5 );
 		$value = wpm_set_new_value( $old_value, $value, $this->options_config[ $option ] );
-		$value = apply_filters( "wpm_update_{$option}_option", $original_value, $option, $old_value );
+		$value = apply_filters( "wpm_update_{$option}_option", $value, $original_value, $option, $old_value );
 
 		return $value;
 	}
