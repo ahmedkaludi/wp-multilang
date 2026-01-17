@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.9
-Stable tag: 2.4.24
+Stable tag: 2.4.25
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -249,6 +249,11 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.25 =
+- Fixed: Other language content is not updating in Elementor #215
+- Fixed: Promotion Banner BFCM #221
+- Fixed: Yoast SEO meta tags not translating #225
+
 = 2.4.24 =
 - Added: Promotion Banner BFCM #221
 - Added: OpenAI Integration for Automatic Neural Network Translation #207
@@ -362,11 +367,5 @@ If you have opened several browser tabs for editing this post in different langu
 - enhancement Code improvement #96
 - fixed Warning: Undefined array key #102
 - feature Automatic translation #77
-
-= 2.4.10 =
-- feature Added compatibility with Divi #72
-- fixed issue with canonical and href URL as per the language. #85
-- fixed issue with Language switcher block in site editor #86
-- fixed Compatibility with WordPress 6.6 and updated readme.txt
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
