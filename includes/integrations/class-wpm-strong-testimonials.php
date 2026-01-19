@@ -37,7 +37,7 @@ class WPM_Strong_Testimonials {
 		);
 
 		foreach ($options as $option_key => $callbacks) {
-			add_filter( "wpm_update_{$option_key}_option", array( $this, $callbacks[0] ), 10, 3 );
+			add_filter( "wpm_update_{$option_key}_option", array( $this, $callbacks[0] ), 10, 4 );
 			add_filter( "option_{$option_key}", array( $this, $callbacks[1] ), 10, 2 );
 		}
 
@@ -50,7 +50,7 @@ class WPM_Strong_Testimonials {
 	 * @return 	$value 	mixed
 	 * @since 	2.4.23
 	 * */
-	public function set_option_value( $value, $key, $old_value ) {
+	public function set_option_value( $value, $original_value, $key, $old_value ) {
 
 		global $wpdb;
 
@@ -69,7 +69,7 @@ class WPM_Strong_Testimonials {
 			}
 		}
 
-		$db_value 	=	$value;
+		$db_value 	=	$original_value;
 		if ( is_array( $db_value ) ) {
 			$db_value 	=	maybe_serialize( $db_value );
 		}

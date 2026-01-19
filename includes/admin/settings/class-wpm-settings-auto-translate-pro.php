@@ -495,9 +495,31 @@ class WPM_Settings_Auto_Translate_Pro {
 									$debug_entry .= "Text: '{$text}' -> Translation: '{$trabs}'\n";
 									if ($trabs != 'false') {
 											if(preg_match('/<[^<]+>/', $translated_source) === 1){
-											$translated_source = str_replace(json_encode($text), json_encode($trabs), $translated_source);
+												// Normalize escaped versions
+											    $original_unescaped = stripslashes($text);
+											    $translated_unescaped = stripslashes($trabs);
+
+											    // Encode versions (JSON-safe)
+											    $original_json = json_encode($text, JSON_UNESCAPED_SLASHES);
+											    $translated_json = json_encode($trabs, JSON_UNESCAPED_SLASHES);
+
+											    // Build all possible text representations
+											    $patterns = [
+											        $text,
+											        $original_unescaped,
+											        $original_json,
+											        json_encode($text) // full escaped JSON version
+											    ];
+
+											    $replacements = [
+											        $trabs,
+											        $translated_unescaped,
+											        $translated_json,
+											        json_encode($trabs)
+											    ];
+												$translated_source = str_replace($patterns, $replacements, $translated_source);
 											}else{
-											$translated_source = str_replace('"'.$text.'"', '"'.$trabs.'"', $translated_source);
+												$translated_source = str_replace('"'.$text.'"', '"'.$trabs.'"', $translated_source);
 											}
 									}
 								}

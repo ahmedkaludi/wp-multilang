@@ -441,7 +441,7 @@ class WPM_Yoast_Seo {
 			// Get _yoast_wpseo_metadesc and _yoast_wpseo_title values from options table
 			$option_name = 'wpseo_taxonomy_meta';
 			//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-			$option_result = $wpdb->get_row($wpdb->prepare("SELECT option_value FROM {$wpdb->prefix}yoast_indexable WHERE option_name = %s", $option_name ));
+			$option_result = $wpdb->get_row($wpdb->prepare("SELECT option_value FROM {$wpdb->prefix}options WHERE option_name = %s", $option_name ));
 
 			if(is_object($option_result) && isset($option_result->option_value)){
 				if(!empty($option_result->option_value) && is_string($option_result->option_value)){
@@ -489,7 +489,7 @@ class WPM_Yoast_Seo {
 
 								// Update the title and description field values of yoast_indexable table
 								//phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-								$wpdb->update($yoast_table_name, $update_array_values, array('object_id' => $term_id));
+								$wpdb->update($yoast_table_name, $update_array_values, array('object_id' => $term_id, 'object_type' => 'term'));
 							}
 						}
 					}
