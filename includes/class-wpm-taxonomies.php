@@ -55,6 +55,7 @@ class WPM_Taxonomies extends WPM_Object {
 		add_filter( 'wp_update_term_data', array( $this, 'update_term' ), 99, 4 );
 		add_action( 'edited_term_taxonomy', array( $this, 'update_description' ), 5, 2 );
 		add_filter( 'get_terms_args', array( $this, 'get_term_by_name' ), 99, 2 );
+		add_action( 'pre_get_posts', array( $this, 'filter_posts_by_language_cat_posts' ), 99 );
 	}
 
 
@@ -316,4 +317,48 @@ class WPM_Taxonomies extends WPM_Object {
 
 		return $args;
 	}
+
+	/**
+	 * Display language respective posts or products on archive page
+	 * @param 	$query 
+	 * @return 	$query 
+	 * @since 	2.4.26
+	 * */
+	public function filter_posts_by_language_cat_posts( $query ) {
+
+	    if ( is_admin() ) {
+	        return;
+	    }
+
+	    if ( ! is_category() && ! is_tag() && ! is_tax() && ! ( function_exists( 'is_product_category' ) && is_product_category() ) ) {
+	        return;
+	    }
+
+	    $lang = get_query_var( 'lang' );
+	    if ( ! $lang ) {
+	        $lang = wpm_get_user_language();
+	    }
+
+	    if ( 'all' === $lang ) {
+	        return;
+	    }
+
+	    $meta_query = (array) $query->get( 'meta_query' );
+
+	    $meta_query[] = array(
+	        'relation' => 'OR',
+	        array(
+	            'key'     => '_languages',
+	            'compare' => 'NOT EXISTS',
+	        ),
+	        array(
+	            'key'     => '_languages',
+	            'value'   => '"' . $lang . '"',
+	            'compare' => 'LIKE',
+	        ),
+	    );
+
+	    $query->set( 'meta_query', $meta_query );
+	}
+
 }
