@@ -4,7 +4,7 @@
 	display: none;
 }
 
-#wpm-secret-key-error{
+#wpm-secret-key-error, #wpm-prompt-error{
 	display: none; 
 	color: red; 
 	font-weight: 400; 
