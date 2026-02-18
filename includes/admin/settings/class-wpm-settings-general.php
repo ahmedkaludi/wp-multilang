@@ -94,6 +94,14 @@ class WPM_Settings_General extends WPM_Settings_Page {
 				'default' => 'no',
 				'type'    => 'checkbox',
 			),
+
+			array(
+				'title'   => esc_html__( 'Force Auto Retranslation', 'wp-multilang' ),
+				'desc'    => esc_html__( 'This will allow users to force auto re-translation for a specific language.', 'wp-multilang' ),
+				'id'      => 'wpm_allow_auto_override',
+				'default' => 'no',
+				'type'    => 'checkbox',
+			),
 			
 			array(
 				'title'   => esc_html__( 'Slug Translation', 'wp-multilang' ),

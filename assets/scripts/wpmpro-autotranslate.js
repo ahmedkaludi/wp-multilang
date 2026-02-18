@@ -184,6 +184,7 @@ jQuery(document).ready(function($){
         $('#wpmpro-translation-error-message').hide();
         let target_langs = [];
         const selectedProvider = wpmpro_autotranslate_localize_data.ai_settings.api_provider;
+        const isAutoReforce = wpmpro_autotranslate_localize_data.allow_auto_override;
         $(".wpmpro-language-cb").each(function () {
             if ($(this).is(":checked")) {
                 target_langs.push($(this).val());
@@ -222,6 +223,13 @@ jQuery(document).ready(function($){
             alert("Please select what you want to translate");
             return false;
         }
+
+        if ( isAutoReforce === 'yes' ) {
+            if ( ! confirm( wpmpro_autotranslate_localize_data.confirmation_message ) ) {
+                return false;
+            }
+        }
+
         console.log('wpm_openai_integration ', wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration);
         if( ! wpmpro_autotranslate_localize_data.is_pro_active && ( wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration.length === 0 || wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration == '0' ) ) {
             return false;
@@ -476,6 +484,7 @@ jQuery(document).ready(function($){
                     source: wpmpro_autotranslate_localize_data.source_language,
                     excluded_items: JSON.stringify(excluded_items),
                     target: target_lang,
+                    allow_auto_override: wpmpro_autotranslate_localize_data.allow_auto_override,
                     wpmpro_autotranslate_nonce: wpmpro_autotranslate_localize_data.wpmpro_autotranslate_nonce,
                 },
                 headers: {
