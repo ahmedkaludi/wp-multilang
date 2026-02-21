@@ -1025,6 +1025,14 @@ class WPM_AJAX {
 		$target 					=	sanitize_text_field( $_POST['target'] );
 		$response 					=	array('status'=>false, 'message'=>esc_html__('No content found to translate','wp-multilang'));
 		$category_array 			=	array( 'category', 'post_tag', 'product_cat' ); // Supported categories
+		$override 					=	false;
+
+		if ( ! empty( $_POST['allow_auto_override'] ) ) {
+			$allow_auto_override 	=	sanitize_text_field( wp_unslash( $_POST['allow_auto_override'] ) );
+			if ( $allow_auto_override === 'yes' ) {
+				$override 			=	true;	
+			}		
+		}
 
 		try {
 			if ( ! in_array( $post_type, $category_array ) ) {
@@ -1044,7 +1052,6 @@ class WPM_AJAX {
 					foreach($posts as $post) {
 						if ( $post && isset($post->ID) ) {
 							// Bulk auto-translate should NOT override existing translations
-							$override = false;
 							$response = WPM_Settings_Auto_Translate_Pro::auto_translate( $post, $source, $target, $override );
 							break; // Only process one post per request
 						}
@@ -1085,7 +1092,6 @@ class WPM_AJAX {
 
 							if ( is_object( $raw_term ) && isset( $raw_term->term_id ) ) {
 								// Bulk auto-translate should NOT override existing translations
-								$override = false;
 								$response 		=	WPM_Settings_Auto_Translate_Pro::auto_translate_term( $raw_term, $source, $target, $override );
 								break; // Only process one term per request
 							}

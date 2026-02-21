@@ -21,6 +21,7 @@ jQuery(document).ready(function($){
 		provider = 'openai';
 
 		$('#wpm-secret-key-error').hide();
+		$('#wpm-prompt-error').hide();
 		$('.wpm-openai-api-success-note').hide();
 		$('.wpm-openai-api-error-note').hide();
 		$('.wpm-openai-provider-note').hide();
@@ -56,8 +57,10 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 
 		$('#wpm-secret-key-error').hide();
+		$('#wpm-prompt-error').hide();
 		const provider = 'openai';
 		let model = '';
+		const prompt =  $('#wpm-openai-prompt').val();
 		if ( $('#wpm-openai-models').length > 0 ) {
 			model = $('#wpm-openai-models').val();
 			if ( model ) {
@@ -83,10 +86,22 @@ jQuery(document).ready(function($){
 			$.ajax({
 				url: ajaxurl,
 				type: 'POST',
-				data: {action: 'wpm_save_openai_settings', provider: provider, model: model, wpm_openai_integration: enabled, security: wpm_openai_params.wpmpro_openai_nonce},
+				data: {action: 'wpm_save_openai_settings', provider: provider, model: model, prompt: prompt, wpm_openai_integration: enabled, security: wpm_openai_params.wpmpro_openai_nonce},
 				success: function(response) {
+					if (!response.success) {
+	                    $('#wpm-prompt-error')
+	                        .text(response.data.message)
+	                        .show();
+
+	                    $button.prop('disabled', false).text('Save Changes');
+	                    return;
+	                }
 					window.location.reload(true);
-				}
+				},
+				error: function() {
+	                alert('Something went wrong. Please try again.');
+	                $button.prop('disabled', false).text('Save Changes');
+	            }
 			});
 
 

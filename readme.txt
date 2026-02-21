@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 6.9
-Stable tag: 2.4.25
+Stable tag: 2.4.26
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -85,6 +85,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Forminator Forms
 * Gravity Forms
 * Ultimate Member Form
+* Oxygen Builder
 
 == Advance Woocommerce Support ==
 * Send emails in customer's selected language
@@ -249,6 +250,13 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.26 =
+- Feature: Added OpenAI Integration for Automatic Neural Network Translation #207
+- Feature: Allow override to be configurable in Auto translate #223
+- Feature: Added compatibility with oxygen builder #227
+- Fixed: WooCommerce products marked for single language still appear in other language archives (AUTO-DRAFT/empty titles) #229
+- Feature: Added compatibility with TownPress theme custom post types #230
+
 = 2.4.25 =
 - Fixed: Other language content is not updating in Elementor #215
 - Fixed: Promotion Banner BFCM #221
@@ -361,11 +369,5 @@ If you have opened several browser tabs for editing this post in different langu
 - feature URL Slug Translation #25
 - fixed PHP waring #102
 - fixed Yoast meta description translation issue #113
-
-= 2.4.11 =
-- fixed Product attributers are not getting translated in frontend #94
-- enhancement Code improvement #96
-- fixed Warning: Undefined array key #102
-- feature Automatic translation #77
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

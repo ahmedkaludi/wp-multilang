@@ -39,6 +39,7 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 								'api_keys' 				=>	[],
 								'api_provider'			=>	'',
 								'model'					=>	'',
+								'api_prompt'			=>	WPM_OPENAI_PROMPT,
 								'api_available_models'	=>	[],
 							];
 		$ai_settings 	=	get_option( 'wpm_openai_settings', $defaults );
@@ -110,15 +111,19 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 		$ai_settings 	=	self::get_openai_settings();
 		$provider 		=	$ai_settings['api_provider'];
 		$secret_key 	=	'';
+		$prompt 		=	WPM_OPENAI_PROMPT;
 		if ( ! empty( $ai_settings['api_keys'] ) && ! empty( $ai_settings['api_keys'][$provider] ) ) {
 			$secret_key =	$ai_settings['api_keys'][$provider];	
+		}
+		if ( ! empty( $ai_settings['api_prompt'] ) ) {
+			$prompt 	=	$ai_settings['api_prompt'];	
 		}
 		$models 		=	[];
 		if ( ! empty( $ai_settings['api_available_models'] ) && ! empty( $ai_settings['api_available_models'][$provider] ) ) {
 			$models 	=	$ai_settings['api_available_models'][$provider];
 		}
 		$selected_model	=	'';
-		if ( ! empty( $ai_settings['model'] ) && ! empty( $ai_settings['model'] ) ) {
+		if ( ! empty( $ai_settings['model'] ) ) {
 			$selected_model =	$ai_settings['model'];
 		}	
 
@@ -186,6 +191,18 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 							</select>
 						</td>
 					</tr>
+
+					<tr valign="top" class="wpm-hide-openai-wrapper wpm-openai-children <?php echo esc_attr( $hide_child ) ?> ">
+						<th scope="row" class="titledesc wpm-pl-20">
+							<label for="wpm-openai-prompt"><?php echo esc_html__( 'Prompt', 'wp-multilang' ) ?></label>
+						</th>	
+						<td class="wpm-pl-20">
+							<textarea class="regular-text" rows="5" id="wpm-openai-prompt" name="wpm_openai_prompt"><?php echo esc_html( $prompt ); ?></textarea>
+							<p class="description"><?php echo esc_html__( 'Please ensure the prompt contains the placeholders ', 'wp-multilang' ); ?> <code>{{source_language}}</code> <?php echo esc_html__( 'and ', 'wp-multilang' ); ?> <code>{{target_language}}</code>, <?php echo esc_html__( 'which will be dynamically replaced during translation.', 'wp-multilang' ); ?> </p>
+							<div id="wpm-prompt-error"></div>
+						</td>	
+					</tr>
+
 					<tr valign="top">
 					    <th scope="row" class="titledesc">
 					        <label class="wpm-label-cursor" for="wpm_gemini_integration">Gemini Integration</label>
@@ -242,6 +259,27 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 		
 		$provider 	=	sanitize_text_field( wp_unslash( $_POST['provider'] ) );
 		$model 		=	'';
+		$prompt 	=	sanitize_textarea_field( wp_unslash( $_POST['prompt'] ) );
+		$required_placeholders = [
+	        '{{source_language}}',
+	        '{{target_language}}',
+    	];
+    	
+	    foreach ( $required_placeholders as $placeholder ) {
+
+	        if ( strpos( $prompt, $placeholder ) === false ) {
+
+	            wp_send_json_error( [
+	                'message' => sprintf(
+	                    'Prompt must contain the placeholder: %s',
+	                    $placeholder
+	                )
+	            ] );
+
+	            return;
+	        }
+	    }
+
 		if ( $provider !== 'multilang' ) {
 			$model 	=	sanitize_text_field( wp_unslash( $_POST['model'] ) );
 		}
@@ -250,12 +288,17 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 
 		$api_settings['api_provider']	=	$provider;
 		$api_settings['model']			=	$model;
+		$api_settings['api_prompt']		=	$prompt;
 
 		update_option( 'wpm_openai_settings', $api_settings );
 
 		$wpm_openai_integration = isset( $_POST['wpm_openai_integration'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_openai_integration'] ) ) : '0';
 
 		update_option( 'wpm_openai_integration', $wpm_openai_integration );
+
+	    wp_send_json_success( [
+	        'message' => 'Settings saved successfully.'
+	    ] );
 
 	}
 

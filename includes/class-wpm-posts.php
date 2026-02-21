@@ -111,9 +111,6 @@ class WPM_Posts extends WPM_Object {
 
 		if ( isset( $query->query_vars['post_type'] ) && ! empty( $query->query_vars['post_type'] ) ) {
 			$post_type = $query->query_vars['post_type'];
-			if ( $post_type === 'advanced_ads' ) {
-				echo "<pre>query->query_vars===== "; print_r($query->query_vars); die;
-			}
 			if ( is_string( $post_type ) && null === wpm_get_post_config( $post_type ) ) {
 				return $query;
 			}
@@ -212,6 +209,15 @@ class WPM_Posts extends WPM_Object {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended -- this is a dependent function and its all security measurament is done wherever it has been used.
 			if ( isset( $_GET['action'] ) && 'untrash' === $_GET['action'] ) {
 				return $data;
+			}
+		}
+
+		if ( ! empty( $data['post_type'] ) && $data['post_type'] === 'customize_changeset' ) {
+			if ( function_exists( 'get_template' ) ) {
+				$theme_name        = get_template();	
+				if ( $theme_name === 'townpress') { 
+					return $data;	
+				}
 			}
 		}
 

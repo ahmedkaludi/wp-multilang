@@ -21,7 +21,7 @@ final class WP_Multilang {
 	 *
 	 * @var string
 	 */
-	public $version = '2.4.25';
+	public $version = '2.4.26';
 
 	/**
 	 * The single instance of the class.
@@ -95,6 +95,7 @@ final class WP_Multilang {
 		$this->define( 'WPM_ABSPATH', dirname( WPM_PLUGIN_FILE ) . '/' );
 		$this->define( 'WPM_PLUGIN_BASENAME', plugin_basename( WPM_PLUGIN_FILE ) );
 		$this->define( 'WPM_VERSION', $this->version );
+		$this->define( 'WPM_OPENAI_PROMPT', 'You are a professional translator that translates text from {{source_language}} to {{target_language}}.' );
 	}
 
 	/**

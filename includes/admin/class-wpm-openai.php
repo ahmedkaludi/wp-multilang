@@ -109,6 +109,9 @@ class WPM_OpenAI {
 
 	    $api_key   = $settings['api_keys']['openai'];
 	    $model     = $settings['model'];
+	    $prompt    = ! empty( $settings['api_prompt'] ) ? $settings['api_prompt'] : WPM_OPENAI_PROMPT;	
+
+		$prompt = str_replace( ['{{source_language}}', '{{target_language}}'], [$source, $target], $prompt );
 
 	    // Correct request format for Responses API
 	    $body = [
@@ -116,7 +119,7 @@ class WPM_OpenAI {
 	        'input' => [
 	            [
 	                'role'    => 'system',
-	                'content' => "You are a professional translator that translates text from {$source} to {$target}."
+	                'content' => $prompt
 	            ],
 	            [
 	                'role'    => 'user',
