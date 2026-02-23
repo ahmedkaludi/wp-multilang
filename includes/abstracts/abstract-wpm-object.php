@@ -127,6 +127,63 @@ abstract class WPM_Object {
 			}
 		}
 
+		// If original meta doesn't exist but _translate version does, create original meta from default language
+		// Only apply this fix for Oxygen Builder when it's active
+		if ( empty( $values ) && $meta_key === '_ct_builder_json' ) {
+			// Check if Oxygen Builder is active
+			$is_oxygen_active = false;
+			
+			// Check for Oxygen Builder class or constant
+			if ( class_exists( 'CT_Component' ) || defined( 'CT_VERSION' ) ) {
+				$is_oxygen_active = true;
+			} else {
+				// Check if Oxygen Builder plugin is active
+				if ( ! function_exists( 'is_plugin_active' ) ) {
+					require_once ABSPATH . 'wp-admin/includes/plugin.php';
+				}
+				$is_oxygen_active = is_plugin_active( 'oxygen/functions.php' );
+			}
+			
+			// Only proceed if Oxygen Builder is active
+			if ( $is_oxygen_active ) {
+				$translate_key = $meta_key . '_translate';
+				//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$translate_value = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$wpdb->{$this->object_table}} WHERE meta_key = %s AND {$column} = %d LIMIT 1;", $translate_key, $object_id ) );
+				
+				if ( ! empty( $translate_value ) ) {
+					$translate_value = maybe_unserialize( $translate_value );
+					$default_lang = wpm_get_default_language();
+					
+					// Extract default language value from translate version (which is base64 encoded)
+					if ( wpm_is_ml_value( $translate_value ) ) {
+						$default_value_encoded = wpm_translate_string( $translate_value, $default_lang );
+						// Base64 decode the value
+						$default_value = base64_decode( $default_value_encoded, true );
+					} else {
+						// If not multilingual, try to decode if it's base64 encoded
+						$default_value = base64_decode( $translate_value, true );
+						if ( false === $default_value ) {
+							$default_value = $translate_value;
+						}
+					}
+					
+					// Create the original meta with default language value
+					if ( ! empty( $default_value ) ) {
+						add_metadata( $this->object_type, $object_id, $meta_key, $default_value );
+						wp_cache_delete( $cache_key );
+						
+						// Return the default value
+						$value = apply_filters( 'wpm_get_meta_value', $default_value, $meta_key );
+						$value = apply_filters( "wpm_get_{$meta_key}_meta_value", $value );
+						$value = apply_filters( "wpm_get_{$this->object_type}_meta_{$meta_key}_value", $value );
+						$value = apply_filters( "wpm_unslash_form_meta_value", $value,  $meta_key);
+						
+						return array( $value );
+					}
+				}
+			}
+		}
+
 		if ( $values ) {
 			return $values;
 		}

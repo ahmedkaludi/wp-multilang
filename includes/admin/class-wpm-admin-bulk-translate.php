@@ -498,10 +498,111 @@ class WPM_Bulk_Translate
                 }
             }
             $data[$key]["terms"] = $terms;
+
+            // Add postmeta fields if filter is used
+            $postmeta_keys = apply_filters("wpm_xliff_postmeta_keys", [], $post);
+            if (!empty($postmeta_keys) && is_array($postmeta_keys)) {
+                global $wpdb;
+                $data[$key]["postmeta"] = [];
+                
+                foreach ($postmeta_keys as $meta_key) {
+                    // Special handling for Oxygen Builder's _ct_builder_json
+                    $is_oxygen_meta = false;
+                    $translate_key = $meta_key . '_translate';
+                    
+                    if ( $meta_key === '_ct_builder_json' ) {
+                        // Check if Oxygen Builder is active
+                        $is_oxygen_active = false;
+                        if ( class_exists( 'CT_Component' ) || defined( 'CT_VERSION' ) ) {
+                            $is_oxygen_active = true;
+                        } else {
+                            if ( ! function_exists( 'is_plugin_active' ) ) {
+                                require_once ABSPATH . 'wp-admin/includes/plugin.php';
+                            }
+                            $is_oxygen_active = is_plugin_active( 'oxygen/functions.php' );
+                        }
+                        
+                        if ( $is_oxygen_active ) {
+                            $is_oxygen_meta = true;
+                            // Read from _translate version for Oxygen Builder
+                            $result = $wpdb->get_results(
+                                $wpdb->prepare(
+                                    "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s",
+                                    $post->ID,
+                                    $translate_key
+                                ),
+                                ARRAY_A
+                            );
+                        }
+                    }
+                    
+                    // If not Oxygen meta or Oxygen not active, use normal logic
+                    if ( ! $is_oxygen_meta ) {
+                        $result = $wpdb->get_results(
+                            $wpdb->prepare(
+                                "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s",
+                                $post->ID,
+                                $meta_key
+                            ),
+                            ARRAY_A
+                        );
+                    }
+
+                    if (
+                        is_array($result) &&
+                        !empty($result[0]) &&
+                        is_array($result[0]) &&
+                        !empty($result[0]["meta_value"]) &&
+                        is_string($result[0]["meta_value"])
+                    ) {
+                        $meta_array = [];
+                        $meta_array["key"] = $meta_key;
+                        
+                        if ( $is_oxygen_meta ) {
+                            // For Oxygen Builder, extract and base64 decode the values
+                            $translate_value = $result[0]["meta_value"];
+                            
+                            // Get source value (base64 decoded)
+                            $source_encoded = wpm_translate_string( $translate_value, $default_lang );
+                            $source_value = base64_decode( $source_encoded, true );
+                            if ( false === $source_value ) {
+                                $source_value = $source_encoded;
+                            }
+                            $meta_array["source_value"] = $source_value;
+                            
+                            // Get target value (base64 decoded)
+                            $target_encoded = wpm_translate_string( $translate_value, $current_lang );
+                            $target_value = base64_decode( $target_encoded, true );
+                            if ( false === $target_value ) {
+                                $target_value = $target_encoded;
+                            }
+                            $meta_array["target_value"] = "";
+                            if ($meta_array["source_value"] !== $target_value) {
+                                $meta_array["target_value"] = $target_value;
+                            }
+                        } else {
+                            // Normal postmeta handling
+                            $meta_array["source_value"] = wpm_translate_string(
+                                $result[0]["meta_value"],
+                                $default_lang
+                            );
+                            $target_value = wpm_translate_string(
+                                $result[0]["meta_value"],
+                                $current_lang
+                            );
+                            $meta_array["target_value"] = "";
+                            if ($meta_array["source_value"] !== $target_value) {
+                                $meta_array["target_value"] = $target_value;
+                            }
+                        }
+                        
+                        $data[$key]["postmeta"][] = $meta_array;
+                    }
+                }
+            }
         }
 
         $data = apply_filters("wpm_filter_xliff_data", $data, $post);
-
         return $data;
     }
 
@@ -563,10 +664,25 @@ XLIFF;
                 foreach ( $data['acf'] as $acf ) {
                     if ( is_array( $acf ) && ! empty( $acf['source_value'] ) ) {
                         $xliff_template .= <<<XLIFF
-
+                        
                         <trans-unit id="{$unit_id}" restype="x-acf" resname="{$acf['key']}">
                             <source><![CDATA[{$acf['source_value']}]]></source>
                             <target><![CDATA[{$acf['target_value']}]]></target>
+                        </trans-unit>
+XLIFF;
+                        $unit_id++;
+                    }
+                }
+            }
+
+            if ( is_array( $data['postmeta'] ) && ! empty( $data['postmeta'] ) ) {
+                foreach ( $data['postmeta'] as $postmeta ) {
+                    if ( is_array( $postmeta ) && ! empty( $postmeta['source_value'] ) ) {
+                        $xliff_template .= <<<XLIFF
+                        
+                        <trans-unit id="{$unit_id}" restype="x-postmeta" resname="{$postmeta['key']}">
+                            <source><![CDATA[{$postmeta['source_value']}]]></source>
+                            <target><![CDATA[{$postmeta['target_value']}]]></target>
                         </trans-unit>
 XLIFF;
                         $unit_id++;
@@ -726,15 +842,32 @@ XLIFF;
             
             $unit_id++;
 
-            if ( is_array( $data['acf'] ) && ! empty( $data['acf'] ) ) {
+            if ( is_array( $data['acf'] ) && isset( $data['acf'] ) ) {
                 foreach ( $data['acf'] as $acf ) {
                     if ( is_array( $acf ) && ! empty( $acf['source_value'] ) ) {
                         $xliff_template .= <<<XLIFF
-
+                        
                         <unit id="{$unit_id}" type="x:acf" name="{$acf['key']}">
                             <segment>
                                 <source><![CDATA[{$acf['source_value']}]]></source>
                                 <target><![CDATA[{$acf['target_value']}]]></target>
+                            </segment>
+                        </unit>
+XLIFF;
+                        $unit_id++;
+                    }
+                }
+            }
+
+            if ( is_array( $data['postmeta'] ) && ! empty( $data['postmeta'] ) ) {
+                foreach ( $data['postmeta'] as $postmeta ) {
+                    if ( is_array( $postmeta ) && ! empty( $postmeta['source_value'] ) ) {
+                        $xliff_template .= <<<XLIFF
+                        
+                        <unit id="{$unit_id}" type="x:postmeta" name="{$postmeta['key']}">
+                            <segment>
+                                <source><![CDATA[{$postmeta['source_value']}]]></source>
+                                <target><![CDATA[{$postmeta['target_value']}]]></target>
                             </segment>
                         </unit>
 XLIFF;
@@ -972,11 +1105,73 @@ XLIFF;
                     if ( ! empty( $post["postmeta"] ) && is_array( $post["postmeta"] ) ) {
                         foreach ( $post["postmeta"] as $meta_key => $meta_value ) {
 
+                            // Special handling for Oxygen Builder's _ct_builder_json
+                            if ( $meta_key === '_ct_builder_json' ) {
+                                // Check if Oxygen Builder is active
+                                $is_oxygen_active = false;
+                                if ( class_exists( 'CT_Component' ) || defined( 'CT_VERSION' ) ) {
+                                    $is_oxygen_active = true;
+                                } else {
+                                    if ( ! function_exists( 'is_plugin_active' ) ) {
+                                        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+                                    }
+                                    $is_oxygen_active = is_plugin_active( 'oxygen/functions.php' );
+                                }
+                                
+                                if ( $is_oxygen_active ) {
+                                    // For Oxygen Builder, update _ct_builder_json_translate instead
+                                    $translate_key = $meta_key . '_translate';
+                                    $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $post_id, $translate_key ), ARRAY_A );
+                                    
+                                    if ( is_array( $result ) && isset( $result[0] ) && is_array( $result[0] ) ) {
+                                        // Get existing translate value
+                                        $existing_translate_value = $result[0]['meta_value'];
+                                        
+                                        // Base64 encode the imported value
+                                        $base64_encoded_value = base64_encode( $meta_value );
+                                        
+                                        // Update the translate meta with language markers
+                                        $updated_meta = wpm_set_new_value( $existing_translate_value, $base64_encoded_value, [], $lang );
+                                        update_post_meta( $post_id, $translate_key, $updated_meta );
+                                        
+                                        // Also ensure the original meta exists
+                                        $original_result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $post_id, $meta_key ), ARRAY_A );
+                                        if ( empty( $original_result ) ) {
+                                            // Create original meta with default language value
+                                            $default_lang = wpm_get_default_language();
+                                            if ( wpm_is_ml_value( $updated_meta ) ) {
+                                                $default_value_encoded = wpm_translate_string( $updated_meta, $default_lang );
+                                                $default_value = base64_decode( $default_value_encoded, true );
+                                                if ( false !== $default_value ) {
+                                                    update_post_meta( $post_id, $meta_key, $default_value );
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        // Create new translate meta
+                                        $base64_encoded_value = base64_encode( $meta_value );
+                                        $new_translate_value = '[:' . $lang . ']' . $base64_encoded_value . '[:]';
+                                        update_post_meta( $post_id, $translate_key, $new_translate_value );
+                                        
+                                        // Create original meta with default language value
+                                        $default_lang = wpm_get_default_language();
+                                        if ( $lang === $default_lang ) {
+                                            update_post_meta( $post_id, $meta_key, $meta_value );
+                                        }
+                                    }
+                                    
+                                    continue; // Skip the normal processing below
+                                }
+                            }
+                            
+                            // Normal postmeta import for other meta keys
                             $result         =   $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $post_id, $meta_key ), ARRAY_A );
 
-                            if ( is_array( $result ) && ! empty( $result[0] ) && is_array( $result[0] ) ) {
-                                if ( ! empty( $result[0]['meta_value'] ) && is_string( $result[0]['meta_value'] ) ) {
-                                    $updated_meta   =   wpm_set_new_value( $result[0]['meta_value'], $meta_value, [], $lang );
+                            if ( is_array( $result ) && isset( $result[0] ) && is_array( $result[0] ) ) {
+                                // Update existing postmeta
+                                if ( isset( $result[0]['meta_value'] ) && is_string( $result[0]['meta_value'] ) ) {
+                                    $existing_value = $result[0]['meta_value'];
+                                    $updated_meta   =   wpm_set_new_value( $existing_value, $meta_value, [], $lang );
                                     update_post_meta( $post_id, $meta_key, $updated_meta );
                                 }
                             }
@@ -1103,6 +1298,22 @@ XLIFF;
                                                         }
                                                     } 
                                                 }
+                                            } elseif (
+                                                $restype == "x-postmeta"
+                                            ) {
+                                                $target = $trans->getElementsByTagName(
+                                                    "target"
+                                                );
+                                                if (
+                                                    is_object($target) &&
+                                                    !empty($target->item(0))
+                                                ) {
+                                                    foreach ($target as $targetNode) {
+                                                        if ( ! empty( $targetNode->nodeValue ) && is_string( $targetNode->nodeValue ) ) {
+                                                            $post_data[$post_id]['postmeta'][$resname] = sanitize_text_field( wp_unslash( $targetNode->nodeValue ) );      
+                                                        }
+                                                    } 
+                                                }
                                             }
                                         }
                                     }
@@ -1179,6 +1390,22 @@ XLIFF;
                                         }
                                     }
                                 } elseif ($unit_type == "x:acf") {
+                                    foreach ($segments as $segment) {
+                                        $target = $segment->getElementsByTagName(
+                                            "target"
+                                        );
+                                        if (
+                                            is_object($target) &&
+                                            !empty($target->item(0))
+                                        ) {
+                                            foreach ($target as $targetNode) {
+                                                if ( ! empty( $targetNode->nodeValue ) && is_string( $targetNode->nodeValue ) ) {
+                                                    $post_data[$post_id]['postmeta'][$unit_name] = sanitize_text_field( wp_unslash( $targetNode->nodeValue ) );      
+                                                }
+                                            } 
+                                        }
+                                    }
+                                } elseif ($unit_type == "x:postmeta") {
                                     foreach ($segments as $segment) {
                                         $target = $segment->getElementsByTagName(
                                             "target"
