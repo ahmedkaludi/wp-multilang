@@ -4,7 +4,7 @@
  *
  * @category Admin
  * @package  WPM/Includes/Admin
- * @since 	 2.4.17
+ * @since    2.4.17
  */
 
 namespace WPM\Includes\Admin;
@@ -21,7 +21,7 @@ class WPM_Bulk_Translate
 
     /**
      * Constructor
-     * @since	2.4.17
+     * @since   2.4.17
      * */
     public function __construct()
     {
@@ -37,7 +37,7 @@ class WPM_Bulk_Translate
 
     /**
      * Load scripts and styles
-     * @since 	2.4.17
+     * @since   2.4.17
      * */
     public function load_scripts()
     {
@@ -84,8 +84,8 @@ class WPM_Bulk_Translate
 
     /**
      * Initialize bulk action hooks
-     * $current_screen 	object
-     * @since 	2.4.17
+     * $current_screen  object
+     * @since   2.4.17
      * */
     public function init($current_screen)
     {
@@ -106,9 +106,9 @@ class WPM_Bulk_Translate
 
     /**
      * Add translate action in dropdown
-     * @param 	$actions 	array
-     * @return 	$actions 	array
-     * @since 	2.4.17
+     * @param   $actions    array
+     * @return  $actions    array
+     * @since   2.4.17
      * */
     public function add_action($actions)
     {
@@ -118,9 +118,9 @@ class WPM_Bulk_Translate
 
     /**
      * Handle translate action
-     * @param 	$sendback 	string
-     * @param 	$action 	string
-     * @since 	2.4.17
+     * @param   $sendback   string
+     * @param   $action     string
+     * @since   2.4.17
      * */
     public function handle_bulk_action($sendback, $action)
     {
@@ -147,7 +147,7 @@ class WPM_Bulk_Translate
 
     /**
      * Render bulk action form
-     * @since 	2.4.17
+     * @since   2.4.17
      * */
     public function display_form()
     {
@@ -163,7 +163,7 @@ class WPM_Bulk_Translate
 
     /**
      * Parse the bulk translate request
-     * @since 	2.4.17
+     * @since   2.4.17
      * */
     public function parse_bulk_request($request)
     {
@@ -206,7 +206,7 @@ class WPM_Bulk_Translate
 
     /**
      * Handle the errors if no post is selected
-     * @since 	2.4.17
+     * @since   2.4.17
      * */
     public function parse_request_before_redirect($sendback)
     {
@@ -232,8 +232,8 @@ class WPM_Bulk_Translate
 
     /**
      * Add errors to transient
-     * @param 	$error 	WP_Error
-     * @since 	2.4.17
+     * @param   $error  WP_Error
+     * @since   2.4.17
      * */
     private function add_settings_error(\WP_Error $error)
     {
@@ -251,8 +251,8 @@ class WPM_Bulk_Translate
 
     /**
      * Add new settings error
-     * @param 	$error 	WP_Error
-     * @since 	2.4.17
+     * @param   $error  WP_Error
+     * @since   2.4.17
      * */
     public function add_errors($error)
     {
@@ -281,7 +281,7 @@ class WPM_Bulk_Translate
 
     /**
      * Display bulk translate error
-     * @since 	2.4.17
+     * @since   2.4.17
      * */
     public function display_notices()
     {
@@ -307,9 +307,9 @@ class WPM_Bulk_Translate
 
     /**
      * Perform bulk export action
-     * @param 	$post_ids 	array
-     * @param 	$file_type 	string
-     * @since 	2.4.17
+     * @param   $post_ids   array
+     * @param   $file_type  string
+     * @since   2.4.17
      * */
     public function perform_bulk_action($post_ids, $file_type)
     {
@@ -418,11 +418,11 @@ class WPM_Bulk_Translate
 
     /**
      * Format data to use in xliff file format creation
-     * @param 	$post 			WP_Post
-     * @param 	$languages 		array
-     * @param 	$default_lang 	string
-     * @param 	$current_lang 	string
-     * @since 	2.4.17
+     * @param   $post           WP_Post
+     * @param   $languages      array
+     * @param   $default_lang   string
+     * @param   $current_lang   string
+     * @since   2.4.17
      * */
     public function format_xliff_data(
         $posts,
@@ -509,8 +509,9 @@ class WPM_Bulk_Translate
                     // Special handling for Oxygen Builder's _ct_builder_json
                     $is_oxygen_meta = false;
                     $translate_key = $meta_key . '_translate';
+                    $original_value = 0;
                     
-                    if ( $meta_key === '_ct_builder_json' ) {
+                    if ( $meta_key === '_ct_builder_json' || $meta_key === '_ct_builder_shortcodes' ) {
                         // Check if Oxygen Builder is active
                         $is_oxygen_active = false;
                         if ( class_exists( 'CT_Component' ) || defined( 'CT_VERSION' ) ) {
@@ -533,6 +534,19 @@ class WPM_Bulk_Translate
                                 ),
                                 ARRAY_A
                             );
+
+                            // If Translate version is not available take default 
+                            if ( empty( $result ) ) {
+                                $result = $wpdb->get_results(
+                                    $wpdb->prepare(
+                                        "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s",
+                                        $post->ID,
+                                        $meta_key
+                                    ),
+                                    ARRAY_A
+                                );
+                                $original_value = 1;  
+                            }
                         }
                     }
                     
@@ -561,14 +575,61 @@ class WPM_Bulk_Translate
                         if ( $is_oxygen_meta ) {
                             // For Oxygen Builder, extract and base64 decode the values
                             $translate_value = $result[0]["meta_value"];
-                            
-                            // Get source value (base64 decoded)
-                            $source_encoded = wpm_translate_string( $translate_value, $default_lang );
-                            $source_value = base64_decode( $source_encoded, true );
-                            if ( false === $source_value ) {
-                                $source_value = $source_encoded;
+                            $source_value = '';
+                            if ( $original_value == 1 ) {
+                                $clean_json     =   $translate_value;  
+                                $clean_json     =   preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $clean_json); 
+                                $source_value   =   $clean_json;
+                            }else{
+                                // Get source value (base64 decoded)
+                                $source_encoded = wpm_translate_string( $translate_value, $default_lang );
+                                $source_value = base64_decode( $source_encoded, true );
+                                if ( false === $source_value ) {
+                                    $source_value = $source_encoded;
+                                }
                             }
-                            $meta_array["source_value"] = $source_value;
+                            
+                            // For builder data render
+                            if ( $meta_key === '_ct_builder_json' ) {
+                                $json_array = json_decode( $source_value, true );
+
+                                if ( json_last_error() === JSON_ERROR_NONE ) {
+                                    $texts = [];
+                                    $this->extract_oxygen_texts( $json_array, $texts );
+
+                                    if ( ! empty( $texts ) ) {
+                                        foreach ( $texts as $text_item ) {
+
+                                            $data[$key]["postmeta"][] = [
+                                                "key" => $meta_key . "::" . $text_item['id'],
+                                                "source_value" => $text_item['text'],
+                                                "target_value" => "",
+                                            ];
+                                        }
+                                    }
+
+                                }
+                            }
+
+                            // For shortcode data render
+                            if ( $meta_key === '_ct_builder_shortcodes' ) {
+
+                                $texts = $this->extract_oxygen_shortcodes_texts( $source_value );
+
+                                if ( ! empty( $texts ) ) {
+
+                                    foreach ( $texts as $index => $item ) {
+
+                                        $data[$key]["postmeta"][] = [
+                                            "key" => $meta_key . "::" . $item['id'],
+                                            "source_value" => $item['text'],
+                                            "target_value" => ""
+                                        ];
+                                    }
+                                }
+
+                            }
+
                             
                             // Get target value (base64 decoded)
                             $target_encoded = wpm_translate_string( $translate_value, $current_lang );
@@ -608,11 +669,11 @@ class WPM_Bulk_Translate
 
     /**
      * Generate translation file version 1.2
-     * @param 	$post 			WP_Post
-     * @param 	$languages 		array
-     * @param 	$default_lang 	string
-     * @param 	$current_lang 	string
-     * @since 	2.4.17
+     * @param   $post           WP_Post
+     * @param   $languages      array
+     * @param   $default_lang   string
+     * @param   $current_lang   string
+     * @since   2.4.17
      * */
     public function generate_xliff_12(
         $posts,
@@ -634,29 +695,29 @@ class WPM_Bulk_Translate
         $xliff_template = <<<XLIFF
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-	<file datatype="plaintext" original="{$original}" product-name="WP Multilang" product-version="{$product_version}" source-language="{$formatted_data[0]["source_lang"]}" target-language="{$formatted_data[0]["target_lang"]}"> 
-		<body>
+    <file datatype="plaintext" original="{$original}" product-name="WP Multilang" product-version="{$product_version}" source-language="{$formatted_data[0]["source_lang"]}" target-language="{$formatted_data[0]["target_lang"]}"> 
+        <body>
 XLIFF;
 
         foreach ($formatted_data as $key => $data) {
             $xliff_template .= <<<XLIFF
 
-			<group restype="x-post" resname="{$data["id"]}">
-				<trans-unit id="{$unit_id}" restype="x-post_title">
-					<source><![CDATA[{$data["source_post_title"]}]]></source>
-					<target>{$data["target_post_title"]}</target>
-				</trans-unit>
-				
+            <group restype="x-post" resname="{$data["id"]}">
+                <trans-unit id="{$unit_id}" restype="x-post_title">
+                    <source><![CDATA[{$data["source_post_title"]}]]></source>
+                    <target>{$data["target_post_title"]}</target>
+                </trans-unit>
+                
 XLIFF;
 
             $unit_id++;
 
             $xliff_template .= <<<XLIFF
 
-				<trans-unit id="{$unit_id}" restype="x-post_content">
-					<source><![CDATA[{$data["source_content"]}]]></source>
-					<target>{$data["target_content"]}</target>
-				</trans-unit>
+                <trans-unit id="{$unit_id}" restype="x-post_content">
+                    <source><![CDATA[{$data["source_content"]}]]></source>
+                    <target>{$data["target_content"]}</target>
+                </trans-unit>
 XLIFF;
             $unit_id++;
 
@@ -692,7 +753,7 @@ XLIFF;
 
             $xliff_template .= <<<XLIFF
 
-				</group>
+                </group>
 XLIFF;
 
         }
@@ -702,12 +763,12 @@ XLIFF;
                 foreach ($data["terms"] as $tkey => $term) {
                     $xliff_template .= <<<XLIFF
 
-			<group restype="x-term" resname="{$term["term_id"]}">
-				<trans-unit id="{$unit_id}" restype="x-name">
-					<source><![CDATA[{$term["name"]}]]></source>
-					<target><![CDATA[{$term["name"]}]]></target>
-				</trans-unit>
-			</group>
+            <group restype="x-term" resname="{$term["term_id"]}">
+                <trans-unit id="{$unit_id}" restype="x-name">
+                    <source><![CDATA[{$term["name"]}]]></source>
+                    <target><![CDATA[{$term["name"]}]]></target>
+                </trans-unit>
+            </group>
 XLIFF;
 
                     $unit_id++;
@@ -717,9 +778,9 @@ XLIFF;
 
         $xliff_template .= <<<XLIFF
 
-		</body>
-	</file>
-</xliff>	
+        </body>
+    </file>
+</xliff>    
 XLIFF;
 
         return $xliff_template;
@@ -727,11 +788,11 @@ XLIFF;
 
     /**
      * Generate translation file version 20
-     * @param 	$post 			WP_Post
-     * @param 	$languages 		array
-     * @param 	$default_lang 	string
-     * @param 	$current_lang 	string
-     * @since 	2.4.17
+     * @param   $post           WP_Post
+     * @param   $languages      array
+     * @param   $default_lang   string
+     * @param   $current_lang   string
+     * @since   2.4.17
      * */
     public function generate_xliff_20(
         $posts,
@@ -749,15 +810,15 @@ XLIFF;
         $xliff_template = <<<XLIFF
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="{$formatted_data[0]["source_lang"]}" trgLang="{$formatted_data[0]["target_lang"]}">
-	<file id="1" original="{$formatted_data[0]["original"]}"> 
+    <file id="1" original="{$formatted_data[0]["original"]}"> 
 XLIFF;
 
         $xliff_template .= $this->render_xliff_groups($formatted_data);
 
         $xliff_template .= <<<XLIFF
 
-	</file>
-</xliff>	
+    </file>
+</xliff>    
 XLIFF;
 
         return $xliff_template;
@@ -765,11 +826,11 @@ XLIFF;
 
     /**
      * Generate translation file version 21
-     * @param 	$post 			WP_Post
-     * @param 	$languages 		array
-     * @param 	$default_lang 	string
-     * @param 	$current_lang 	string
-     * @since 	2.4.17
+     * @param   $post           WP_Post
+     * @param   $languages      array
+     * @param   $default_lang   string
+     * @param   $current_lang   string
+     * @since   2.4.17
      * */
     public function generate_xliff_21(
         $posts,
@@ -787,15 +848,15 @@ XLIFF;
         $xliff_template = <<<XLIFF
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.1" version="2.1" srcLang="{$formatted_data[0]["source_lang"]}" trgLang="{$formatted_data[0]["target_lang"]}">
-	<file id="1" original="{$formatted_data[0]["original"]}"> 
+    <file id="1" original="{$formatted_data[0]["original"]}"> 
 XLIFF;
 
         $xliff_template .= $this->render_xliff_groups($formatted_data);
 
         $xliff_template .= <<<XLIFF
 
-	</file>
-</xliff>	
+    </file>
+</xliff>    
 XLIFF;
 
         return $xliff_template;
@@ -803,9 +864,9 @@ XLIFF;
 
     /**
      * Prepare xliff group content
-     * @param 	$formatted_data 	array
-     * @return 	$xliff_template 	string
-     * @since 	2.4.17
+     * @param   $formatted_data     array
+     * @return  $xliff_template     string
+     * @since   2.4.17
      * */
     public function render_xliff_groups($formatted_data)
     {
@@ -816,28 +877,28 @@ XLIFF;
         foreach ($formatted_data as $key => $data) {
             $xliff_template .= <<<XLIFF
 
-		<group id="{$group_id}" type="x:post" name="{$data["id"]}">
+        <group id="{$group_id}" type="x:post" name="{$data["id"]}">
 XLIFF;
             $xliff_template .= <<<XLIFF
 
-			<unit id="{$unit_id}" type="x:post_title">
-				<segment>
-					<source><![CDATA[{$data["source_post_title"]}]]></source>
-					<target>{$data["target_post_title"]}</target>
-				</segment>
-			</unit>
+            <unit id="{$unit_id}" type="x:post_title">
+                <segment>
+                    <source><![CDATA[{$data["source_post_title"]}]]></source>
+                    <target>{$data["target_post_title"]}</target>
+                </segment>
+            </unit>
 XLIFF;
 
             $unit_id++;
 
             $xliff_template .= <<<XLIFF
 
-			<unit id="{$unit_id}" type="x:post_content">
-				<segment>
-					<source><![CDATA[{$data["source_content"]}]]></source>
-					<target>{$data["target_content"]}</target>
-				</segment>
-			</unit>
+            <unit id="{$unit_id}" type="x:post_content">
+                <segment>
+                    <source><![CDATA[{$data["source_content"]}]]></source>
+                    <target>{$data["target_content"]}</target>
+                </segment>
+            </unit>
 XLIFF;
             
             $unit_id++;
@@ -877,7 +938,7 @@ XLIFF;
             }
 
             $xliff_template .= <<<XLIFF
-		</group> 
+        </group> 
 XLIFF;
 
             $group_id++;
@@ -888,14 +949,14 @@ XLIFF;
                 foreach ($data["terms"] as $tkey => $term) {
                     $xliff_template .= <<<XLIFF
 
-		<group id="{$group_id}" type="x:term" name="{$term["term_id"]}">
-			<unit id="{$unit_id}" type="x:name">
-				<segment>
-					<source><![CDATA[{$term["name"]}]]></source>
-					<target><![CDATA[{$term["name"]}]]></target>
-				</segment>
-			</unit>
-		</group>
+        <group id="{$group_id}" type="x:term" name="{$term["term_id"]}">
+            <unit id="{$unit_id}" type="x:name">
+                <segment>
+                    <source><![CDATA[{$term["name"]}]]></source>
+                    <target><![CDATA[{$term["name"]}]]></target>
+                </segment>
+            </unit>
+        </group>
 XLIFF;
                     $group_id++;
                     $unit_id++;
@@ -908,42 +969,42 @@ XLIFF;
 
     /**
      * Import translation from xliff file
-     * @param 	$value 	array
-     * @since 	2.4.17
+     * @param   $value  array
+     * @since   2.4.17
      * */
     public function render_import_translations($value)
     {
         ?>
-		<tr valign="top">
-			<th scope="row" class="titledesc">
-				<h4><?php echo esc_html($value["title"]); ?></h4>
-			</th>
-			<td class="forminp">
-				<p>
-					<form enctype="multipart/form-data" type="post" id="wpm-import-xliff-form" action="<?php echo esc_url(
+        <tr valign="top">
+            <th scope="row" class="titledesc">
+                <h4><?php echo esc_html($value["title"]); ?></h4>
+            </th>
+            <td class="forminp">
+                <p>
+                    <form enctype="multipart/form-data" type="post" id="wpm-import-xliff-form" action="<?php echo esc_url(
          admin_url("admin-post.php")
      ); ?>">
-						<input type="file" name="wpm_import_xliff_file" id="wpm-import-xliff-file">
-						<button type="submit" id="wpm-import-xliff-btn" class="button js-wpm-action" name="wpm_import_xliff_btn" value="Import xliff data"><?php echo esc_html__(
+                        <input type="file" name="wpm_import_xliff_file" id="wpm-import-xliff-file">
+                        <button type="submit" id="wpm-import-xliff-btn" class="button js-wpm-action" name="wpm_import_xliff_btn" value="Import xliff data"><?php echo esc_html__(
           "Import File",
           "wp-multilang"
       ); ?></button>
-						<input type="hidden" name="action" value="wpm_import_translations">
-						<?php wp_nonce_field("wpm-xliff-nonce", "wpm_xliff_security"); ?>
-					</form>
-				</p>
-				<p class="description"><?php echo esc_html__(
+                        <input type="hidden" name="action" value="wpm_import_translations">
+                        <?php wp_nonce_field("wpm-xliff-nonce", "wpm_xliff_security"); ?>
+                    </form>
+                </p>
+                <p class="description"><?php echo esc_html__(
         "Import translated xliff file.",
         "wp-multilang"
     ); ?></p>
-			</td>
-		</tr>
-		<?php
+            </td>
+        </tr>
+        <?php
     }
 
     /**
      * Get uploaded xliff file contents
-     * @since 	2.4.17
+     * @since   2.4.17
      * */
     public function import_translations()
     {
@@ -996,8 +1057,8 @@ XLIFF;
 
     /**
      * Import data from xliff file
-     * @param 	$filepath 	string
-     * @since 	2.4.17
+     * @param   $filepath   string
+     * @since   2.4.17
      * */
     public function import_data_from_file($filepath)
     {
@@ -1100,13 +1161,36 @@ XLIFF;
                         ];
 
                         wp_update_post($update_data);
-                    }
+                    } else if (!empty($title)) {
+                        $update_data = [
+                            "ID" => $post_id,
+                            "post_title" => $title,
+                        ];
 
+                        wp_update_post($update_data);
+                    }else if (!empty($content)) {
+                        $update_data = [
+                            "ID" => $post_id,
+                            "post_content" => $content,
+                        ];
+
+                        wp_update_post($update_data);
+                    }
+                    
                     if ( ! empty( $post["postmeta"] ) && is_array( $post["postmeta"] ) ) {
                         foreach ( $post["postmeta"] as $meta_key => $meta_value ) {
 
                             // Special handling for Oxygen Builder's _ct_builder_json
-                            if ( $meta_key === '_ct_builder_json' ) {
+                            if ( strpos( $meta_key, '_ct_builder_json::' ) === 0 || strpos( $meta_key, '_ct_builder_shortcodes::' ) === 0 ) {
+                                $origin_meta_key = $meta_key;
+                                if ( strpos( $meta_key, '_ct_builder_json::' ) === 0 ) {
+                                    $meta_key = '_ct_builder_json';    
+                                }
+
+                                if ( strpos( $meta_key, '_ct_builder_shortcodes::' ) === 0 ) {
+                                    $meta_key = '_ct_builder_shortcodes';    
+                                }
+                                
                                 // Check if Oxygen Builder is active
                                 $is_oxygen_active = false;
                                 if ( class_exists( 'CT_Component' ) || defined( 'CT_VERSION' ) ) {
@@ -1121,21 +1205,73 @@ XLIFF;
                                 if ( $is_oxygen_active ) {
                                     // For Oxygen Builder, update _ct_builder_json_translate instead
                                     $translate_key = $meta_key . '_translate';
+                                    $original_value = 0;
+                                    
                                     $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $post_id, $translate_key ), ARRAY_A );
+                                    
+                                    // If translation not available then get the default builder value
+                                    if ( empty( $result ) ) {
+                                        $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $post_id, $meta_key ), ARRAY_A );
+                                        $original_value = 1;
+                                    }
                                     
                                     if ( is_array( $result ) && isset( $result[0] ) && is_array( $result[0] ) ) {
                                         // Get existing translate value
                                         $existing_translate_value = $result[0]['meta_value'];
+                                        $original_builder_value = $existing_translate_value;
                                         
                                         // Base64 encode the imported value
                                         $base64_encoded_value = base64_encode( $meta_value );
-                                        
-                                        // Update the translate meta with language markers
-                                        $updated_meta = wpm_set_new_value( $existing_translate_value, $base64_encoded_value, [], $lang );
-                                        update_post_meta( $post_id, $translate_key, $updated_meta );
+                                        $decode_existing_translate_value = '';
+                                        $decode_existing_translate_value = '';
+                                        if ( ! empty( $existing_translate_value ) && is_string( $existing_translate_value ) ) {
+                                            if ( $original_value == 1 ) {
+                                                $clean_json    =   $existing_translate_value;  
+                                                $clean_json = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $clean_json); 
+                                                $decode_existing_translate_value = $clean_json;
+                                                $original_builder_value = base64_encode( $clean_json );
+
+                                            }else{
+                                                $decode_existing_translate_value    =   base64_decode( wpm_translate_string( $existing_translate_value, $lang ) );    
+                                            }
+                                            
+                                            // If current language is empty then fallback to default language
+                                            if (  empty( $decode_existing_translate_value ) ) {
+                                                $decode_existing_translate_value    =   base64_decode( wpm_translate_string( $existing_translate_value ) );
+                                            }
+                                            
+                                            if ( $meta_key === '_ct_builder_json' && ! empty( $decode_existing_translate_value ) ) {
+                                                $decode_existing_translate_value    =   json_decode( $decode_existing_translate_value, true );
+                                                $this->replace_oxygen_texts($decode_existing_translate_value, $origin_meta_key, $meta_value);
+                                                $decode_existing_translate_value    =   base64_encode( wp_json_encode( $decode_existing_translate_value ) );
+                                            }
+
+                                            if ( $meta_key === '_ct_builder_shortcodes' && ! empty( $decode_existing_translate_value ) ) {
+                                                if ( ! empty( $decode_existing_translate_value ) && is_string( $decode_existing_translate_value ) ) {
+                                                    $lookup_id = str_replace( '_ct_builder_shortcodes::', '', $origin_meta_key );
+                                                    
+                                                    $decode_existing_translate_value = $this->replace_oxygen_shortcode_text_by_id(
+                                                        $decode_existing_translate_value,
+                                                        $lookup_id,
+                                                        $meta_value
+                                                    );
+
+                                                    $decode_existing_translate_value = base64_encode( $decode_existing_translate_value );    
+                                                    
+                                                }
+                                                
+                                            }
+
+                                            $encode_existing_translate_value = $original_value == 1 ? $original_builder_value : $existing_translate_value; 
+                                            
+                                            // Update the translate meta with language markers
+                                            $updated_meta = wpm_set_new_value( $encode_existing_translate_value, $decode_existing_translate_value, [], $lang );
+                                            update_post_meta( $post_id, $translate_key, $updated_meta );   
+                                        }
                                         
                                         // Also ensure the original meta exists
                                         $original_result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $post_id, $meta_key ), ARRAY_A );
+                                        
                                         if ( empty( $original_result ) ) {
                                             // Create original meta with default language value
                                             $default_lang = wpm_get_default_language();
@@ -1162,17 +1298,17 @@ XLIFF;
                                     
                                     continue; // Skip the normal processing below
                                 }
-                            }
-                            
-                            // Normal postmeta import for other meta keys
-                            $result         =   $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $post_id, $meta_key ), ARRAY_A );
+                            }else{
+                                // Normal postmeta import for other meta keys
+                                $result         =   $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s", $post_id, $meta_key ), ARRAY_A );
 
-                            if ( is_array( $result ) && isset( $result[0] ) && is_array( $result[0] ) ) {
-                                // Update existing postmeta
-                                if ( isset( $result[0]['meta_value'] ) && is_string( $result[0]['meta_value'] ) ) {
-                                    $existing_value = $result[0]['meta_value'];
-                                    $updated_meta   =   wpm_set_new_value( $existing_value, $meta_value, [], $lang );
-                                    update_post_meta( $post_id, $meta_key, $updated_meta );
+                                if ( is_array( $result ) && isset( $result[0] ) && is_array( $result[0] ) ) {
+                                    // Update existing postmeta
+                                    if ( isset( $result[0]['meta_value'] ) && is_string( $result[0]['meta_value'] ) ) {
+                                        $existing_value = $result[0]['meta_value'];
+                                        $updated_meta   =   wpm_set_new_value( $existing_value, $meta_value, [], $lang );
+                                        update_post_meta( $post_id, $meta_key, $updated_meta );
+                                    }
                                 }
                             }
 
@@ -1206,9 +1342,9 @@ XLIFF;
 
     /**
      * Convert xml data into an array for xliff 1.2 version
-     * @param 	$file_tag 	Document object
-     * @since 	2.4.17
-     * @return 	$post_data 	array
+     * @param   $file_tag   Document object
+     * @since   2.4.17
+     * @return  $post_data  array
      * */
     public function xml_to_array_1_2($file_tag)
     {
@@ -1330,9 +1466,9 @@ XLIFF;
 
     /**
      * Convert xml data into an array for xliff 2.0 & 2.1 version
-     * @param 	$file_tag 	Document object
-     * @since 	2.4.17
-     * @return 	$post_data 	array
+     * @param   $file_tag   Document object
+     * @since   2.4.17
+     * @return  $post_data  array
      * */
     public function xml_to_array_2_1($file_tag)
     {
@@ -1430,5 +1566,180 @@ XLIFF;
         }
         
         return $post_data;
+    }
+
+    /**
+     * Extract the content of oxygen builder from json
+     * @param   $json       array
+     * @param   $results    array     call by referece
+     * @return  $results    array
+     * @since   2.4.27
+     * */
+    private function extract_oxygen_texts( $json, &$results = [] ) {
+
+        if ( is_array( $json ) ) {
+            foreach ( $json as $key => $value ) {
+
+                if ( $key === 'ct_content' && is_string( $value ) ) {
+                    $parent_id  =   isset( $json['ct_parent'] ) ? $json['ct_parent'] : 0;
+                    $id         =   isset( $json['ct_id'] ) ? $json['ct_id'] : 0;
+                    if ( $parent_id > 0 || $id > 0 ) {
+                        $id     = $parent_id . '_' . $id;   
+                        $results[] = [
+                            'id' => $id,
+                            'text' => $value,
+                        ];
+                    }
+                }
+
+                if ( is_array( $value ) ) {
+                    $this->extract_oxygen_texts( $value, $results );
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Replace oxygen texts for _ct_builder
+     * @param   $json               array   pass by reference
+     * @param   $key                text
+     * @param   $replace_value      text
+     * @since   2.4.27  
+     * */
+    private function replace_oxygen_texts( &$json, $key, $replace_value ) {
+
+        $parts = explode( '::', $key );
+
+        if ( empty( $parts[1] ) ) {
+            return;
+        }
+
+        list( $parent_id, $id ) = array_pad( explode( '_', $parts[1] ), 2, 0 );
+
+        $parent_id = intval( $parent_id );
+        $id        = intval( $id );
+
+        if ( ! is_array( $json ) ) {
+            return;
+        }
+
+        foreach ( $json as &$node ) {
+
+            if ( is_array( $node ) ) {
+
+                // Check inside options array
+                if (
+                    isset( $node['options']['ct_id'], $node['options']['ct_parent'] ) &&
+                    intval( $node['options']['ct_id'] ) === $id &&
+                    intval( $node['options']['ct_parent'] ) === $parent_id
+                ) {
+
+                    // Replace only ct_content
+                    if ( isset( $node['options']['ct_content'] ) ) {
+                        $node['options']['ct_content'] = $replace_value;
+                        return; // stop after first match
+                    }
+                }
+
+                // Continue recursion
+                $this->replace_oxygen_texts( $node, $key, $replace_value );
+            }
+        }
+    }
+
+    /**
+     * Extract shortcode texts and return them into an array
+     * @param   $content    shortcode text
+     * @return  $results    array
+     * @since   2.4.27
+     * */
+    private function extract_oxygen_shortcodes_texts( $content ) {
+
+        $results = [];
+
+        // Only match text-carrying Oxygen elements
+        $pattern = '/\[(ct_text_block|ct_headline|ct_link_text)([^\]]*)\]([\s\S]*?)\[\/\1\]/';
+
+        if ( preg_match_all( $pattern, $content, $matches, PREG_SET_ORDER ) ) {
+
+            foreach ( $matches as $match ) {
+
+                $attrs = $match[2];
+                $inner = trim( $match[3] );
+
+                if ( $inner === '' ) {
+                    continue;
+                }
+
+                // Extract ct_options JSON
+                if ( preg_match("/ct_options='([^']+)'/", $attrs, $opt_match) ) {
+
+                    $opts = json_decode( $opt_match[1], true );
+
+                    if ( isset($opts['ct_parent'], $opts['ct_id']) ) {
+
+                        $results[] = [
+                            'id'   => $opts['ct_parent'] . '_' . $opts['ct_id'],
+                            'text' => $inner
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Replace oxygen shortcode inner text by ct_parent + ct_id
+     * @param string $content        Full shortcode string
+     * @param string $lookup_id      Example: 2_7
+     * @param string $translated     Translated text
+     * @return string
+     * @since 2.4.27
+     */
+    private function replace_oxygen_shortcode_text_by_id(
+        $content,
+        $lookup_id,
+        $translated
+    ) {
+        
+        $pattern = '/\[(ct_text_block|ct_headline|ct_link_text)([^\]]*)\]([\s\S]*?)\[\/\1\]/';
+
+        return preg_replace_callback(
+
+            $pattern,
+
+            function( $match ) use ( $lookup_id, $translated ) {
+
+                $attrs = $match[2];
+
+                // Extract ct_options
+                if ( preg_match("/ct_options='([^']+)'/", $attrs, $opt_match) ) {
+
+                    $opts = json_decode( $opt_match[1], true );
+
+                    if ( isset($opts['ct_parent'], $opts['ct_id']) ) {
+
+                        $current_id = $opts['ct_parent'] . '_' . $opts['ct_id'];
+
+                        // Exact match
+                        if ( $current_id === $lookup_id ) {
+
+                            return '[' . $match[1] . $attrs . ']'
+                                 . $translated
+                                 . '[/' . $match[1] . ']';
+                        }
+                    }
+                }
+
+                // No change
+                return $match[0];
+            },
+
+            $content
+        );
     }
 }
