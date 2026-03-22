@@ -286,7 +286,7 @@ class WPM_Taxonomies extends WPM_Object {
 			return;
 		}
 
-		$description = wpm_set_new_value( $this->description['old'], $value, $taxonomy_config['description'] );
+		$description = wpm_set_new_value( $this->description['old'] ?? array(), $value, $taxonomy_config['description'] );
 		if ( ! empty( $description ) ) {
 			$description = wp_unslash( $description );
 		}
