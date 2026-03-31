@@ -85,7 +85,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Forminator Forms
 * Gravity Forms
 * Ultimate Member Form
-* Oxygen Builder
+* Oxygen Builder ( [available in premium version](https://wp-multilang.com/pricing/) )
 * Internal Link Juicer
 
 == Advance Woocommerce Support ==
