@@ -141,7 +141,7 @@ class WPM_Acf {
 		if ( strpos( $post_id, 'block_' ) === 0 && is_array( $info ) ) {
     		$info['type'] = 'block';
 		}
-		error_log("info===== " . json_encode($info));
+		
 		switch ( $info['type'] ) {
 
 			case 'post':
