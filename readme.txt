@@ -4,8 +4,8 @@ Contributors: magazine3
 Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
-Tested up to: 6.9
-Stable tag: 2.4.26
+Tested up to: 7.0
+Stable tag: 2.4.27
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -85,7 +85,8 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Forminator Forms
 * Gravity Forms
 * Ultimate Member Form
-* Oxygen Builder
+* Oxygen Builder ( [available in premium version](https://wp-multilang.com/pricing/) )
+* Internal Link Juicer
 
 == Advance Woocommerce Support ==
 * Send emails in customer's selected language
@@ -250,6 +251,14 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.27 =
+- Fixed: other language content is not updating in Elementor #215
+- Enhancement: Issue with ACF blocks #218
+- Feature: Added compatibility with the Internal Link Juicer plugin #219
+- Feature: Added Xliff file support for Oxygen Builder #242
+- Enhancement: Fixed bbPress forum translation issue  #244
+- Fixed: Undefined index notice in update_description method #249
+
 = 2.4.26 =
 - Feature: Added OpenAI Integration for Automatic Neural Network Translation #207
 - Feature: Allow override to be configurable in Auto translate #223
@@ -364,10 +373,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed Issue with yoast meta description #113
 - fixed License key wrong link issue #118
 - fixed Error after the update 2.4.11 #109
-
-= 2.4.12 =
-- feature URL Slug Translation #25
-- fixed PHP waring #102
-- fixed Yoast meta description translation issue #113
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

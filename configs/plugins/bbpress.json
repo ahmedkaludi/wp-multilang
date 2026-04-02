@@ -1,0 +1,10 @@
+{
+	"post_types": {
+		"forum": {},
+		"topic": {},
+		"reply": {}
+	},
+	"taxonomies": {
+	    "topic-tag" : {}
+  	}
+}

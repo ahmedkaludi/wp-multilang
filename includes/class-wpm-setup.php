@@ -548,6 +548,7 @@ class WPM_Setup {
 			'ultimate-member' 			 => __NAMESPACE__ . '\Integrations\WPM_Ultimate_Member',
 			'advanced-ads' 			 	 => __NAMESPACE__ . '\Integrations\WPM_Advanced_Ads',
 			'strong-testimonials' 		 => __NAMESPACE__ . '\Integrations\WPM_Strong_Testimonials',
+			'internal-links' 		 	 => __NAMESPACE__ . '\Integrations\WPM_Internal_Links',
 		) );
 
 		$active_plugins = wp_cache_get( 'active_plugins', 'wpm' );

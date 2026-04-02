@@ -137,6 +137,11 @@ class WPM_Acf {
 
 		$info = acf_get_post_id_info( $post_id );
 
+		// ACF is added as a block in post content then find that block
+		if ( strpos( $post_id, 'block_' ) === 0 && is_array( $info ) ) {
+    		$info['type'] = 'block';
+		}
+		
 		switch ( $info['type'] ) {
 
 			case 'post':
@@ -152,8 +157,20 @@ class WPM_Acf {
 				if ( ! $term || is_wp_error( $term ) || null === wpm_get_taxonomy_config( $term->taxonomy ) ) {
 					return $value;
 				}
-		}
 
+				break;
+
+			case 'block':
+					
+					$post_type = get_post_type( $info['id'] );
+					if ( ! $post_type || null === wpm_get_post_config( $post_type ) ) {
+						return $value;
+					}
+
+				break;
+
+		}
+		
 		$acf_field_config = apply_filters( "wpm_acf_{$info['type']}_config", null, $value, $post_id, $field );
 		$acf_field_config = apply_filters( "wpm_acf_{$field['type']}_config", $acf_field_config, $value, $post_id, $field );
 		$acf_field_config = apply_filters( "wpm_acf_name_{$field['_name']}_config", $acf_field_config, $value, $post_id, $field );
