@@ -87,6 +87,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Ultimate Member Form
 * Oxygen Builder ( [available in premium version](https://wp-multilang.com/pricing/) )
 * Internal Link Juicer
+* Strong Testimonials
 
 == Advance Woocommerce Support ==
 * Send emails in customer's selected language
