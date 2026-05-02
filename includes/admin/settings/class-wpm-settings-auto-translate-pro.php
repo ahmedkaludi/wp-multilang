@@ -608,6 +608,227 @@ class WPM_Settings_Auto_Translate_Pro {
 				file_put_contents($debug_file, $debug_entry, FILE_APPEND | LOCK_EX);
 			}
 
+			/*
+			Bricks auto translation
+			*/
+			if ( class_exists( '\Bricks\Frontend' ) ) {
+			    
+			    $debug_file = WP_CONTENT_DIR . '/wpm_debug_translation.log';
+			    $debug_entry = "=== BRICKS PROCESSING START ===\n";
+			    $debug_entry .= "Post ID: {$post->ID} | Source: {$source} | Target: {$target} | Override: " . ($override ? 'Yes' : 'No') . "\n";
+			    
+			    // Bricks stores content in these meta keys
+			    $bricks_meta_keys = [
+			        '_bricks_page_content_2',
+			    ];
+			    
+			    foreach ( $bricks_meta_keys as $meta_key ) {
+			        $data = get_post_meta( $post->ID, $meta_key, true );
+
+			        global $wpdb;
+	                $raw_meta_value = $wpdb->get_var(
+					    $wpdb->prepare(
+					        "SELECT meta_value 
+					         FROM $wpdb->postmeta 
+					         WHERE meta_key = %s 
+					         AND post_id = %d",
+					        $meta_key,
+					        $post->ID
+					    )
+					);
+					if ( is_serialized( $raw_meta_value ) ) {
+						$data 	=	maybe_unserialize( $raw_meta_value );
+					}
+
+			        $debug_entry .= "Processing meta key: {$meta_key}\n";
+			        $debug_entry .= "Data exists: " . (!empty($data) ? 'Yes' : 'No') . " | Length: " . (empty($data) ? 0 : strlen(maybe_serialize($data))) . "\n";
+			       
+			        if ( empty($data) ) {
+			            $debug_entry .= "Skipping {$meta_key} - no data\n";
+			            continue;
+			        }
+			        
+			        // Bricks data may be stored as serialized array or JSON string
+			        if ( is_string($data) ) {
+			            $data_array = json_decode( $data, true );
+			            if ( json_last_error() !== JSON_ERROR_NONE ) {
+			                $data_array = maybe_unserialize( $data );
+			            }
+			        } else {
+			            $data_array = $data; // already unserialized by get_post_meta
+			        }
+			        
+			        $debug_entry .= "Parsed to array: " . (is_array($data_array) ? 'Yes (' . count($data_array) . ' elements)' : 'No') . "\n";
+			        
+			        if ( ! is_array($data_array) ) {
+			            $debug_entry .= "Skipping {$meta_key} - could not parse to array\n";
+			            continue;
+			        }
+			        
+			        // Re-serialize to string for the translate meta storage (consistent with Elementor approach)
+			        $data_string = wp_json_encode( $data_array );
+			        
+			        $data_translate = get_post_meta( $post->ID, $meta_key . '_translate', true );
+			        $is_data_exists = wpm_ml_check_language_string( $data_translate, $target );
+			        
+			        $debug_entry .= "Translate meta exists: " . (!empty($data_translate) ? 'Yes' : 'No') . "\n";
+			        $debug_entry .= "Target data exists: " . ($is_data_exists ? 'Yes' : 'No') . "\n";
+			        
+			        if ( $is_data_exists === false || $override === true ) {
+			            
+			            $debug_entry .= "Will translate {$meta_key}\n";
+			            
+			            $is_src_data_exists = wpm_ml_check_language_string( $data_translate, $source );
+			            $debug_entry .= "Source data exists: " . ($is_src_data_exists ? 'Yes' : 'No') . "\n";
+			            
+			            if ( $is_src_data_exists === true ) {
+			                $source_data = wpm_ml_get_language_string( $data_translate, $source );
+
+			                if ( base64_decode($source_data, true) !== false ) {
+			                    $source_data = base64_decode( $source_data );
+			                }
+			                $source_data 	=	maybe_unserialize($source_data);
+			                $source_data 	= 	wp_json_encode( $source_data );
+			                
+			                $debug_entry .= "Using existing source data from translate meta\n";
+			            } else {
+			                $source_data = $data_string;
+			                // $source_data 	=	json_decode( $source_data, true );
+			                // $source_data 	=	maybe_serialize( $source_data );
+			                
+			                $data_translate = '[:' . $source . ']' . base64_encode($raw_meta_value) . '[:]';
+			                $debug_entry .= "Using original data and creating translate meta structure\n";
+			            }
+			            
+			            // Extract text fields from Bricks flat array structure
+			            $textToTranslate = [];
+			            if ( is_string($source_data) ) {
+				            $source_array = json_decode( $source_data, true );
+				            if ( json_last_error() !== JSON_ERROR_NONE ) {
+				                $source_array = maybe_unserialize( $source_data );
+				            }
+				        }
+			            
+			            if ( is_array($source_array) ) {
+			                self::extractBricksTextFields( $source_array, $textToTranslate );
+			                $debug_entry .= "Bricks text fields extracted: " . count($textToTranslate) . "\n";
+			            }
+			            
+			            $translated_source = $source_data;
+
+			            $translated_source = stripslashes($translated_source);
+			
+						foreach ( $textToTranslate as $key => $text ) {
+
+						    if ( empty(trim($text)) ) continue;
+
+						    // handle HTML properly
+						    if ( preg_match('/<[^>]+>/', $text) ) {
+
+							    $plain = trim(strip_tags($text));
+
+							    $translated_plain = wpm_ml_auto_translate_content( $plain . ' ', $source, $target );
+
+							    if ( $translated_plain && $translated_plain !== 'false' ) {
+
+							        $trabs = preg_replace('/>([^<]*)</s', '>' . $translated_plain . '<', $text);
+
+							    } else {
+							        $trabs = $text;
+							    }
+
+						    } else {
+						        $trabs = wpm_ml_auto_translate_content($text, $source, $target);
+						    }
+
+						    if ( $trabs != 'false' && ! empty($trabs) ) {
+
+						        if ( preg_match('/<[^>]+>/', $text) ) {
+
+						            $original_json = json_encode($text, JSON_UNESCAPED_SLASHES);
+						            $translated_json = json_encode($trabs, JSON_UNESCAPED_SLASHES);
+
+						            $translated_source = str_replace(
+						                [$text, $original_json],
+						                [$trabs, $translated_json],
+						                $translated_source
+						            );
+
+						        } else {
+
+						            $translated_source = str_replace(
+						                '"' . $text . '"',
+						                '"' . $trabs . '"',
+						                $translated_source
+						            );
+						        }
+						    }
+						}
+			            
+			            $debug_entry .= "Translation result: " . ($translated_source != false ? 'Success' : 'Failed') . "\n";
+			            
+			            if ( $translated_source != false ) {
+			            	if ( ! is_serialized( $translated_source ) ) {
+			            		$translated_source 	=	json_decode( $translated_source, true );
+			            		$translated_source 	=	maybe_serialize($translated_source);
+			            	}
+			            	
+			                $translated_source_encoded = '[:' . $target . ']' . base64_encode($translated_source) . '[:]';
+			                
+			                if ( $override === true && $is_data_exists !== false ) {
+			                    $pattern = '/\[:' . $target . '\][^\[]*(?:\[:\])?/';
+			                    $data_translate = preg_replace($pattern, '', $data_translate);
+			                    $debug_entry .= "Removed existing target language content\n";
+			                }
+			                
+			                if ( strpos($data_translate, '[:]') === false ) {
+			                    $data_translate = $data_translate . '[:]';
+			                }
+			                
+			                $new_data_string = str_replace('[:]', $translated_source_encoded, $data_translate);
+			                
+			                $debug_entry .= "New data string length: " . strlen($new_data_string) . "\n";
+			                
+			                $update_result = update_post_meta(
+			                    $post->ID,
+			                    $meta_key . '_translate',
+			                    $new_data_string
+			                );
+			                
+			                $debug_entry .= "Meta update result: " . ($update_result ? 'Success' : 'Failed') . "\n";
+			                
+			                if ( ! $update_result ) {
+			                    global $wpdb;
+			                    $debug_entry .= "Last database error: " . $wpdb->last_error . "\n";
+			                    
+			                    $insert_result = add_post_meta($post->ID, $meta_key . '_translate', $new_data_string, true);
+			                    $debug_entry .= "Insert attempt result: " . ($insert_result ? 'Success' : 'Failed') . "\n";
+			                    
+			                    if ( ! $insert_result ) {
+			                        delete_post_meta($post->ID, $meta_key . '_translate');
+			                        $insert_result = add_post_meta($post->ID, $meta_key . '_translate', $new_data_string, true);
+			                        $debug_entry .= "Delete and re-insert result: " . ($insert_result ? 'Success' : 'Failed') . "\n";
+			                    }
+			                    
+			                    $update_result = $insert_result;
+			                }
+			                
+			                if ( $update_result ) {
+			                    $should_update = true;
+			                }
+			            }
+			            
+			        } else {
+			            $debug_entry .= "Skipping translation for {$meta_key} - target data exists and override is false\n";
+			        }
+			        
+			        $debug_entry .= "---\n";
+			    }
+			    
+			    $debug_entry .= "=== BRICKS PROCESSING END ===\n\n";
+			    file_put_contents($debug_file, $debug_entry, FILE_APPEND | LOCK_EX);
+			}
+
 			// DEBUG: Check for Rank Math and other SEO meta fields
 			$debug_file = WP_CONTENT_DIR . '/wpm_debug_translation.log';
 			$debug_entry = "=== SEO META PROCESSING START ===\n";
@@ -1065,6 +1286,121 @@ class WPM_Settings_Auto_Translate_Pro {
 			}
 		}
 
+	}
+
+	/**
+	 * Extract translatable text fields from Bricks builder flat element array.
+	 * Bricks stores a flat array of elements, each with: id, name, parent, children, settings.
+	 * Text lives inside $element['settings'] at various keys depending on widget type.
+	 * @param 	$elements 			array
+	 * @param 	$textToTranslate 	array - pass by reference
+	 * @since 	2.4.28
+	 */
+	protected static function extractBricksTextFields( array $elements, array &$textToTranslate ): void {
+	    
+	    // These settings keys contain plain translatable text (no HTML)
+	    $plain_text_keys = [
+	        'text',       // heading, text-basic, button, text-link
+	        'title',      // list items, accordion items
+	        'subtitle',   // accordion items
+	        'meta',       // list items
+	        'prefix',     // animated-typing
+	        'suffix',     // animated-typing
+	        'label',      // form fields
+	        'placeholder',// form fields
+	        'successMessage',
+	        'emailSubject',
+	        'fromName',
+	        'emailErrorMessage',
+	        'mailchimpPendingMessage',
+	        'mailchimpErrorMessage',
+	        'sendgridErrorMessage',
+	    ];
+	    
+	    // These settings keys contain HTML (rich text)
+	    $html_text_keys = [
+	        'content', // accordion content, tab content
+	    ];
+	    
+	    foreach ( $elements as $element ) {
+	        if ( empty($element['settings']) || ! is_array($element['settings']) ) {
+	            continue;
+	        }
+	        
+	        $settings = $element['settings'];
+	        
+	        // --- Direct plain text keys ---
+	        foreach ( $plain_text_keys as $key ) {
+	            if ( ! empty($settings[$key]) && is_string($settings[$key]) ) {
+	                $textToTranslate[] = $settings[$key];
+	            }
+	        }
+	        
+	        // --- Direct HTML/rich text keys ---
+	        foreach ( $html_text_keys as $key ) {
+	            if ( ! empty($settings[$key]) && is_string($settings[$key]) ) {
+	                $textToTranslate[] = $settings[$key];
+	            }
+	        }
+	        
+	        // --- Nested: accordion items [ {title, subtitle, content} ] ---
+	        if ( ! empty($settings['accordions']) && is_array($settings['accordions']) ) {
+	            foreach ( $settings['accordions'] as $accordion ) {
+	                foreach ( ['title', 'subtitle', 'content'] as $k ) {
+	                    if ( ! empty($accordion[$k]) && is_string($accordion[$k]) ) {
+	                        $textToTranslate[] = $accordion[$k];
+	                    }
+	                }
+	            }
+	        }
+	        
+	        // --- Nested: list items [ {title, meta} ] ---
+	        if ( ! empty($settings['items']) && is_array($settings['items']) ) {
+	            foreach ( $settings['items'] as $item ) {
+	                // testimonials: name, title, content
+	                // list: title, meta
+	                foreach ( ['title', 'meta', 'name', 'content'] as $k ) {
+	                    if ( ! empty($item[$k]) && is_string($item[$k]) ) {
+	                        $textToTranslate[] = $item[$k];
+	                    }
+	                }
+	            }
+	        }
+	        
+	        // --- Nested: tabs [ {title, content} ] ---
+	        if ( ! empty($settings['tabs']) && is_array($settings['tabs']) ) {
+	            foreach ( $settings['tabs'] as $tab ) {
+	                foreach ( ['title', 'content'] as $k ) {
+	                    if ( ! empty($tab[$k]) && is_string($tab[$k]) ) {
+	                        $textToTranslate[] = $tab[$k];
+	                    }
+	                }
+	            }
+	        }
+	        
+	        // --- Nested: animated-typing strings [ {text} ] ---
+	        if ( ! empty($settings['strings']) && is_array($settings['strings']) ) {
+	            foreach ( $settings['strings'] as $string_item ) {
+	                if ( ! empty($string_item['text']) && is_string($string_item['text']) ) {
+	                    $textToTranslate[] = $string_item['text'];
+	                }
+	            }
+	        }
+	        
+	        // --- Nested: form fields [ {label, placeholder} ] ---
+	        if ( ! empty($settings['fields']) && is_array($settings['fields']) ) {
+	            foreach ( $settings['fields'] as $field ) {
+	                foreach ( ['label', 'placeholder'] as $k ) {
+	                    if ( ! empty($field[$k]) && is_string($field[$k]) ) {
+	                        $textToTranslate[] = $field[$k];
+	                    }
+	                }
+	            }
+	        }
+	    }
+	    
+	    // Deduplicate to avoid translating the same string multiple times
+	    $textToTranslate = array_values( array_unique($textToTranslate) );
 	}
 
 }
