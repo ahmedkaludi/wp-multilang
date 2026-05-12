@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 7.0
-Stable tag: 2.4.27
+Stable tag: 2.4.28
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -252,6 +252,13 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.28 =
+- Feature: Added a Compatibility With Strong Testimonials #238
+- Enhancement: Add Welsh Flag #250
+- Fixed: ACF Fields saving issue with key #254
+- Feature: Added compatibility with bricks builder #255
+- Tested: Tested with wordpress version 7.0 #259
+
 = 2.4.27 =
 - Fixed: other language content is not updating in Elementor #215
 - Enhancement: Issue with ACF blocks #218
@@ -364,15 +371,5 @@ If you have opened several browser tabs for editing this post in different langu
 - feature Added eature to translate slug for 2nd level of hierarchy of urls #121
 - fixed Code improvement #125
 - fixed Compatibility with WordPress 6.7 and updated readme.txt #126
-
-= 2.4.13 =
-- feature WP GraphQL support #44
-- fixed Post Title translation issue for multiple languages #78
-- enhancement Language switcher disappears too early in Wordpress 6.6 #91
-- enhancement Code improvement #96
-- fixed Out of memory error after update to 2.4.11 #111
-- fixed Issue with yoast meta description #113
-- fixed License key wrong link issue #118
-- fixed Error after the update 2.4.11 #109
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
