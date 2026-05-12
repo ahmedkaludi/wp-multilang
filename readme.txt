@@ -55,6 +55,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 
 * Elementor ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-build-a-multilingual-site-with-elementor-using-wp-multilang/)
 * Divi Builder ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/how-to-build-a-multilingual-site-with-divi-builder-using-wp-multilang/)
+* Bricks Builder ( [available in premium version](https://wp-multilang.com/pricing/) ) - [View Tutorial](https://wp-multilang.com/docs/knowledge-base/)
 * ACF, ACF Pro
 * WooCommerce
 * WooCommerce Customizer
