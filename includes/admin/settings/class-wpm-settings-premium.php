@@ -63,6 +63,13 @@ class WPM_Settings_Premium extends WPM_Settings_Page {
 					'id'      => 'wpm_divi_compatibility_free',
 					'default' => 'no',
 					'type'    => 'checkbox',
+				),
+				array(
+					'title'   => esc_html__( 'Bricks Builder', 'wp-multilang' ),
+					'class'   => 'wpm_free_compatibilities',
+					'id'      => 'wpm_bricks_compatibility_free',
+					'default' => 'no',
+					'type'    => 'checkbox',
 				)
 			);
 		if(defined('WP_MULTILANG_PRO_VERSION')){
