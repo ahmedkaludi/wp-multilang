@@ -714,43 +714,78 @@ class WPM_Settings_Auto_Translate_Pro {
 			                $debug_entry .= "Bricks text fields extracted: " . count($textToTranslate) . "\n";
 			            }
 			            
-			            $translated_source = $source_data;
+			            // DO NOT stripslashes on the raw JSON — it corrupts escape sequences inside string values.
+						// Work directly on the decoded array, re-encode cleanly at the end.
+						$source_array_to_translate = json_decode( $source_data, true );
+						if ( json_last_error() !== JSON_ERROR_NONE || ! is_array($source_array_to_translate) ) {
+						    $source_array_to_translate = maybe_unserialize( $source_data );
+						}
 
-			            $translated_source = stripslashes($translated_source);
+						// Translate in-place on the decoded array, then re-encode once at the end.
+						// This avoids all string-replacement fragility against JSON-encoded HTML.
+						if ( is_array($source_array_to_translate) ) {
+						    self::translateBricksTextFieldsInArray( $source_array_to_translate, $source, $target );
+						    $translated_source = wp_json_encode( $source_array_to_translate, JSON_UNESCAPED_UNICODE );
+						} else {
+						    // Fallback: could not decode, skip translation
+						    $translated_source = false;
+						}
 			
 						foreach ( $textToTranslate as $key => $text ) {
 
 						    if ( empty(trim($text)) ) continue;
 
-						    // handle HTML properly
+						    // Detect if the text contains HTML tags
 						    if ( preg_match('/<[^>]+>/', $text) ) {
 
-							    $plain = trim(strip_tags($text));
+						        // Decode HTML entities so the translator sees clean text
+						        $decoded = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
-							    $translated_plain = wpm_ml_auto_translate_content( $plain . ' ', $source, $target );
+						        // Extract all text nodes (content between tags), preserving structure
+						        // Split on tags, translate each non-empty text segment individually
+						        $parts = preg_split('/(<[^>]*>)/s', $decoded, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-							    if ( $translated_plain && $translated_plain !== 'false' ) {
+						        $translated_parts = [];
+						        foreach ( $parts as $part ) {
+						            if ( preg_match('/^<[^>]*>$/', $part) ) {
+						                // It's a tag — keep as-is
+						                $translated_parts[] = $part;
+						            } elseif ( trim($part) !== '' ) {
+						                // It's a text node — translate it
+						                $t = 'Drivit'; //wpm_ml_auto_translate_content(trim($part), $source, $target);
+						                $translated_parts[] = ( $t && $t !== 'false' ) ? $t : $part;
+						            } else {
+						                // Whitespace-only — keep as-is
+						                $translated_parts[] = $part;
+						            }
+						        }
 
-							        $trabs = preg_replace('/>([^<]*)</s', '>' . $translated_plain . '<', $text);
+						        $trabs = implode('', $translated_parts);
 
-							    } else {
-							        $trabs = $text;
-							    }
+						        // Re-encode entities to match original storage format
+						        $trabs = htmlspecialchars_decode(htmlspecialchars($trabs, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES | ENT_HTML5);
 
 						    } else {
-						        $trabs = wpm_ml_auto_translate_content($text, $source, $target);
+						        $trabs = 'Drivit'; //wpm_ml_auto_translate_content($text, $source, $target);
 						    }
 
 						    if ( $trabs != 'false' && ! empty($trabs) ) {
 
 						        if ( preg_match('/<[^>]+>/', $text) ) {
 
-						            $original_json = json_encode($text, JSON_UNESCAPED_SLASHES);
-						            $translated_json = json_encode($trabs, JSON_UNESCAPED_SLASHES);
+						            // For HTML fields, match both raw and JSON-encoded versions in the source
+						            $original_json   = json_encode($text,  JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+						            $translated_json = json_encode($trabs, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+						            // Also handle the &amp; encoded version that may appear in JSON strings
+						            $text_amp    = str_replace('&', '&amp;', $text);
+						            $trabs_amp   = str_replace('&', '&amp;', $trabs);
+						            $amp_json    = json_encode($text_amp,  JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+						            $amp_trabs   = json_encode($trabs_amp, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
 						            $translated_source = str_replace(
-						                [$text, $original_json],
-						                [$trabs, $translated_json],
+						                [ $text,    $original_json,  $text_amp,  $amp_json  ],
+						                [ $trabs,   $translated_json, $trabs_amp, $amp_trabs ],
 						                $translated_source
 						            );
 
@@ -769,6 +804,7 @@ class WPM_Settings_Auto_Translate_Pro {
 			            
 			            if ( $translated_source != false ) {
 			            	if ( ! is_serialized( $translated_source ) ) {
+			       
 			            		$translated_source 	=	json_decode( $translated_source, true );
 			            		$translated_source 	=	maybe_serialize($translated_source);
 			            	}
@@ -1402,5 +1438,158 @@ class WPM_Settings_Auto_Translate_Pro {
 	    // Deduplicate to avoid translating the same string multiple times
 	    $textToTranslate = array_values( array_unique($textToTranslate) );
 	}
+
+	/**
+ * Recursively walk a decoded Bricks element array and translate text fields in-place.
+ * Works on the PHP array directly — no JSON string replacement needed.
+ *
+ * @param array  $elements  Decoded Bricks elements array (modified in-place)
+ * @param string $source    Source language code
+ * @param string $target    Target language code
+ * @since 2.4.29
+ */
+protected static function translateBricksTextFieldsInArray( array &$elements, string $source, string $target ): void {
+
+    $plain_text_keys = [
+        'text', 'title', 'subtitle', 'meta', 'prefix', 'suffix',
+        'label', 'placeholder', 'successMessage', 'emailSubject',
+        'fromName', 'emailErrorMessage', 'mailchimpPendingMessage',
+        'mailchimpErrorMessage', 'sendgridErrorMessage',
+    ];
+
+    $html_text_keys = [ 'content' ];
+
+    foreach ( $elements as &$element ) {
+
+        if ( empty($element['settings']) || ! is_array($element['settings']) ) {
+            continue;
+        }
+
+        $settings = &$element['settings'];
+
+        // --- Translate direct plain/html text keys ---
+        $all_text_keys = array_merge( $plain_text_keys, $html_text_keys );
+        foreach ( $all_text_keys as $key ) {
+            if ( ! isset($settings[$key]) || ! is_string($settings[$key]) || trim($settings[$key]) === '' ) {
+                continue;
+            }
+            $settings[$key] = self::translateBricksTextField( $settings[$key], $source, $target );
+        }
+
+        // --- Nested: accordion items ---
+        if ( ! empty($settings['accordions']) && is_array($settings['accordions']) ) {
+            foreach ( $settings['accordions'] as &$accordion ) {
+                foreach ( ['title', 'subtitle', 'content'] as $k ) {
+                    if ( ! empty($accordion[$k]) && is_string($accordion[$k]) ) {
+                        $accordion[$k] = self::translateBricksTextField( $accordion[$k], $source, $target );
+                    }
+                }
+            }
+            unset($accordion);
+        }
+
+        // --- Nested: list / testimonial items ---
+        if ( ! empty($settings['items']) && is_array($settings['items']) ) {
+            foreach ( $settings['items'] as &$item ) {
+                foreach ( ['title', 'meta', 'name', 'content'] as $k ) {
+                    if ( ! empty($item[$k]) && is_string($item[$k]) ) {
+                        $item[$k] = self::translateBricksTextField( $item[$k], $source, $target );
+                    }
+                }
+            }
+            unset($item);
+        }
+
+        // --- Nested: tabs ---
+        if ( ! empty($settings['tabs']) && is_array($settings['tabs']) ) {
+            foreach ( $settings['tabs'] as &$tab ) {
+                foreach ( ['title', 'content'] as $k ) {
+                    if ( ! empty($tab[$k]) && is_string($tab[$k]) ) {
+                        $tab[$k] = self::translateBricksTextField( $tab[$k], $source, $target );
+                    }
+                }
+            }
+            unset($tab);
+        }
+
+        // --- Nested: animated-typing strings ---
+        if ( ! empty($settings['strings']) && is_array($settings['strings']) ) {
+            foreach ( $settings['strings'] as &$string_item ) {
+                if ( ! empty($string_item['text']) && is_string($string_item['text']) ) {
+                    $string_item['text'] = self::translateBricksTextField( $string_item['text'], $source, $target );
+                }
+            }
+            unset($string_item);
+        }
+
+        // --- Nested: form fields ---
+        if ( ! empty($settings['fields']) && is_array($settings['fields']) ) {
+            foreach ( $settings['fields'] as &$field ) {
+                foreach ( ['label', 'placeholder'] as $k ) {
+                    if ( ! empty($field[$k]) && is_string($field[$k]) ) {
+                        $field[$k] = self::translateBricksTextField( $field[$k], $source, $target );
+                    }
+                }
+            }
+            unset($field);
+        }
+    }
+
+    unset($element);
+}
+
+/**
+ * Translate a single text value — handles both plain text and HTML strings.
+ * For HTML: splits on tags, translates each text node, reassembles.
+ *
+ * @param  string $text    Original value (plain or HTML)
+ * @param  string $source  Source language code
+ * @param  string $target  Target language code
+ * @return string          Translated value (same format as input)
+ * @since  2.4.29	
+ */
+protected static function translateBricksTextField( string $text, string $source, string $target ): string {
+
+    if ( trim($text) === '' ) {
+        return $text;
+    }
+
+    // Plain text — no tags at all
+    if ( ! preg_match('/<[^>]+>/', $text) ) {
+        $translated = wpm_ml_auto_translate_content( $text, $source, $target );
+        return ( $translated && $translated !== 'false' ) ? $translated : $text;
+    }
+
+    // HTML text — decode entities first so translator sees clean text,
+    // then split on tags, translate each text node, reassemble.
+    $decoded = html_entity_decode( $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+
+    // Split preserving the delimiter (tags)
+    $parts = preg_split( '/(<[^>]*>)/s', $decoded, -1, PREG_SPLIT_DELIM_CAPTURE );
+
+    $translated_parts = [];
+    foreach ( $parts as $part ) {
+        if ( preg_match('/^<[^>]*>$/', $part) ) {
+            // It's a tag — keep exactly as-is
+            $translated_parts[] = $part;
+        } elseif ( trim($part) !== '' ) {
+            // Text node — translate it
+            $t = wpm_ml_auto_translate_content( trim($part), $source, $target );
+            $translated_parts[] = ( $t && $t !== 'false' ) ? $t : $part;
+        } else {
+            $translated_parts[] = $part;
+        }
+    }
+
+    $result = implode( '', $translated_parts );
+
+    // Re-encode any special chars back to HTML entities to match original storage
+    // Only encode chars that were entities in the original
+    if ( strpos($text, '&amp;') !== false ) {
+        $result = str_replace( '&', '&amp;', $result );
+    }
+
+    return $result;
+}
 
 }
