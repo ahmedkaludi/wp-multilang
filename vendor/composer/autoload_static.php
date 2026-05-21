@@ -71,6 +71,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Integrations\\WPM_Schema_Saswp' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-schema-and-structured-data.php',
         'WPM\\Includes\\Integrations\\WPM_Team' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-team.php',
         'WPM\\Includes\\Integrations\\WPM_Forminator' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-forminator.php',
+        'WPM\\Includes\\Integrations\\WPM_Fluentform' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-fluentform.php',
         'WPM\\Includes\\Integrations\\WPM_Gravityforms' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-gravityforms.php',
         'WPM\\Includes\\Integrations\\WPM_Ultimate_Member' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-ultimate-member.php',
         'WPM\\Includes\\Integrations\\WPM_Advanced_Ads' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-advanced-ads.php',

@@ -60,6 +60,7 @@ $class_map_array =  array(
     'WPM\\Includes\\Integrations\\WPM_Schema_Saswp' => $baseDir . '/includes/integrations/class-wpm-schema-and-structured-data.php',
     'WPM\\Includes\\Integrations\\WPM_Team' => $baseDir . '/includes/integrations/class-wpm-team.php',
     'WPM\\Includes\\Integrations\\WPM_Forminator' => $baseDir . '/includes/integrations/class-wpm-forminator.php',
+    'WPM\\Includes\\Integrations\\WPM_Fluentform' => $baseDir . '/includes/integrations/class-wpm-fluentform.php',
     'WPM\\Includes\\Integrations\\WPM_Gravityforms' => $baseDir . '/includes/integrations/class-wpm-gravityforms.php',
     'WPM\\Includes\\Integrations\\WPM_Ultimate_Member' => $baseDir . '/includes/integrations/class-wpm-ultimate-member.php',
     'WPM\\Includes\\Integrations\\WPM_Advanced_Ads' => $baseDir . '/includes/integrations/class-wpm-advanced-ads.php',

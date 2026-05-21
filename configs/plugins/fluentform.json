@@ -1,0 +1,13 @@
+{
+	"admin_pages": [
+		"toplevel_page_fluent_forms",
+		"fluent-forms_page_fluent_forms_all_entries",
+		"fluent-forms_page_fluent_forms_reports",
+		"fluent-forms_page_fluent_forms_payment_entries",
+		"fluent-forms_page_fluent_forms_settings",
+		"fluent-forms_page_fluent_forms_transfer",
+		"fluent-forms_page_fluent_forms_smtp",
+		"fluent-forms_page_fluent_forms_add_ons",
+		"fluent-forms_page_fluent_forms_docs"
+	]
+}
