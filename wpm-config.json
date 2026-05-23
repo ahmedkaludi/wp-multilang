@@ -1,0 +1,19 @@
+{
+  "post_types": {
+    "portfolio": {
+      "post_title": [],
+      "post_content": [],
+      "post_excerpt": []
+    }
+  },
+  "taxonomies": {
+    "project_category": {
+      "name": [],
+      "description": []
+    },
+    "content_type": {
+      "name": [],
+      "description": []
+    }
+  }
+}
