@@ -438,7 +438,11 @@ class WPM_Taxonomies extends WPM_Object {
 		if ( ! empty( $args['name'] ) && empty( $args['name__like'] ) ) {
 			$taxonomy = current( $taxonomies );
 			if ( null !== wpm_get_taxonomy_config( $taxonomy ) ) {
-				$args['name__like'] = '[:' . wpm_get_language() . ']' . $args['name'] . '[:';
+				$term_name = $args['name'];
+				if ( is_array( $term_name ) && ! empty( $term_name[0] ) ) {
+					$term_name 	=	$term_name[0];		
+				}
+				$args['name__like'] = '[:' . wpm_get_language() . ']' . $term_name . '[:';
 				$args['name']       = '';
 			}
 		}

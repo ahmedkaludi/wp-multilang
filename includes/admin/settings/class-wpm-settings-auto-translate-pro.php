@@ -752,7 +752,7 @@ class WPM_Settings_Auto_Translate_Pro {
 						                $translated_parts[] = $part;
 						            } elseif ( trim($part) !== '' ) {
 						                // It's a text node — translate it
-						                $t = 'Drivit'; //wpm_ml_auto_translate_content(trim($part), $source, $target);
+						                $t = wpm_ml_auto_translate_content(trim($part), $source, $target);
 						                $translated_parts[] = ( $t && $t !== 'false' ) ? $t : $part;
 						            } else {
 						                // Whitespace-only — keep as-is
@@ -766,7 +766,7 @@ class WPM_Settings_Auto_Translate_Pro {
 						        $trabs = htmlspecialchars_decode(htmlspecialchars($trabs, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES | ENT_HTML5);
 
 						    } else {
-						        $trabs = 'Drivit'; //wpm_ml_auto_translate_content($text, $source, $target);
+						        $trabs = wpm_ml_auto_translate_content($text, $source, $target);
 						    }
 
 						    if ( $trabs != 'false' && ! empty($trabs) ) {
