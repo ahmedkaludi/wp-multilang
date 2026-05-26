@@ -882,7 +882,7 @@ class WPM_Settings_Auto_Translate_Pro {
 				if (strpos($meta_key, 'rank_math') === 0) {
 					$rank_math_metas[$meta_key] = is_array($meta_value) ? $meta_value[0] : $meta_value;
 				}
-				if (strpos($meta_key, '_yoast') === 0 || strpos($meta_key, 'rank_math') === 0 || strpos($meta_key, 'seopress') === 0) {
+				if (strpos($meta_key, '_yoast') === 0 || strpos($meta_key, 'rank_math') === 0 || strpos($meta_key, '_seopress') === 0) {
 					$seo_metas[$meta_key] = is_array($meta_value) ? $meta_value[0] : $meta_value;
 				}
 			}
@@ -1046,6 +1046,111 @@ class WPM_Settings_Auto_Translate_Pro {
 			$seopress_active = defined('SEOPRESS_VERSION');
 			$debug_entry .= "Yoast SEO active: " . ($yoast_active ? 'Yes' : 'No') . "\n";
 			$debug_entry .= "SEOPress active: " . ($seopress_active ? 'Yes' : 'No') . "\n";
+
+			if ( $seopress_active ) {
+
+				global $wpdb;
+
+				$all_metas = $wpdb->get_results(
+				    $wpdb->prepare(
+				        "SELECT meta_key, meta_value 
+				         FROM $wpdb->postmeta 
+				         WHERE post_id = %d",
+				        $post->ID
+				    ),
+				    ARRAY_A
+				);
+
+				$seopress_update_flag = false;
+
+				if ( ! empty( $all_metas ) && is_array( $all_metas ) ){ 
+
+					$seopress_translatable_keys = 	[
+						'_seopress_titles_title',
+						'_seopress_titles_desc',
+						'_seopress_social_fb_title',
+						'_seopress_social_fb_desc',
+						'_seopress_social_twitter_title',
+						'_seopress_social_twitter_desc',
+					];
+
+					foreach ( $all_metas as $seop_key => $seop_meta_value ) {
+						if ( strpos( $seop_meta_value['meta_key'], '_seopress' ) === 0  && ! empty( $seop_meta_value['meta_value'] ) ) {
+
+							if ( ! in_array( $seop_meta_value['meta_key'], $seopress_translatable_keys ) ) {
+								continue;
+							}
+
+							$meta_value 	=	$seop_meta_value['meta_value'];
+							$meta_key 		=	$seop_meta_value['meta_key'];
+
+							if ( is_string( $meta_value ) && ! is_serialized( $meta_value ) && ! self::isJson( $meta_value )) {
+
+								$target_exists 	= 	wpm_ml_check_language_string( $meta_value, $target );
+
+								if ( $target_exists === false || $override === true ) {
+									$source_exists = wpm_ml_check_language_string( $meta_value, $source );
+									
+									// Get source data
+									if ( $source_exists === true ) {
+										$source_data = wpm_ml_get_language_string( $meta_value, $source );
+									}else{
+										$source_data = $meta_value;
+
+										$target_exists_in_original = wpm_ml_check_language_string( $meta_value, $target );
+										if ( $target_exists_in_original ) {
+											$source_data 	=	wpm_ml_get_language_string( $meta_value, $target );
+										}
+									}
+									$seopress_update_flag = true;
+								}
+								if ( $target_exists === true && $override === true ) {
+									$source_data = wpm_ml_get_language_string( $meta_value, $source );
+									$seopress_update_flag = true;
+								}
+
+								if ( $seopress_update_flag === true && ! empty( $source_data ) ) {
+
+									$parts = preg_split(
+									    '/(%%[^%]+%%)/',
+									    $source_data,
+									    -1,
+									    PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+									);
+
+									$result 	=	'';
+									foreach ( $parts as $part ) {
+										$part 	=	trim( $part );
+										if ( empty( $part ) ) {
+											$result .= ' ';
+											continue;
+										}
+
+									    // If placeholder, keep as is
+									    if ( preg_match('/%%[^%]+%%/', $part ) ) {
+									        $result .= $part . ' ';
+									    } else {
+									        $translated_data = wpm_ml_auto_translate_content( trim( $part ), $source, $target );
+									        // Preserve spacing
+									        $result .=  $translated_data . ' ';
+									    }
+									}
+
+									if ( ! empty( $result ) ) {
+										update_post_meta( $post->ID, $meta_key, $result );
+									}
+
+								}
+
+							}
+							
+						}	
+					}
+
+				}
+
+			}
+
 			
 			$debug_entry .= "=== SEO META PROCESSING END ===\n\n";
 			file_put_contents($debug_file, $debug_entry, FILE_APPEND | LOCK_EX);
@@ -1590,6 +1695,24 @@ protected static function translateBricksTextField( string $text, string $source
     }
 
     return $result;
+}
+
+
+/**
+ * Check is string is a json data
+ * @param 	$string 	string
+ * @return 	boolean
+ * @since 	2.4.29
+ * */
+public static function isJson( $string ) {
+
+	if ( ! is_string( $string ) ) {
+		return false;
+	}
+
+	json_decode( $string );
+
+	return json_last_error() === JSON_ERROR_NONE;
 }
 
 }
