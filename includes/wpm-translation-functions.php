@@ -622,113 +622,216 @@ if ( ! function_exists( 'wpm_ml_log_message' ) ) {
 	}
 }
 
-if ( ! function_exists( 'wpm_ml_auto_translate_content' ) ) {
-	function wpm_ml_auto_translate_content( $string, $source, $target, $batch_start = 0, $batch_size = 100 ) {
-		if( $string == "" ) {
-			return $string;
-		}
-		$translated_strings = [];
-			// Load HTML into DOMDocument.
-			libxml_use_internal_errors(true); 
-			if(preg_match('/<[^>]+>/',  $string) !== 1) {
-				$words = explode(' ', $string);
-				$chunks = array_chunk($words, 500);
-				$translated_string = '';
-				$chunk_count = 0;
-				$total_chunks = count($chunks);
-				foreach ($chunks as $chunk) {
-					$chunk_count++;
-					$chunk_string = implode(' ', $chunk);
-					$t_text = wpm_ml_auto_fetch_translation( $chunk_string, $source, $target );
-					$translated_string .= $t_text ? $t_text : $chunk_string;
-					
-					// Add small delay to prevent overwhelming the API
-					usleep(100000); // 0.1 second delay
-				}
-				$translated_string = $translated_string ? $translated_string : $string;
-				return $translated_string;
-			}
+if ( ! function_exists( 'wpm_ml_is_untranslatable' ) ) {
+	/**
+	 * Check if a string doesn't need translation (numbers, symbols, template tags, etc.)
+	 *
+	 * @param  string $string
+	 * @return bool
+	 * @since  2.4.30
+	 */
+	function wpm_ml_is_untranslatable( $string ) {
+		$trimmed = trim( $string );
+		if ( $trimmed === '' ) return true;
+		if ( preg_match( '/^[\d\s.,+\-:;\/\\\\]+$/', $trimmed ) ) return true;
+		if ( mb_strlen( $trimmed ) <= 1 ) return true;
+		if ( preg_match( '/^\{[^}]+\}$/', $trimmed ) ) return true;
+		if ( preg_match( '/^[㎡㎥㎏℃℉%°²³]+$/u', $trimmed ) ) return true;
+		return false;
+	}
+}
 
-			$dom = new DOMDocument('1.0', 'UTF-8');
-			$isHTML = $dom->loadHTML( '<?xml encoding="UTF-8"?>'.$string, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
-			libxml_clear_errors();
-			if ( $isHTML ) {
-		
-				$xpath = new DOMXPath( $dom );
-				$text_nodes = $xpath->query('//text()[normalize-space() and not(ancestor::script or ancestor::style or ancestor::noscript or ancestor::iframe)]');			
-			
-	            $enable_logging = apply_filters( 'wpm_ml_translation_debug_log', true );
-	            $total_nodes = $text_nodes->length;
-	            
-	            // If batch_start is 0 and batch_size is 0, return total node count
-	            if ( $batch_start === 0 && $batch_size === 0 ) {
-	                return array( 'total_nodes' => $total_nodes );
-	            }
-	            
-	            $node_count = 0;
-	            $processed_count = 0;
-	            
-	            foreach ( $text_nodes as $key => $node ) {
-	                $node_count++;
-	                
-	                // Skip nodes before batch start
-	                if ( $node_count <= $batch_start ) {
-	                    continue;
-	                }
-	                
-	                // Stop if we've processed the batch size
-	                if ( $processed_count >= $batch_size ) {
-	                    if ( $enable_logging ) {
-	                        wpm_ml_log_message( sprintf('Reached batch size limit (%d/%d). Processed %d nodes.', $batch_size, $total_nodes, $processed_count) );
-	                    }
-	                    break;
-	                }
-	                
-	                // Prepare and guard the text value
-	                $node_value = is_string( $node->nodeValue ) ? $node->nodeValue : '';
-	                $source_text = wpm_ml_remove_special_characters( $node_value );
-	                
-	                if ( $enable_logging ) {
-	                    wpm_ml_log_message( sprintf('Processing text node %d of %d (len=%d)', $node_count, $total_nodes, strlen($source_text)) );
-	                }
-	                
-	                try {
-	                    $translated_string = wpm_ml_auto_fetch_translation( $source_text, $source, $target );
-	                } catch ( \Throwable $e ) {
-	                    // Never break the loop on translation errors
-	                    if ( $enable_logging ) {
-	                        wpm_ml_log_message( sprintf('Error translating node %d: %s', $node_count, $e->getMessage()), 'error' );
-	                    }
-	                    $translated_string = false;
-	                }
-	                
-	                // Fallback to original on failure
-	                $translated_string = $translated_string ? $translated_string : $node_value;
-	                $translated_string = wpm_ml_add_special_characters( $translated_string );
-	                $translated_strings[$key] = $translated_string;
-	                $processed_count++;
-	                
-	                // Add small delay to prevent overwhelming the API
-	                usleep(50000); // 0.05 second delay
-	            }
-				
-				// Replace text nodes with translated content.
-				foreach ( $text_nodes as $key => $node ) {
-					if ( isset( $translated_strings[ $key ] ) ) {
-						$node->nodeValue = $translated_strings[ $key ];
+if ( ! function_exists( 'wpm_ml_batch_translate' ) ) {
+	/**
+	 * Translate an array of strings in a single API call using a separator.
+	 * Falls back to individual calls if the API doesn't preserve the separator.
+	 *
+	 * @param  array  $strings  Indexed array of strings to translate.
+	 * @param  string $source   Source language code.
+	 * @param  string $target   Target language code.
+	 * @return array            Indexed array of translated strings (same order/count as input).
+	 * @since  2.4.30
+	 */
+	function wpm_ml_batch_translate( array $strings, $source, $target ) {
+		if ( empty( $strings ) ) {
+			return $strings;
+		}
+
+		$separator     = "\n|||WPM_SEP|||\n";
+		$max_batch_len = 8000;
+
+		$batches   = array();
+		$current   = array();
+		$current_len = 0;
+
+		foreach ( $strings as $s ) {
+			$add_len = strlen( $s ) + strlen( $separator );
+			if ( $current_len + $add_len > $max_batch_len && ! empty( $current ) ) {
+				$batches[] = $current;
+				$current   = array();
+				$current_len = 0;
+			}
+			$current[]   = $s;
+			$current_len += $add_len;
+		}
+		if ( ! empty( $current ) ) {
+			$batches[] = $current;
+		}
+
+		$all_translated = array();
+
+		foreach ( $batches as $batch ) {
+			$combined   = implode( $separator, $batch );
+			$translated = wpm_ml_auto_fetch_translation( $combined, $source, $target );
+
+			if ( $translated && $translated !== 'false' ) {
+				$parts = explode( '|||WPM_SEP|||', $translated );
+				$parts = array_map( 'trim', $parts );
+
+				if ( count( $parts ) === count( $batch ) ) {
+					foreach ( $parts as $i => $p ) {
+						$all_translated[] = ( $p !== '' && $p !== 'false' ) ? $p : $batch[ $i ];
+					}
+				} else {
+					wpm_ml_log_message( sprintf(
+						'Batch separator mismatch: expected %d, got %d. Falling back to individual calls.',
+						count( $batch ), count( $parts )
+					), 'warning' );
+					foreach ( $batch as $single ) {
+						$t = wpm_ml_auto_fetch_translation( $single, $source, $target );
+						$all_translated[] = ( $t && $t !== 'false' ) ? $t : $single;
 					}
 				}
-			
-				// Return the updated HTML.
-				$final_html = $dom->saveHTML();
-				if ( strpos( $final_html, '<?xml encoding="UTF-8"?>' ) === 0 ) {
-					// If the HTML starts with xml encoding, remove it.
-					$final_html = str_replace( '<?xml encoding="UTF-8"?>', '', $final_html );
+			} else {
+				foreach ( $batch as $single ) {
+					$t = wpm_ml_auto_fetch_translation( $single, $source, $target );
+					$all_translated[] = ( $t && $t !== 'false' ) ? $t : $single;
 				}
-				return $final_html;
 			}
-				
+		}
+
+		return $all_translated;
+	}
+}
+
+if ( ! function_exists( 'wpm_ml_auto_translate_content' ) ) {
+	function wpm_ml_auto_translate_content( $string, $source, $target, $batch_start = 0, $batch_size = 100 ) {
+		if ( $string == "" ) {
 			return $string;
+		}
+
+		libxml_use_internal_errors( true );
+
+		// Plain text (no HTML tags)
+		if ( preg_match( '/<[^>]+>/', $string ) !== 1 ) {
+
+			if ( wpm_ml_is_untranslatable( $string ) ) {
+				return $string;
+			}
+
+			$words  = explode( ' ', $string );
+			$chunks = array_chunk( $words, 500 );
+
+			if ( count( $chunks ) <= 1 ) {
+				$t_text = wpm_ml_auto_fetch_translation( $string, $source, $target );
+				return $t_text ? $t_text : $string;
+			}
+
+			$chunk_strings = array_map( function( $chunk ) {
+				return implode( ' ', $chunk );
+			}, $chunks );
+
+			wpm_ml_log_message( sprintf( 'Plain-text batching: %d chunks via batch_translate', count( $chunk_strings ) ) );
+			$translated_chunks = wpm_ml_batch_translate( $chunk_strings, $source, $target );
+			return implode( ' ', $translated_chunks );
+		}
+
+		// HTML content
+		$dom    = new DOMDocument( '1.0', 'UTF-8' );
+		$isHTML = $dom->loadHTML( '<?xml encoding="UTF-8"?>' . $string, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+		libxml_clear_errors();
+
+		if ( ! $isHTML ) {
+			return $string;
+		}
+
+		$xpath      = new DOMXPath( $dom );
+		$text_nodes = $xpath->query( '//text()[normalize-space() and not(ancestor::script or ancestor::style or ancestor::noscript or ancestor::iframe)]' );
+		$total_nodes = $text_nodes->length;
+
+		if ( $batch_start === 0 && $batch_size === 0 ) {
+			return array( 'total_nodes' => $total_nodes );
+		}
+
+		$enable_logging = apply_filters( 'wpm_ml_translation_debug_log', true );
+		wpm_ml_log_message( sprintf( 'HTML batching: %d total text nodes', $total_nodes ) );
+
+		// Collect all translatable text nodes in one pass
+		$translatable_keys   = array();
+		$translatable_texts  = array();
+		$original_values     = array();
+		$node_count          = 0;
+		$collected           = 0;
+
+		foreach ( $text_nodes as $key => $node ) {
+			$node_count++;
+
+			if ( $node_count <= $batch_start ) {
+				continue;
+			}
+			if ( $collected >= $batch_size ) {
+				break;
+			}
+
+			$node_value  = is_string( $node->nodeValue ) ? $node->nodeValue : '';
+			$source_text = wpm_ml_remove_special_characters( $node_value );
+
+			if ( wpm_ml_is_untranslatable( $source_text ) ) {
+				continue;
+			}
+
+			$translatable_keys[]  = $key;
+			$translatable_texts[] = $source_text;
+			$original_values[]    = $node_value;
+			$collected++;
+		}
+
+		if ( empty( $translatable_texts ) ) {
+			$final_html = $dom->saveHTML();
+			return str_replace( '<?xml encoding="UTF-8"?>', '', $final_html );
+		}
+
+		wpm_ml_log_message( sprintf( 'Sending %d text nodes in batched API call(s) (skipped %d untranslatable)',
+			count( $translatable_texts ), $total_nodes - count( $translatable_texts ) ) );
+
+		// Translate all collected texts in batched API calls
+		try {
+			$translated_texts = wpm_ml_batch_translate( $translatable_texts, $source, $target );
+		} catch ( \Throwable $e ) {
+			if ( $enable_logging ) {
+				wpm_ml_log_message( sprintf( 'Batch translation error: %s', $e->getMessage() ), 'error' );
+			}
+			$translated_texts = $translatable_texts;
+		}
+
+		// Map translations back to DOM nodes
+		foreach ( $translatable_keys as $i => $dom_key ) {
+			$translated = isset( $translated_texts[ $i ] ) ? $translated_texts[ $i ] : $original_values[ $i ];
+			$translated = wpm_ml_add_special_characters( $translated );
+
+			foreach ( $text_nodes as $nk => $node ) {
+				if ( $nk === $dom_key ) {
+					$node->nodeValue = $translated;
+					break;
+				}
+			}
+		}
+
+		$final_html = $dom->saveHTML();
+		if ( strpos( $final_html, '<?xml encoding="UTF-8"?>' ) === 0 ) {
+			$final_html = str_replace( '<?xml encoding="UTF-8"?>', '', $final_html );
+		}
+		return $final_html;
 	}
 }
 
