@@ -213,12 +213,7 @@ class WPM_Posts extends WPM_Object {
 		}
 
 		if ( ! empty( $data['post_type'] ) && $data['post_type'] === 'customize_changeset' ) {
-			if ( function_exists( 'get_template' ) ) {
-				$theme_name        = get_template();	
-				if ( $theme_name === 'townpress') { 
-					return $data;	
-				}
-			}
+			return $data;	
 		}
 
 		$post_id = isset( $data['ID'] ) ? wpm_clean( $data['ID'] ) : ( isset( $postarr['ID'] ) ? wpm_clean( $postarr['ID'] ) : 0 );
