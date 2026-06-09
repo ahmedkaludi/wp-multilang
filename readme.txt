@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 7.0
-Stable tag: 2.4.28
+Stable tag: 2.4.29
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -89,6 +89,7 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Oxygen Builder ( [available in premium version](https://wp-multilang.com/pricing/) )
 * Internal Link Juicer
 * Strong Testimonials
+* Fluent Forms
 
 == Advance Woocommerce Support ==
 * Send emails in customer's selected language
@@ -253,6 +254,12 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.29 =
+- Fixed: With WooCommerce storefront theme customization #252
+- Fixed: issue with Gutslider #253
+- Feature: Need to add compatibility with custom post type #256
+- Feature: Added compatibility with fluent form #261
+
 = 2.4.28 =
 - Feature: Added a Compatibility With Strong Testimonials #238
 - Enhancement: Add Welsh Flag #250
@@ -363,14 +370,5 @@ If you have opened several browser tabs for editing this post in different langu
 - feature Added option to reset the translation languages #122
 - fixed WPBakery Builder Meta Descriptions and Meta Titles Not Translating #128
 - fixed Auto translate not working when adding post via elementor #130
-
-= 2.4.14 =
-- fixed Woocommerce product attributes are not getting translated #93
-- feature Added compatibility with the WP Githuber plugin #99
-- enhancement Use 'translate' keyword for search the plugin from add new plugin section #103
-- feature Added compatibility with Smart Custom Fields Plugin #116
-- feature Added eature to translate slug for 2nd level of hierarchy of urls #121
-- fixed Code improvement #125
-- fixed Compatibility with WordPress 6.7 and updated readme.txt #126
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

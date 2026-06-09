@@ -544,6 +544,7 @@ class WPM_Setup {
 			'schema-and-structured-data-for-wp' => __NAMESPACE__ . '\Integrations\WPM_Schema_Saswp',
 			'tlp-team' 					 => __NAMESPACE__ . '\Integrations\WPM_Team',
 			'forminator' 				 => __NAMESPACE__ . '\Integrations\WPM_Forminator',
+			'fluentform' 				 => __NAMESPACE__ . '\Integrations\WPM_Fluentform',
 			'gravityforms' 				 => __NAMESPACE__ . '\Integrations\WPM_Gravityforms',
 			'ultimate-member' 			 => __NAMESPACE__ . '\Integrations\WPM_Ultimate_Member',
 			'advanced-ads' 			 	 => __NAMESPACE__ . '\Integrations\WPM_Advanced_Ads',

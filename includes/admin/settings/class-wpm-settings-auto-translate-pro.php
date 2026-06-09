@@ -490,39 +490,56 @@ class WPM_Settings_Auto_Translate_Pro {
 							if ($data_array) {
 								self::extractTextFields($data_array,$textToTranslate);
 								$debug_entry .= "Text fields extracted: " . count($textToTranslate) . "\n";
-								foreach ($textToTranslate as $key => $text) {
-									$trabs = wpm_ml_auto_translate_content($text, $source, $target);
-									$debug_entry .= "Text: '{$text}' -> Translation: '{$trabs}'\n";
-									if ($trabs != 'false') {
-											if(preg_match('/<[^<]+>/', $translated_source) === 1){
-												// Normalize escaped versions
-											    $original_unescaped = stripslashes($text);
-											    $translated_unescaped = stripslashes($trabs);
 
-											    // Encode versions (JSON-safe)
-											    $original_json = json_encode($text, JSON_UNESCAPED_SLASHES);
-											    $translated_json = json_encode($trabs, JSON_UNESCAPED_SLASHES);
-
-											    // Build all possible text representations
-											    $patterns = [
-											        $text,
-											        $original_unescaped,
-											        $original_json,
-											        json_encode($text) // full escaped JSON version
-											    ];
-
-											    $replacements = [
-											        $trabs,
-											        $translated_unescaped,
-											        $translated_json,
-											        json_encode($trabs)
-											    ];
-												$translated_source = str_replace($patterns, $replacements, $translated_source);
-											}else{
-												$translated_source = str_replace('"'.$text.'"', '"'.$trabs.'"', $translated_source);
-											}
+								// Filter out untranslatable strings before batching
+								$filterable   = array();
+								$filter_keys  = array();
+								foreach ( $textToTranslate as $key => $text ) {
+									if ( ! wpm_ml_is_untranslatable( $text ) ) {
+										$filterable[]  = $text;
+										$filter_keys[] = $key;
 									}
 								}
+
+								$debug_entry .= "Translatable fields after filtering: " . count($filterable) . "\n";
+
+								// Batch translate all Elementor text fields at once
+								$translated_batch = wpm_ml_batch_translate( $filterable, $source, $target );
+
+								// Map translations back and apply str_replace on the source JSON
+								foreach ( $filter_keys as $i => $orig_key ) {
+									$text  = $textToTranslate[ $orig_key ];
+									$trabs = isset( $translated_batch[ $i ] ) ? $translated_batch[ $i ] : $text;
+
+									$debug_entry .= "Text: '{$text}' -> Translation: '{$trabs}'\n";
+
+									if ( $trabs != 'false' && $trabs !== $text ) {
+										if ( preg_match( '/<[^<]+>/', $translated_source ) === 1 ) {
+											$original_unescaped    = stripslashes( $text );
+											$translated_unescaped  = stripslashes( $trabs );
+
+											$original_json    = json_encode( $text, JSON_UNESCAPED_SLASHES );
+											$translated_json  = json_encode( $trabs, JSON_UNESCAPED_SLASHES );
+
+											$patterns = [
+												$text,
+												$original_unescaped,
+												$original_json,
+												json_encode( $text )
+											];
+											$replacements = [
+												$trabs,
+												$translated_unescaped,
+												$translated_json,
+												json_encode( $trabs )
+											];
+											$translated_source = str_replace( $patterns, $replacements, $translated_source );
+										} else {
+											$translated_source = str_replace( '"' . $text . '"', '"' . $trabs . '"', $translated_source );
+										}
+									}
+								}
+
 								if( $meta_key == '_elementor_element_cache' ){
 									delete_post_meta($post->ID, $meta_key);
 									$debug_entry .= "Deleted element cache meta\n";
@@ -714,61 +731,94 @@ class WPM_Settings_Auto_Translate_Pro {
 			                $debug_entry .= "Bricks text fields extracted: " . count($textToTranslate) . "\n";
 			            }
 			            
-			            $translated_source = $source_data;
-
-			            $translated_source = stripslashes($translated_source);
-			
-						foreach ( $textToTranslate as $key => $text ) {
-
-						    if ( empty(trim($text)) ) continue;
-
-						    // handle HTML properly
-						    if ( preg_match('/<[^>]+>/', $text) ) {
-
-							    $plain = trim(strip_tags($text));
-
-							    $translated_plain = wpm_ml_auto_translate_content( $plain . ' ', $source, $target );
-
-							    if ( $translated_plain && $translated_plain !== 'false' ) {
-
-							        $trabs = preg_replace('/>([^<]*)</s', '>' . $translated_plain . '<', $text);
-
-							    } else {
-							        $trabs = $text;
-							    }
-
-						    } else {
-						        $trabs = wpm_ml_auto_translate_content($text, $source, $target);
-						    }
-
-						    if ( $trabs != 'false' && ! empty($trabs) ) {
-
-						        if ( preg_match('/<[^>]+>/', $text) ) {
-
-						            $original_json = json_encode($text, JSON_UNESCAPED_SLASHES);
-						            $translated_json = json_encode($trabs, JSON_UNESCAPED_SLASHES);
-
-						            $translated_source = str_replace(
-						                [$text, $original_json],
-						                [$trabs, $translated_json],
-						                $translated_source
-						            );
-
-						        } else {
-
-						            $translated_source = str_replace(
-						                '"' . $text . '"',
-						                '"' . $trabs . '"',
-						                $translated_source
-						            );
-						        }
-						    }
+			            // DO NOT stripslashes on the raw JSON — it corrupts escape sequences inside string values.
+						// Work directly on the decoded array, re-encode cleanly at the end.
+						$source_array_to_translate = json_decode( $source_data, true );
+						if ( json_last_error() !== JSON_ERROR_NONE || ! is_array($source_array_to_translate) ) {
+						    $source_array_to_translate = maybe_unserialize( $source_data );
 						}
+
+						// Translate in-place on the decoded array, then re-encode once at the end.
+						// This avoids all string-replacement fragility against JSON-encoded HTML.
+						if ( is_array($source_array_to_translate) ) {
+						    self::translateBricksTextFieldsInArray( $source_array_to_translate, $source, $target );
+						    $translated_source = wp_json_encode( $source_array_to_translate, JSON_UNESCAPED_UNICODE );
+						} else {
+						    // Fallback: could not decode, skip translation
+						    $translated_source = false;
+						}
+			
+						// Batch-translate extracted Bricks text fields for JSON str_replace
+					$bricks_plain   = array();
+					$bricks_html    = array();
+					$bricks_plain_k = array();
+					$bricks_html_k  = array();
+
+					foreach ( $textToTranslate as $key => $text ) {
+						if ( empty( trim( $text ) ) || wpm_ml_is_untranslatable( $text ) ) {
+							continue;
+						}
+						if ( preg_match( '/<[^>]+>/', $text ) ) {
+							$bricks_html[]   = $text;
+							$bricks_html_k[] = $key;
+						} else {
+							$bricks_plain[]   = $text;
+							$bricks_plain_k[] = $key;
+						}
+					}
+
+					// Batch plain-text fields
+					$bricks_plain_translated = array();
+					if ( ! empty( $bricks_plain ) ) {
+						$bricks_plain_translated = wpm_ml_batch_translate( $bricks_plain, $source, $target );
+					}
+
+					// Build a full translation map: original_key => translated_text
+					$bricks_tr_map = array();
+					foreach ( $bricks_plain_k as $pi => $orig_key ) {
+						$bricks_tr_map[ $orig_key ] = isset( $bricks_plain_translated[ $pi ] ) ? $bricks_plain_translated[ $pi ] : $textToTranslate[ $orig_key ];
+					}
+					// HTML fields still need tag-aware processing (done individually)
+					foreach ( $bricks_html_k as $orig_key ) {
+						$text  = $textToTranslate[ $orig_key ];
+						$trabs = self::translateBricksTextField( $text, $source, $target );
+						$bricks_tr_map[ $orig_key ] = $trabs;
+					}
+
+					// Apply translations via str_replace on the JSON string
+					foreach ( $bricks_tr_map as $orig_key => $trabs ) {
+						$text = $textToTranslate[ $orig_key ];
+						if ( $trabs == 'false' || empty( $trabs ) || $trabs === $text ) {
+							continue;
+						}
+
+						if ( preg_match( '/<[^>]+>/', $text ) ) {
+							$original_json   = json_encode( $text,  JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+							$translated_json = json_encode( $trabs, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+							$text_amp        = str_replace( '&', '&amp;', $text );
+							$trabs_amp       = str_replace( '&', '&amp;', $trabs );
+							$amp_json        = json_encode( $text_amp,  JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+							$amp_trabs       = json_encode( $trabs_amp, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+
+							$translated_source = str_replace(
+								[ $text, $original_json, $text_amp, $amp_json ],
+								[ $trabs, $translated_json, $trabs_amp, $amp_trabs ],
+								$translated_source
+							);
+						} else {
+							$translated_source = str_replace(
+								'"' . $text . '"',
+								'"' . $trabs . '"',
+								$translated_source
+							);
+						}
+					}
 			            
 			            $debug_entry .= "Translation result: " . ($translated_source != false ? 'Success' : 'Failed') . "\n";
 			            
 			            if ( $translated_source != false ) {
 			            	if ( ! is_serialized( $translated_source ) ) {
+			       
 			            		$translated_source 	=	json_decode( $translated_source, true );
 			            		$translated_source 	=	maybe_serialize($translated_source);
 			            	}
@@ -846,7 +896,7 @@ class WPM_Settings_Auto_Translate_Pro {
 				if (strpos($meta_key, 'rank_math') === 0) {
 					$rank_math_metas[$meta_key] = is_array($meta_value) ? $meta_value[0] : $meta_value;
 				}
-				if (strpos($meta_key, '_yoast') === 0 || strpos($meta_key, 'rank_math') === 0 || strpos($meta_key, 'seopress') === 0) {
+				if (strpos($meta_key, '_yoast') === 0 || strpos($meta_key, 'rank_math') === 0 || strpos($meta_key, '_seopress') === 0) {
 					$seo_metas[$meta_key] = is_array($meta_value) ? $meta_value[0] : $meta_value;
 				}
 			}
@@ -858,150 +908,115 @@ class WPM_Settings_Auto_Translate_Pro {
 			$rank_math_active = defined('RANK_MATH_VERSION');
 			$debug_entry .= "Rank Math active: " . ($rank_math_active ? 'Yes' : 'No') . "\n";
 			
-			// Process Rank Math meta fields for translation
+			// Process Rank Math meta fields for translation (batched)
 			if ($rank_math_active && !empty($rank_math_metas)) {
 				$debug_entry .= "Processing Rank Math metas for translation...\n";
 				
-				// Define Rank Math meta keys that should be translated
 				$rank_math_translatable_keys = array(
 					'rank_math_title',
 					'rank_math_description'
-					// Note: rank_math_schema_Service contains serialized data and should not be translated directly
 				);
 				
+				// PASS 1: Collect source texts that need translation
+				$rm_to_translate   = array(); // meta_key => source_data
+				$rm_meta_values    = array(); // meta_key => current meta_value (with language structure)
+
 				foreach ($rank_math_translatable_keys as $meta_key) {
-					if (isset($rank_math_metas[$meta_key])) {
-						$debug_entry .= "Processing {$meta_key}\n";
-						
-						$meta_value = $rank_math_metas[$meta_key];
-						
-						$debug_entry .= "Original value: " . substr($meta_value, 0, 100) . "...\n";
-						
-						// Check if target language already exists in the original meta
-						$target_exists = wpm_ml_check_language_string($meta_value, $target);
-						$debug_entry .= "Target exists: " . ($target_exists ? 'Yes' : 'No') . "\n";
-						
-						// Check if we should translate (either doesn't exist OR override is true)
-						if ($target_exists === false || $override === true) {
-							$debug_entry .= "Will translate {$meta_key}\n";
-							
-							// Check if source language exists in the original meta
-							$source_exists = wpm_ml_check_language_string($meta_value, $source);
-							$debug_entry .= "Source exists in original meta: " . ($source_exists ? 'Yes' : 'No') . "\n";
-							
-							// Get source data
-							if ($source_exists === true) {
-								$source_data = wpm_ml_get_language_string($meta_value, $source);
-								$debug_entry .= "Using existing source data from original meta\n";
-							} else {
-								$source_data = $meta_value;
-								$debug_entry .= "Original meta value: " . substr($source_data, 0, 100) . "...\n";
-								
-								// Check if the original content is actually in the target language, not source
-								// This happens when the meta was previously translated but source/target got mixed up
-								$target_exists_in_original = wpm_ml_check_language_string($meta_value, $target);
-								if ($target_exists_in_original) {
-									$debug_entry .= "Found target language in original meta - extracting target content\n";
-									$source_data = wpm_ml_get_language_string($meta_value, $target);
-									// Create proper structure with source language
-									$meta_value = '[:' . $source . ']' . $source_data . '[:]';
-									$debug_entry .= "Restructured with source language: " . substr($meta_value, 0, 100) . "...\n";
-								} else {
-									// Check if the content appears to be in the target language already
-									// This is a heuristic check - if we're translating from EN to ZH but content is Chinese, skip
-									$debug_entry .= "Checking if content is already in target language...\n";
-									
-									// Simple heuristic: if source is 'en' and target is 'zh', check if content contains Chinese characters
-									if ($source === 'en' && $target === 'zh') {
-										if (preg_match('/[\x{4e00}-\x{9fff}]/u', $source_data)) {
-											$debug_entry .= "Content appears to be Chinese already - skipping translation\n";
-											continue;
-										}
-									}
-									// Reverse check: if source is 'zh' and target is 'en', check if content contains English characters
-									elseif ($source === 'zh' && $target === 'en') {
-										if (!preg_match('/[\x{4e00}-\x{9fff}]/u', $source_data) && preg_match('/[a-zA-Z]/', $source_data)) {
-											$debug_entry .= "Content appears to be English already - skipping translation\n";
-											continue;
-										}
-									}
-									
-									// Only create language string structure if source data is not empty
-									if (!empty(trim($source_data))) {
-										$meta_value = '[:' . $source . ']' . $source_data . '[:]';
-										$debug_entry .= "Using original data and creating language string structure\n";
-									} else {
-										$debug_entry .= "Skipping - source data is empty for {$meta_key}\n";
-										continue;
-									}
-								}
-							}
-							
-							// Additional validation - skip if source data is empty or just underscores
-							if (empty(trim($source_data)) || trim($source_data) === '' || preg_match('/^_+$/', trim($source_data))) {
-								$debug_entry .= "Skipping - source data is empty or contains only underscores for {$meta_key}\n";
+					if ( ! isset($rank_math_metas[$meta_key]) ) {
+						continue;
+					}
+
+					$meta_value    = $rank_math_metas[$meta_key];
+					$target_exists = wpm_ml_check_language_string($meta_value, $target);
+					$debug_entry  .= "Processing {$meta_key} | Target exists: " . ($target_exists ? 'Yes' : 'No') . "\n";
+
+					if ($target_exists !== false && $override !== true) {
+						$debug_entry .= "Skipping {$meta_key} - target exists and override is false\n---\n";
+						continue;
+					}
+
+					$source_exists = wpm_ml_check_language_string($meta_value, $source);
+					if ($source_exists === true) {
+						$source_data = wpm_ml_get_language_string($meta_value, $source);
+					} else {
+						$source_data = $meta_value;
+						$target_exists_in_original = wpm_ml_check_language_string($meta_value, $target);
+						if ($target_exists_in_original) {
+							$source_data = wpm_ml_get_language_string($meta_value, $target);
+							$meta_value  = '[:' . $source . ']' . $source_data . '[:]';
+						} else {
+							if ($source === 'en' && $target === 'zh' && preg_match('/[\x{4e00}-\x{9fff}]/u', $source_data)) {
+								$debug_entry .= "Content appears to be Chinese already - skipping\n---\n";
+								continue;
+							} elseif ($source === 'zh' && $target === 'en' && !preg_match('/[\x{4e00}-\x{9fff}]/u', $source_data) && preg_match('/[a-zA-Z]/', $source_data)) {
+								$debug_entry .= "Content appears to be English already - skipping\n---\n";
 								continue;
 							}
-							
-							// Translate the content
-							$translated_data = wpm_ml_auto_translate_content($source_data, $source, $target);
-							$debug_entry .= "Translation result: " . ($translated_data ? 'Success' : 'Failed') . "\n";
-							$debug_entry .= "Translated data: " . ($translated_data ? substr($translated_data, 0, 100) . "..." : 'Empty/False') . "\n";
-							
-							// Only proceed if translation was successful and not empty/false
-							if ($translated_data && $translated_data !== false && trim($translated_data) !== '') {
-								$translated_data = '[:' . $target . ']' . $translated_data . '[:]';
-								
-								// If override is true and target exists, remove existing target content
-								if ($override === true && $target_exists === true) {
-									$pattern = '/\[:'.$target.'\][^\[]*(?:\[:\])?/';
-									$meta_value = preg_replace($pattern, '', $meta_value);
-									$debug_entry .= "Removed existing target content\n";
-									$debug_entry .= "After removal: " . substr($meta_value, 0, 100) . "...\n";
-								}
-								
-								// Ensure we have proper structure before adding new translation
-								if (strpos($meta_value, '[:]') === false) {
-									// If no [:], add it at the end
-									$meta_value = $meta_value . '[:]';
-								}
-								
-								$new_meta_value = str_replace('[:]', $translated_data, $meta_value);
-								$debug_entry .= "Final meta value: " . substr($new_meta_value, 0, 100) . "...\n";
-								
-								// Update the original meta directly
-								$update_result = update_post_meta($post->ID, $meta_key, $new_meta_value);
-								$debug_entry .= "Update result: " . ($update_result ? 'Success' : 'Failed') . "\n";
-								
-								if (!$update_result) {
-									// Try alternative update methods
-									delete_post_meta($post->ID, $meta_key);
-									$insert_result = add_post_meta($post->ID, $meta_key, $new_meta_value, true);
-									$debug_entry .= "Insert result: " . ($insert_result ? 'Success' : 'Failed') . "\n";
-									$update_result = $insert_result;
-								}
-								
-								if ($update_result) {
-									$should_update = true;
-									$debug_entry .= "Rank Math meta translation successful\n";
-								}
+							if ( ! empty(trim($source_data)) ) {
+								$meta_value = '[:' . $source . ']' . $source_data . '[:]';
 							} else {
-								$debug_entry .= "Skipping translation - empty or failed result for {$meta_key}\n";
-								$debug_entry .= "Source data was: " . substr($source_data, 0, 100) . "...\n";
+								$debug_entry .= "Skipping - source data is empty for {$meta_key}\n---\n";
+								continue;
 							}
-						} else {
-							$debug_entry .= "Skipping {$meta_key} - target exists and override is false\n";
 						}
-						
+					}
+
+					if (empty(trim($source_data)) || preg_match('/^_+$/', trim($source_data))) {
+						$debug_entry .= "Skipping - source data is empty or underscores for {$meta_key}\n---\n";
+						continue;
+					}
+
+					$rm_to_translate[$meta_key] = $source_data;
+					$rm_meta_values[$meta_key]  = $meta_value;
+				}
+
+				// PASS 2: Batch-translate all collected Rank Math source texts
+				if ( ! empty($rm_to_translate) ) {
+					$rm_keys   = array_keys($rm_to_translate);
+					$rm_texts  = array_values($rm_to_translate);
+
+					$debug_entry .= "Batch-translating " . count($rm_texts) . " Rank Math fields\n";
+					$rm_translated = wpm_ml_batch_translate( $rm_texts, $source, $target );
+
+					// PASS 3: Apply translations and update meta
+					foreach ( $rm_keys as $i => $meta_key ) {
+						$translated_data = isset($rm_translated[$i]) ? $rm_translated[$i] : '';
+						$meta_value      = $rm_meta_values[$meta_key];
+						$target_exists   = wpm_ml_check_language_string($rank_math_metas[$meta_key], $target);
+
+						$debug_entry .= "{$meta_key}: Translation " . ($translated_data ? 'Success' : 'Failed') . "\n";
+
+						if ( $translated_data && $translated_data !== false && trim($translated_data) !== '' ) {
+							$translated_data = '[:' . $target . ']' . $translated_data . '[:]';
+
+							if ( $override === true && $target_exists === true ) {
+								$pattern    = '/\[:' . $target . '\][^\[]*(?:\[:\])?/';
+								$meta_value = preg_replace($pattern, '', $meta_value);
+							}
+
+							if (strpos($meta_value, '[:]') === false) {
+								$meta_value = $meta_value . '[:]';
+							}
+
+							$new_meta_value = str_replace('[:]', $translated_data, $meta_value);
+							$update_result  = update_post_meta($post->ID, $meta_key, $new_meta_value);
+
+							if ( ! $update_result ) {
+								delete_post_meta($post->ID, $meta_key);
+								$update_result = add_post_meta($post->ID, $meta_key, $new_meta_value, true);
+							}
+
+							if ($update_result) {
+								$should_update = true;
+								$debug_entry  .= "{$meta_key} translation saved successfully\n";
+							}
+						}
 						$debug_entry .= "---\n";
 					}
 				}
-				
-				// Skip Rank Math schema data translation to prevent errors
+
 				if (isset($rank_math_metas['rank_math_schema_Service'])) {
-					$debug_entry .= "Skipping rank_math_schema_Service - excluded from translation to prevent serialization errors\n";
-					$debug_entry .= "Schema data length: " . strlen($rank_math_metas['rank_math_schema_Service']) . "\n";
-					$debug_entry .= "---\n";
+					$debug_entry .= "Skipping rank_math_schema_Service - excluded to prevent serialization errors\n---\n";
 				}
 			}
 			
@@ -1010,6 +1025,144 @@ class WPM_Settings_Auto_Translate_Pro {
 			$seopress_active = defined('SEOPRESS_VERSION');
 			$debug_entry .= "Yoast SEO active: " . ($yoast_active ? 'Yes' : 'No') . "\n";
 			$debug_entry .= "SEOPress active: " . ($seopress_active ? 'Yes' : 'No') . "\n";
+
+			if ( $seopress_active ) {
+
+				global $wpdb;
+
+				$all_metas = $wpdb->get_results(
+				    $wpdb->prepare(
+				        "SELECT meta_key, meta_value 
+				         FROM $wpdb->postmeta 
+				         WHERE post_id = %d",
+				        $post->ID
+				    ),
+				    ARRAY_A
+				);
+
+				if ( ! empty( $all_metas ) && is_array( $all_metas ) ){ 
+
+					$seopress_translatable_keys = [
+						'_seopress_titles_title',
+						'_seopress_titles_desc',
+						'_seopress_social_fb_title',
+						'_seopress_social_fb_desc',
+						'_seopress_social_twitter_title',
+						'_seopress_social_twitter_desc',
+					];
+
+					// PASS 1: Collect all translatable text parts across all SEOPress fields
+					$sp_collect = array(); // [ [ 'meta_key' => key, 'parts' => [...], 'translatable_indices' => [...], 'source_texts' => [...] ], ... ]
+
+					foreach ( $all_metas as $seop_key => $seop_meta_value ) {
+						if ( strpos( $seop_meta_value['meta_key'], '_seopress' ) !== 0 || empty( $seop_meta_value['meta_value'] ) ) {
+							continue;
+						}
+						if ( ! in_array( $seop_meta_value['meta_key'], $seopress_translatable_keys ) ) {
+							continue;
+						}
+
+						$meta_value = $seop_meta_value['meta_value'];
+						$meta_key   = $seop_meta_value['meta_key'];
+
+						if ( ! is_string( $meta_value ) || is_serialized( $meta_value ) || self::isJson( $meta_value ) ) {
+							continue;
+						}
+
+						$target_exists = wpm_ml_check_language_string( $meta_value, $target );
+						$source_data   = '';
+						$should_process = false;
+
+						if ( $target_exists === false || $override === true ) {
+							$source_exists = wpm_ml_check_language_string( $meta_value, $source );
+							if ( $source_exists === true ) {
+								$source_data = wpm_ml_get_language_string( $meta_value, $source );
+							} else {
+								$source_data = $meta_value;
+								$target_exists_in_original = wpm_ml_check_language_string( $meta_value, $target );
+								if ( $target_exists_in_original ) {
+									$source_data = wpm_ml_get_language_string( $meta_value, $target );
+								}
+							}
+							$should_process = true;
+						}
+						if ( $target_exists === true && $override === true ) {
+							$source_data    = wpm_ml_get_language_string( $meta_value, $source );
+							$should_process = true;
+						}
+
+						if ( $should_process && ! empty( $source_data ) ) {
+							$parts = preg_split(
+								'/(%%[^%]+%%)/',
+								$source_data,
+								-1,
+								PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+							);
+
+							$translatable_indices = array();
+							$source_texts         = array();
+
+							foreach ( $parts as $pi => $part ) {
+								$part = trim( $part );
+								if ( ! empty( $part ) && ! preg_match( '/%%[^%]+%%/', $part ) && ! wpm_ml_is_untranslatable( $part ) ) {
+									$translatable_indices[] = $pi;
+									$source_texts[]         = $part;
+								}
+							}
+
+							if ( ! empty( $source_texts ) ) {
+								$sp_collect[] = array(
+									'meta_key'             => $meta_key,
+									'parts'                => $parts,
+									'translatable_indices' => $translatable_indices,
+									'source_texts'         => $source_texts,
+								);
+							}
+						}
+					}
+
+					// PASS 2: Flatten all source texts and batch-translate
+					if ( ! empty( $sp_collect ) ) {
+						$sp_all_texts = array();
+						$sp_offsets   = array(); // track where each field's texts start in the flat array
+
+						foreach ( $sp_collect as $entry ) {
+							$sp_offsets[] = count( $sp_all_texts );
+							$sp_all_texts = array_merge( $sp_all_texts, $entry['source_texts'] );
+						}
+
+						$sp_translated = wpm_ml_batch_translate( $sp_all_texts, $source, $target );
+
+						// PASS 3: Reassemble and save
+						foreach ( $sp_collect as $ci => $entry ) {
+							$offset = $sp_offsets[ $ci ];
+							$parts  = $entry['parts'];
+
+							foreach ( $entry['translatable_indices'] as $ti => $part_idx ) {
+								$translated = isset( $sp_translated[ $offset + $ti ] ) ? $sp_translated[ $offset + $ti ] : trim( $parts[ $part_idx ] );
+								$parts[ $part_idx ] = $translated;
+							}
+
+							$result = '';
+							foreach ( $parts as $part ) {
+								$part = trim( $part );
+								if ( empty( $part ) ) {
+									$result .= ' ';
+								} else {
+									$result .= $part . ' ';
+								}
+							}
+
+							if ( ! empty( $result ) ) {
+								update_post_meta( $post->ID, $entry['meta_key'], trim( $result ) );
+							}
+						}
+					}
+
+				}
+
+			}
+
 			
 			$debug_entry .= "=== SEO META PROCESSING END ===\n\n";
 			file_put_contents($debug_file, $debug_entry, FILE_APPEND | LOCK_EX);
@@ -1402,5 +1555,173 @@ class WPM_Settings_Auto_Translate_Pro {
 	    // Deduplicate to avoid translating the same string multiple times
 	    $textToTranslate = array_values( array_unique($textToTranslate) );
 	}
+
+	/**
+ * Recursively walk a decoded Bricks element array and translate text fields in-place.
+ * Works on the PHP array directly — no JSON string replacement needed.
+ *
+ * @param array  $elements  Decoded Bricks elements array (modified in-place)
+ * @param string $source    Source language code
+ * @param string $target    Target language code
+ * @since 2.4.29
+ */
+protected static function translateBricksTextFieldsInArray( array &$elements, string $source, string $target ): void {
+
+    $plain_text_keys = [
+        'text', 'title', 'subtitle', 'meta', 'prefix', 'suffix',
+        'label', 'placeholder', 'successMessage', 'emailSubject',
+        'fromName', 'emailErrorMessage', 'mailchimpPendingMessage',
+        'mailchimpErrorMessage', 'sendgridErrorMessage',
+    ];
+
+    $html_text_keys = [ 'content' ];
+    $all_text_keys  = array_merge( $plain_text_keys, $html_text_keys );
+
+    // PASS 1: Collect all translatable text values and record their locations
+    $collect = array(); // [ [ 'text' => string, 'path' => [...] ], ... ]
+
+    foreach ( $elements as $ei => &$element ) {
+        if ( empty($element['settings']) || ! is_array($element['settings']) ) {
+            continue;
+        }
+        $settings = &$element['settings'];
+
+        foreach ( $all_text_keys as $key ) {
+            if ( isset($settings[$key]) && is_string($settings[$key]) && trim($settings[$key]) !== '' && ! wpm_ml_is_untranslatable($settings[$key]) ) {
+                $collect[] = array( 'text' => $settings[$key], 'ref' => array( &$settings, $key ) );
+            }
+        }
+
+        $nested_groups = array(
+            'accordions' => array( 'title', 'subtitle', 'content' ),
+            'items'      => array( 'title', 'meta', 'name', 'content' ),
+            'tabs'       => array( 'title', 'content' ),
+            'strings'    => array( 'text' ),
+            'fields'     => array( 'label', 'placeholder' ),
+        );
+
+        foreach ( $nested_groups as $group_key => $sub_keys ) {
+            if ( ! empty($settings[$group_key]) && is_array($settings[$group_key]) ) {
+                foreach ( $settings[$group_key] as &$nested_item ) {
+                    foreach ( $sub_keys as $k ) {
+                        if ( ! empty($nested_item[$k]) && is_string($nested_item[$k]) && ! wpm_ml_is_untranslatable($nested_item[$k]) ) {
+                            $collect[] = array( 'text' => $nested_item[$k], 'ref' => array( &$nested_item, $k ) );
+                        }
+                    }
+                }
+                unset($nested_item);
+            }
+        }
+    }
+    unset($element);
+
+    if ( empty($collect) ) {
+        return;
+    }
+
+    // PASS 2: Extract plain-text items for batching; HTML items need per-item handling
+    $plain_indices = array();
+    $plain_texts   = array();
+
+    foreach ( $collect as $i => $entry ) {
+        if ( ! preg_match( '/<[^>]+>/', $entry['text'] ) ) {
+            $plain_indices[] = $i;
+            $plain_texts[]   = $entry['text'];
+        }
+    }
+
+    // Batch-translate all plain text in one shot
+    $plain_translated = array();
+    if ( ! empty($plain_texts) ) {
+        $plain_translated = wpm_ml_batch_translate( $plain_texts, $source, $target );
+    }
+
+    // Write plain translations back
+    foreach ( $plain_indices as $pi => $collect_idx ) {
+        $translated = isset( $plain_translated[$pi] ) ? $plain_translated[$pi] : $collect[$collect_idx]['text'];
+        $ref = &$collect[$collect_idx]['ref'];
+        $ref[0][$ref[1]] = $translated;
+    }
+
+    // Translate HTML items individually (they need tag-aware processing)
+    foreach ( $collect as $i => $entry ) {
+        if ( in_array( $i, $plain_indices, true ) ) {
+            continue;
+        }
+        $translated = self::translateBricksTextField( $entry['text'], $source, $target );
+        $ref = &$collect[$i]['ref'];
+        $ref[0][$ref[1]] = $translated;
+    }
+}
+
+/**
+ * Translate a single text value — handles both plain text and HTML strings.
+ * For HTML: splits on tags, translates each text node, reassembles.
+ *
+ * @param  string $text    Original value (plain or HTML)
+ * @param  string $source  Source language code
+ * @param  string $target  Target language code
+ * @return string          Translated value (same format as input)
+ * @since  2.4.29	
+ */
+protected static function translateBricksTextField( string $text, string $source, string $target ): string {
+
+    if ( trim($text) === '' || wpm_ml_is_untranslatable($text) ) {
+        return $text;
+    }
+
+    // Plain text — no tags at all
+    if ( ! preg_match('/<[^>]+>/', $text) ) {
+        $translated = wpm_ml_auto_fetch_translation( $text, $source, $target );
+        return ( $translated && $translated !== 'false' ) ? $translated : $text;
+    }
+
+    // HTML text — decode entities, split on tags, batch-translate all text nodes at once
+    $decoded = html_entity_decode( $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+    $parts   = preg_split( '/(<[^>]*>)/s', $decoded, -1, PREG_SPLIT_DELIM_CAPTURE );
+
+    // Collect translatable text-node indices
+    $text_indices = array();
+    $text_values  = array();
+    foreach ( $parts as $i => $part ) {
+        if ( ! preg_match('/^<[^>]*>$/', $part) && trim($part) !== '' && ! wpm_ml_is_untranslatable($part) ) {
+            $text_indices[] = $i;
+            $text_values[]  = trim($part);
+        }
+    }
+
+    if ( ! empty($text_values) ) {
+        $translated_values = wpm_ml_batch_translate( $text_values, $source, $target );
+        foreach ( $text_indices as $ti => $part_idx ) {
+            $parts[$part_idx] = isset($translated_values[$ti]) ? $translated_values[$ti] : $parts[$part_idx];
+        }
+    }
+
+    $result = implode( '', $parts );
+
+    if ( strpos($text, '&amp;') !== false ) {
+        $result = str_replace( '&', '&amp;', $result );
+    }
+
+    return $result;
+}
+
+
+/**
+ * Check is string is a json data
+ * @param 	$string 	string
+ * @return 	boolean
+ * @since 	2.4.29
+ * */
+public static function isJson( $string ) {
+
+	if ( ! is_string( $string ) ) {
+		return false;
+	}
+
+	json_decode( $string );
+
+	return json_last_error() === JSON_ERROR_NONE;
+}
 
 }
