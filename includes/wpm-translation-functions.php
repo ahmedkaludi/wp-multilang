@@ -567,18 +567,24 @@ function wpm_set_new_value( $old_value, $new_value, $config = array(), $lang = '
 add_filter( 'wpm_filter_string_to_ml_array', 'wpm_filter_string_for_github_md_plugin' );
 function wpm_filter_string_for_github_md_plugin( $string ) {
 
-	$flag 	=	0;
-
 	if ( in_array( 'githuber-md/githuber-md.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ), true )  ) ) {
 		// Check if string contains <code> tag and it's post markdown option is enabled
 		if ( strpos( $string, '<code>' ) !== false ) {
-			$flag 	=	1;
+			return $string;
 		}
 	}
+
+	// Checks if any html attribute contains json data and skips
+	if ( preg_match( '/=\s*["\'][^"\']*&quot;/i', $string ) ) {
+        $string = str_replace(
+            [ '&amp;', '&#039;', '&lt;', '&gt;' ],
+            [ '&',     "'",      '<',    '>'    ],
+            $string
+        );
+        return $string;
+    }
 	
-	if ( $flag == 0 ) {
-		$string = htmlspecialchars_decode( $string );
-	}
+	$string = htmlspecialchars_decode( $string );
 
 	return $string;
 }
