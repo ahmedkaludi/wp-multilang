@@ -49,6 +49,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Admin\\WPM_Reset_Settings' => __DIR__ . '/../..' . '/includes/admin/class-wpm-reset-settings.php',
         'WPM\\Includes\\Admin\\WPM_Bulk_Translate' => __DIR__ . '/../..' . '/includes/admin/class-wpm-admin-bulk-translate.php',
         'WPM\\Includes\\Admin\\WPM_OpenAI' => __DIR__ . '/../..' . '/includes/admin/class-wpm-openai.php',
+        'WPM\\Includes\\Admin\\WPM_Deepl' => __DIR__ . '/../..' . '/includes/admin/class-wpm-deepl.php',
         'WPM\\Includes\\Integrations\\WPM_AIOSP' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-aiosp.php',
         'WPM\\Includes\\Integrations\\WPM_Acf' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-acf.php',
         'WPM\\Includes\\Integrations\\WPM_SCF' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-scf.php',

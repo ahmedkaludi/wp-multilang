@@ -3,6 +3,7 @@
 namespace WPM\Includes;
 use WPM\Includes\Admin\WPM_Reset_Settings;
 use WPM\Includes\Admin\WPM_OpenAI;
+use WPM\Includes\Admin\WPM_Deepl;
 use WPM\Includes\Admin\Settings\WPM_Settings_Auto_Translate_Pro;
 use WPM\Includes\Admin\Settings\WPM_Settings_AI_Integration;
 
@@ -1143,7 +1144,19 @@ class WPM_AJAX {
 		    wp_send_json_error( array( 'message' => esc_html__( 'not authorized', 'wp-multilang' ) ) );
 		}
 
-		$response 	=	WPM_Settings_AI_Integration::check_ai_platform_quota();
+		$response['status'] = false;
+		$response['message'] = '';
+
+		$provider 		=	isset( $_POST['provider'] ) ? sanitize_text_field( wp_unslash( $_POST['provider'] ) ) : '';
+		if ( empty( $provider ) ) {
+			wp_send_json( $response );		
+		} 
+
+		if ( $provider === 'openai' ) {
+			$response 	=	WPM_Settings_AI_Integration::check_ai_platform_quota();
+		}else if( $provider === 'deepl' ) {
+			$response 	=	WPM_Deepl::check_quota();
+		}
 
 		wp_send_json($response);
 	}

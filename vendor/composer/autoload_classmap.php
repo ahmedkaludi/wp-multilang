@@ -38,6 +38,7 @@ $class_map_array =  array(
     'WPM\\Includes\\Admin\\WPM_Reset_Settings' => $baseDir . '/includes/admin/class-wpm-reset-settings.php',
     'WPM\\Includes\\Admin\\WPM_Bulk_Translate' => $baseDir . '/includes/admin/class-wpm-admin-bulk-translate.php',
     'WPM\\Includes\\Admin\\WPM_OpenAI' => $baseDir . '/includes/admin/class-wpm-openai.php',
+    'WPM\\Includes\\Admin\\WPM_Deepl' => $baseDir . '/includes/admin/class-wpm-deepl.php',
     'WPM\\Includes\\Integrations\\WPM_AIOSP' => $baseDir . '/includes/integrations/class-wpm-aiosp.php',
     'WPM\\Includes\\Integrations\\WPM_Acf' => $baseDir . '/includes/integrations/class-wpm-acf.php',
     'WPM\\Includes\\Integrations\\WPM_SCF' => $baseDir . '/includes/integrations/class-wpm-scf.php',

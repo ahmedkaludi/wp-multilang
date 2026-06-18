@@ -11,6 +11,7 @@
  */
 use WPM\Includes\WPM_Custom_Post_Types;
 use WPM\Includes\Admin\WPM_OpenAI;
+use WPM\Includes\Admin\WPM_Deepl;
 use WPM\Includes\Admin\Settings\WPM_Settings_AI_Integration;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -872,6 +873,20 @@ if ( ! function_exists( 'wpm_ml_auto_fetch_translation' ) ) {
 					}
 				}
 				
+			break;
+
+			case 'deepl':
+
+				if ( ! empty( $ai_settings['deepl_secret_key'] ) ) {
+					try {
+						$string 	=	WPM_Deepl::translate_content( $string, $source, $target, $ai_settings );
+					} catch ( \Throwable $e ) {
+						if ( $enable_logging ) {
+	                        wpm_ml_log_message( sprintf('Error in openAI translation: %s', $e->getMessage()), 'error' );
+	                    }
+					}	
+				}
+
 			break;
 
 		}

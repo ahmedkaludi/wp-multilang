@@ -58,7 +58,14 @@ jQuery(document).ready(function($){
 
 		$('#wpm-secret-key-error').hide();
 		$('#wpm-prompt-error').hide();
-		const provider = 'openai';
+		let provider = $('#wpm-ai-provider').val();
+		let providerExists 	=	false;
+		const aiApiProviders = wpm_openai_params.ai_api_providers;
+
+		if (provider in aiApiProviders) {
+			providerExists 	=	true;
+		}
+
 		let model = '';
 		const prompt =  $('#wpm-openai-prompt').val();
 		if ( $('#wpm-openai-models').length > 0 ) {
@@ -71,11 +78,18 @@ jQuery(document).ready(function($){
 		if ( $('#wpm_openai_integration').is(':checked') ) {
 			enabled = '1';
 		}
-		console.log('provider ', provider);
-		console.log('model ', model);
+
+		let deeplEnabled = '0';
+		if ( $('#wpm_deepl_integration').is(':checked') ) {
+			deeplEnabled = '1';
+		}
+
+		let deeplSecretKey = $('#wpm-deepl-secretkey').val();
+		let deeplApiPlan = $('#wpm-deepl-api-plan').val();
+
 		let $button = $('#wpm-save-openai-settings');
 
-		if ( provider === 'openai' ) {
+		if ( providerExists ) {
 			// if ( model.length === 0 ) {
 			// 	alert('Please validate api key and select model');
 			// 	return;
@@ -86,7 +100,16 @@ jQuery(document).ready(function($){
 			$.ajax({
 				url: ajaxurl,
 				type: 'POST',
-				data: {action: 'wpm_save_openai_settings', provider: provider, model: model, prompt: prompt, wpm_openai_integration: enabled, security: wpm_openai_params.wpmpro_openai_nonce},
+				data: {
+					action: 'wpm_save_openai_settings', 
+					provider: provider, 
+					model: model, 
+					prompt: prompt, 
+					wpm_openai_integration: enabled, 
+					wpm_deepl_integration: deeplEnabled,
+					wpm_deepl_secret_key: deeplSecretKey,
+					wpm_deepl_api_plan: deeplApiPlan,
+					security: wpm_openai_params.wpmpro_openai_nonce},
 				success: function(response) {
 					if (!response.success) {
 	                    $('#wpm-prompt-error')
@@ -120,6 +143,14 @@ jQuery(document).ready(function($){
 			}
 		}else{
 			$('.wpm-openai-children').hide();
+		}
+	});
+
+	$(document).on('click', '#wpm_deepl_integration', function(e) {
+		if($(this).is(':checked')) {
+			$('.wpm-deepl-children').show();
+		}else{
+			$('.wpm-deepl-children').hide();
 		}
 	});
 

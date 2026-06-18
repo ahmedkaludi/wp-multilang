@@ -10,16 +10,40 @@ jQuery(document).ready(function($){
      * */
     $(document).on('click', '#wpm-auto-translate-btn', function(e){
 
-        const selectedProvider = wpmpro_ats_localize_data.ai_settings.api_provider;
+        const aiSettings = wpmpro_ats_localize_data.ai_settings;
+        const selectedProvider = aiSettings.api_provider;
+        const isProActive = wpmpro_ats_localize_data.is_pro_active;
 
-        if( ! wpmpro_ats_localize_data.is_pro_active && ( wpmpro_ats_localize_data.ai_settings.wpm_openai_integration.length === 0 || wpmpro_ats_localize_data.ai_settings.wpm_openai_integration === '0' ) ) {
-            return false;
-        } 
-        if( ! wpmpro_ats_localize_data.is_pro_active && ( selectedProvider.length === 0 || wpmpro_ats_localize_data.ai_settings.model.length === 0 ) ) {
-            return false
+        if ( !isProActive ) {
+
+            // Provider must be selected
+            if ( !selectedProvider ) {
+                return false;
+            }
+
+            // Provider integration must be enabled
+            const integrationKey = `wpm_${selectedProvider}_integration`;
+
+            if (
+                !aiSettings[integrationKey] ||
+                aiSettings[integrationKey] === '0'
+            ) {
+                return false;
+            }
+
+            // OpenAI requires a model, DeepL does not
+            if (
+                selectedProvider === 'openai' &&
+                ( !aiSettings.model || aiSettings.model.length === 0 )
+            ) {
+                return false;
+            }
         }
-        
-        if ( ( wpmpro_ats_localize_data.is_pro_active ) && wpmpro_ats_localize_data.license_status !== 'active' ) {
+
+        if (
+            isProActive &&
+            wpmpro_ats_localize_data.license_status !== 'active'
+        ) {
             return false;
         }
 
