@@ -1,0 +1,16 @@
+{
+  "post_fields": {
+    "ymc_post_elements": {
+      "button_text_all": {},
+      "button_text": {}
+    },
+    "ymc_empty_post_result": {},
+    "ymc_search_text_button": {},
+    "ymc_search_placeholder": {},
+    "ymc_pagination_elements": {
+      "prev_btn_text": {},
+      "next_btn_text": {},
+      "load_btn_text": {}
+    }
+  }
+}
