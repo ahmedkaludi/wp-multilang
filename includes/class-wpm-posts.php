@@ -62,6 +62,9 @@ class WPM_Posts extends WPM_Object {
 		});
 		// Block editor filter for saving the post data
 		add_filter( 'wpm_filter_block_editor_post_data', array( $this, 'wpm_filter_block_editor_post_data_clbk' ), 10, 2 );
+
+		// Translate raw post content for divi builder
+		add_filter( 'et_fb_load_raw_post_content', [ $this, 'translate_divi_post_content' ], 10, 2 );
 	}
 
 
@@ -236,6 +239,22 @@ class WPM_Posts extends WPM_Object {
 					$data[ $key ] = wpm_set_new_value( $old_value, $data[ $key ], $post_field_config );
 				}
 			}
+		}
+
+		/* Only touch Divi's save-verification when this save is genuinely
+		*  coming from the Divi Visual Builder's own AJAX save action, AND
+		*  the content WPM wrapped is actual Divi builder markup.
+		*  Fix for the ticket #268 
+		*/
+		$is_divi_fb_ajax_save = (
+		    defined( 'DOING_AJAX' ) && DOING_AJAX
+		    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- read-only check, actual nonce verification already done by et_fb_ajax_save() itself.
+		    && isset( $_POST['action'] ) && 'et_fb_ajax_save' === $_POST['action']
+		    && isset( $post_content ) && strpos( $post_content, '[et_pb_' ) !== false
+		);
+
+		if ( $is_divi_fb_ajax_save ) {
+		    add_filter( 'et_fb_ajax_save_verification_result', '__return_true' );
 		}
 
 		if ( 'nav_menu_item' === $data['post_type'] ) {
@@ -422,6 +441,16 @@ class WPM_Posts extends WPM_Object {
 		
 		}
 		return $result;
+
+	}
+
+	public function translate_divi_post_content( $post_content, $post_id ) {
+		
+		if ( ! empty( $post_content ) && is_string( $post_content ) ) {
+			$post_content 	=	wpm_translate_string( $post_content );
+		}
+
+		return $post_content;
 
 	}
 }
