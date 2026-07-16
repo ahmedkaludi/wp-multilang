@@ -20,7 +20,8 @@
   },
   "admin_pages": [
     "seo_page_wpseo_titles",
-    "seo_page_wpseo_advanced"
+    "seo_page_wpseo_advanced",
+    "seo_page_wpseo_page_settings"
   ],
   "options": {
     "wpseo_titles": {

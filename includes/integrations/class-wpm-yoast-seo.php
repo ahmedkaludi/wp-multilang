@@ -52,6 +52,8 @@ class WPM_Yoast_Seo {
 				add_filter( 'wpseo_frontend_presenters', array( $this, 'add_wpseo_frontend_presenters' ) );
 			}			
 		}
+
+		add_action( 'admin_enqueue_scripts', [ $this, 'render_language_switcher' ] );
 	}
 
 	/**
@@ -678,5 +680,23 @@ class WPM_Yoast_Seo {
 			}
 		}
 		return $description;
+	}
+
+	/**
+	 * Function to load the yoast seo script
+	 * @param 	$hook	string
+	 * @since 	2.4.31
+	 * */
+	public function render_language_switcher( $hook ) {
+		
+		if ( $hook === 'seo_page_wpseo_page_settings' ) {
+
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+			wp_register_script( 'wpm-yoast-seo-script', wpm_asset_path( 'scripts/wpm-yoast-seo' . $suffix . '.js' ), array( 'jquery', 'wp-util', 'wpm_language_switcher' ), WPM_VERSION, true );
+			wp_enqueue_script( 'wpm-yoast-seo-script' );
+
+		}
+
 	}
 }
