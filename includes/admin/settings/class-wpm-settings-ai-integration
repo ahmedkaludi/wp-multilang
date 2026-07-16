@@ -41,6 +41,8 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 								'model'					=>	'',
 								'api_prompt'			=>	WPM_OPENAI_PROMPT,
 								'api_available_models'	=>	[],
+								'deepl_secret_key' 		=>	'',
+								'deepl_api_plan' 		=>	'',
 							];
 		$ai_settings 	=	get_option( 'wpm_openai_settings', $defaults );
 		$ai_settings['wpm_openai_integration'] = get_option( 'wpm_openai_integration' );
@@ -60,6 +62,11 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
                 'endpoint' => 'https://api.openai.com/v1/',
                 'url' => 'https://platform.openai.com/'
             ],
+		    'deepl' => [
+		        'name'     => 'DeepL',
+		        'endpoint' => 'https://api-free.deepl.com/v2/',
+		        'url'      => 'https://www.deepl.com/pro-api',
+		    ],
         ];
 
 	}
@@ -92,6 +99,7 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 				'language'                  	=>	wpm_get_language(),
 				'wpmpro_openai_nonce'			=>	wp_create_nonce( 'wpmpro-openai-nonce' ),
 				'is_pro_active'					=>	wpm_is_pro_active(),
+				'ai_api_providers' 				=>	self::get_api_providers(),
 			);
 			$translator_params 	= 	WPM_Settings_Auto_Translate_Pro::filter_js_params( $translator_params );	
 			wp_localize_script( 'wpm_openai', 'wpm_openai_params', $translator_params );
@@ -109,18 +117,19 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 
 		$providers 		=	self::get_api_providers();
 		$ai_settings 	=	self::get_openai_settings();
+
 		$provider 		=	$ai_settings['api_provider'];
 		$secret_key 	=	'';
 		$prompt 		=	WPM_OPENAI_PROMPT;
-		if ( ! empty( $ai_settings['api_keys'] ) && ! empty( $ai_settings['api_keys'][$provider] ) ) {
-			$secret_key =	$ai_settings['api_keys'][$provider];	
+		if ( ! empty( $ai_settings['api_keys'] ) && ! empty( $ai_settings['api_keys']['openai'] ) ) {
+			$secret_key =	$ai_settings['api_keys']['openai'];	
 		}
 		if ( ! empty( $ai_settings['api_prompt'] ) ) {
 			$prompt 	=	$ai_settings['api_prompt'];	
 		}
 		$models 		=	[];
-		if ( ! empty( $ai_settings['api_available_models'] ) && ! empty( $ai_settings['api_available_models'][$provider] ) ) {
-			$models 	=	$ai_settings['api_available_models'][$provider];
+		if ( ! empty( $ai_settings['api_available_models'] ) && ! empty( $ai_settings['api_available_models']['openai'] ) ) {
+			$models 	=	$ai_settings['api_available_models']['openai'];
 		}
 		$selected_model	=	'';
 		if ( ! empty( $ai_settings['model'] ) ) {
@@ -143,6 +152,24 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 			<p><?php echo sprintf( __( 'Read <a href="%s" target="_blank">AI Integration Docs</a>', 'wp-multilang' ), esc_url( 'https://wp-multilang.com/docs' ) ) ?></p>
 			<table class="form-table">
 				<tbody>
+					<tr valign="top">
+						<th scope="row" class="titledesc">
+							<label class="wpm-label-cursor" style="cursor:pointer;" for="wpm-ai-provider"><?php echo esc_html__( 'Select Platform', 'wp-multilang' ); ?></label>
+						</th>
+						<td class="forminp forminp-checkbox">
+							<select name="wpm-ai-provider" id="wpm-ai-provider">
+								<?php 
+								foreach ( $providers as $key => $value ) {
+								?>
+									<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $provider, $key ); ?>>
+										<?php echo esc_html( $value['name'] ); ?>
+									</option>
+								<?php
+								}
+								?>
+							</select>
+						</td>
+					</tr>
 					<tr valign="top">
 						<th scope="row" class="titledesc">
 							<label class="wpm-label-cursor" style="cursor:pointer;" for="wpm_openai_integration"><?php echo esc_html__( 'OpenAI Integration', 'wp-multilang' ); ?></label>
@@ -202,6 +229,8 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 							<div id="wpm-prompt-error"></div>
 						</td>	
 					</tr>
+
+					<?php do_action( 'wpm_render_deepl_settings', $ai_settings ); ?>
 
 					<tr valign="top">
 					    <th scope="row" class="titledesc">
@@ -284,17 +313,30 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 			$model 	=	sanitize_text_field( wp_unslash( $_POST['model'] ) );
 		}
 
+		$deepl_secret_key		=	isset( $_POST['wpm_deepl_secret_key'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_deepl_secret_key'] ) ) : '';
+		$deepl_api_plan			=	isset( $_POST['wpm_deepl_api_plan'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_deepl_api_plan'] ) ) : 'free';
+		$deepl_plans 			=	array( 'free', 'pro' );
+		if ( ! in_array( $deepl_api_plan, $deepl_plans ) ) {
+			$deepl_api_plan 	=	'free';	
+		} 
+
 		$api_settings 	=	self::get_openai_settings();
 
-		$api_settings['api_provider']	=	$provider;
-		$api_settings['model']			=	$model;
-		$api_settings['api_prompt']		=	$prompt;
+		$api_settings['api_provider']		=	$provider;
+		$api_settings['model']				=	$model;
+		$api_settings['api_prompt']			=	$prompt;
+		$api_settings['deepl_secret_key']	=	$deepl_secret_key;
+		$api_settings['deepl_api_plan']		=	$deepl_api_plan;
 
 		update_option( 'wpm_openai_settings', $api_settings );
 
 		$wpm_openai_integration = isset( $_POST['wpm_openai_integration'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_openai_integration'] ) ) : '0';
-
 		update_option( 'wpm_openai_integration', $wpm_openai_integration );
+
+		$wpm_deepl_integration = isset( $_POST['wpm_deepl_integration'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_deepl_integration'] ) ) : '0';
+		update_option( 'wpm_deepl_integration', $wpm_deepl_integration );
+
+		$deepl_settings 	=	
 
 	    wp_send_json_success( [
 	        'message' => 'Settings saved successfully.'

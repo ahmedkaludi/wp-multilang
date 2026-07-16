@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 7.0
-Stable tag: 2.4.29
+Stable tag: 2.4.30
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -254,6 +254,13 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.30 =
+- Feature: Need to add DeepL AI Integration #257
+- Fixed: Language switcher compatibility with wordpress 7.0 #264
+- Feature: Added compaitbility with YMC Filter plugin #266
+- Fixed: Duplicate content creating in post/page using Divi #268
+- Enhancement: Added support to Secure Custom Fields #269
+
 = 2.4.29 =
 - Fixed: With WooCommerce storefront theme customization #252
 - Fixed: issue with Gutslider #253
@@ -363,12 +370,5 @@ If you have opened several browser tabs for editing this post in different langu
 - feature AIOSEO multilingual schema and structured data support #58
 - feature Added a new feature that helps users select different logos as per the language of the site #71
 - feature Compatibility with Forminator form Plugin #132
-
-= 2.4.15 =
-- feature Added compatibility with Schema & Structured Data for WP & AMP Plugin #59
-- feature Added compatibility with Team – Team Members Showcase Plugin #75
-- feature Added option to reset the translation languages #122
-- fixed WPBakery Builder Meta Descriptions and Meta Titles Not Translating #128
-- fixed Auto translate not working when adding post via elementor #130
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

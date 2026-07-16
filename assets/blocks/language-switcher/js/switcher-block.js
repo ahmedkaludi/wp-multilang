@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
-	if($('.wp-block-wpm-language-switcher').length > 0 && $('.wp-block-wpm-language-switcher .wpm-language-switcher').length > 0){
-		let switcherDiv = $('.wp-block-wpm-language-switcher')
+	if($('.wpm-language-switcher').length > 0){
+		let switcherDiv = $('.wpm-language-switcher')
 		let findUl = $(switcherDiv).find('ul');
 
 		let selectSwitcher = switcherDiv.find('.wpm-switcher-select');
@@ -20,7 +20,7 @@ jQuery(document).ready(function($){
                 },
                 success:function(response){ 
                 	if(findUl.length > 0){
-			            $('.wp-block-wpm-language-switcher .wpm-language-switcher a').each(function(i, e){
+			            $('.wpm-language-switcher a').each(function(i, e){
 							var lang = $(this).data('lang');
 
 							let langUrl = '';
@@ -36,7 +36,7 @@ jQuery(document).ready(function($){
 					}
 
 					if(selectSwitcher.length > 0){
-						$('.wp-block-wpm-language-switcher .wpm-language-switcher option').each(function(i, e){
+						$('.wpm-language-switcher option').each(function(i, e){
 							var lang = $(this).data('lang');
 
 							let langUrl = '';
@@ -56,7 +56,7 @@ jQuery(document).ready(function($){
 		}
 	}
 
-	$(document).on('change', '.wp-block-wpm-language-switcher .wpm-switcher-select', function(e){
+	$(document).on('change', '.wpm-language-switcher .wpm-switcher-select', function(e){
 		let selectedOpt = $(this).val();
 		window.location.href = selectedOpt;
 	});

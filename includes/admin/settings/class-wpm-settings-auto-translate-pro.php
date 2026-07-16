@@ -111,6 +111,7 @@ class WPM_Settings_Auto_Translate_Pro {
 
 
 		$main_params['is_pro_active'] = wpm_is_pro_active();
+		$main_params 	=	apply_filters( 'wpm_filter_autotranslate_localize_data', $main_params );
 
 		return $main_params;
 
@@ -1386,12 +1387,24 @@ class WPM_Settings_Auto_Translate_Pro {
 		$params 	=	array();
 		$params 	=	self::filter_js_params( $params );
 		
+		$provider = ! empty( $params['ai_settings']['api_provider'] ) ? $params['ai_settings']['api_provider'] : '';
+		$integration_key = 'wpm_' . $provider . '_integration';
+		
 		if ( wpm_is_pro_active() && $params['license_status'] !== 'active' ) {
 
 		?>
 			<p class="wpm-license-error-note" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'Your license key is inactive or expired, please check', 'wp-multilang' ); ?><a href="<?php echo esc_attr( admin_url( 'admin.php?page=wpm-settings&tab=license' ) ) ?>"><?php echo esc_html__( ' here' ); ?></a></p>
 		<?php	
-		}else if ( ! wpm_is_pro_active() &&  ( empty( $params['ai_settings']['wpm_openai_integration'] ) || $params['ai_settings']['wpm_openai_integration'] == 0 ||  empty( $params['ai_settings']['model'] ) || empty( $params['ai_settings']['api_provider'] ) ) ) {
+		}else if ( ! wpm_is_pro_active() && (
+				empty( $provider ) ||
+				empty( $params['ai_settings'][ $integration_key ] ) ||
+				$params['ai_settings'][ $integration_key ] == 0 ||
+				(
+					$provider === 'openai' &&
+					empty( $params['ai_settings']['model'] )
+				)
+			)
+		) {
 		?>
 			<p class="wpm-license-error-note" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'Set up', 'wp-multilang' ); ?><a href="<?php echo esc_attr( admin_url( 'admin.php?page=wpm-settings&tab=ai_integration' ) ); ?>"><?php echo esc_html__( ' AI integration' ); ?></a><?php echo esc_html__( ' to use auto-translation in the free plan, or', 'wp-multilang' ); ?><a href="<?php echo esc_url( 'https://wp-multilang.com/pricing/' ); ?>" target="_blank"><?php echo esc_html__( ' upgrade to Pro' ); ?></a><?php echo esc_html__( ' for automatic translation.', 'wp-multilang' ) ?></p>
 		<?php	

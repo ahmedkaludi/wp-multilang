@@ -230,15 +230,39 @@ jQuery(document).ready(function($){
             }
         }
 
-        console.log('wpm_openai_integration ', wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration);
-        if( ! wpmpro_autotranslate_localize_data.is_pro_active && ( wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration.length === 0 || wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration == '0' ) ) {
-            return false;
-        } 
-        if( ! wpmpro_autotranslate_localize_data.is_pro_active && ( selectedProvider.length === 0 || wpmpro_autotranslate_localize_data.ai_settings.model.length === 0 ) ) {
-            return false
+        const aiSettings = wpmpro_autotranslate_localize_data.ai_settings;
+
+        if ( ! wpmpro_autotranslate_localize_data.is_pro_active ) {
+
+            // Check selected provider exists
+            if ( selectedProvider.length === 0 ) {
+                return false;
+            }
+
+            // Dynamic integration key check
+            const integrationKey = `wpm_${selectedProvider}_integration`;
+
+            if (
+                ! aiSettings[integrationKey] ||
+                aiSettings[integrationKey].length === 0 ||
+                aiSettings[integrationKey] === '0'
+            ) {
+                return false;
+            }
+
+            // Model required only for OpenAI
+            if (
+                selectedProvider === 'openai' &&
+                ( ! aiSettings.model || aiSettings.model.length === 0 )
+            ) {
+                return false;
+            }
         }
-        
-        if ( ( wpmpro_autotranslate_localize_data.is_pro_active ) && wpmpro_autotranslate_localize_data.license_status !== 'active' ) {
+
+        if (
+            wpmpro_autotranslate_localize_data.is_pro_active &&
+            wpmpro_autotranslate_localize_data.license_status !== 'active'
+        ) {
             return false;
         }
 
@@ -250,6 +274,7 @@ jQuery(document).ready(function($){
         
         // Check AI quota before translating
         const aiQuotaStatus = await wpmHandleAITranslationCheck(selectedProvider);
+        
         if (!aiQuotaStatus) {
             return false;
         }
@@ -693,10 +718,14 @@ jQuery(document).ready(function($){
     async function wpmHandleAITranslationCheck(selectedProvider) {
         let openAIStatus = true;
 
-        if (!wpmpro_autotranslate_localize_data.is_pro_active &&
-            selectedProvider === 'openai' &&
-            wpmpro_autotranslate_localize_data.ai_settings.model.length > 0 &&
-            wpmpro_autotranslate_localize_data.ai_settings.wpm_openai_integration == '1'
+        const requiresModel = selectedProvider === 'openai';
+        const aiSettings = wpmpro_autotranslate_localize_data.ai_settings;
+        const integrationKey = `wpm_${selectedProvider}_integration`;
+
+        if (
+            !wpmpro_autotranslate_localize_data.is_pro_active &&
+            aiSettings[integrationKey] === '1' &&
+            ( !requiresModel || aiSettings.model.length > 0 )
         ) {
 
             $("#wpmpro-translate").hide();
