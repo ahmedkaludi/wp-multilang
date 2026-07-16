@@ -237,6 +237,8 @@ class WPM_Posts extends WPM_Object {
 
 				if ( ! wpm_is_ml_value( $data[ $key ] ) ) {
 					$data[ $key ] = wpm_set_new_value( $old_value, $data[ $key ], $post_field_config );
+				} else {
+					$data[ $key ] = wp_slash( wp_unslash( $data[ $key ] ) );
 				}
 			}
 		}

@@ -543,9 +543,10 @@ function wpm_set_new_value( $old_value, $new_value, $config = array(), $lang = '
 	$old_value = wpm_value_to_ml_array( $old_value );
 
 	if ( wpm_is_ml_array( $old_value ) ) {
+		$is_post_save = doing_filter( 'wp_insert_post_data' ) || doing_filter( 'wp_insert_attachment_data' );
 		foreach ($old_value as $key => $lang_value) {
 			if ( is_string( $lang_value ) ) {
-				if ( strpos($lang_value, '{"') || strpos($lang_value, ':{"') || strpos($lang_value, '""')  || strpos($lang_value, '":"') ) {
+				if ( $is_post_save || strpos($lang_value, '{"') || strpos($lang_value, ':{"') || strpos($lang_value, '""')  || strpos($lang_value, '":"') ) {
 					$old_value[ $key ] = wp_slash( $lang_value );
 				}
 			}
