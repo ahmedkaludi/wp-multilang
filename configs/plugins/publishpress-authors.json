@@ -1,0 +1,13 @@
+{
+	"post_types": {
+		"ppma_boxes": {},
+		"ppmacf_field": {}
+	},
+	"post_fields":{
+		"ppmacf_description": {},
+		"ppma_boxes_layout_meta_value": {
+			"title_text": {},
+			"title_text_plural": {}
+		}
+	}
+}
