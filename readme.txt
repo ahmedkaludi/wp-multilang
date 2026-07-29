@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 7.0
-Stable tag: 2.4.30
+Stable tag: 2.4.31
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -254,6 +254,11 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.31 =
+- Fixed: Backslashes lost upon saving different language in custom HTML editor #267
+- Fixed: Yoast global settings not saving values per language #271
+- Enhancement: Improve Post Content Rendering and HTML Entity Handling #272
+
 = 2.4.30 =
 - Feature: Need to add DeepL AI Integration #257
 - Fixed: Language switcher compatibility with wordpress 7.0 #264
@@ -363,12 +368,5 @@ If you have opened several browser tabs for editing this post in different langu
 - feature Added compatibility with Gravity form #148
 - fixed Execution timing issue with the code-profiler plugin #149
 - feature Auto-Translation for Reviews and Collections in Schema Plugin #150
-
-= 2.4.16 =
-- feature Rankmath multilingual schema and structured data support #56
-- feature Yoast multilingual schema and structured data support #57
-- feature AIOSEO multilingual schema and structured data support #58
-- feature Added a new feature that helps users select different logos as per the language of the site #71
-- feature Compatibility with Forminator form Plugin #132
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).

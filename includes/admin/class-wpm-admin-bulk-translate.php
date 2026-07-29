@@ -209,13 +209,9 @@ class WPM_Bulk_Translate
      * @since   2.4.17
      * */
     public function parse_request_before_redirect($sendback)
-    {
-        if (
-            !isset($_GET["action"], $_REQUEST["_wpm_bulk_translate_nonce"]) ||
-            "wpm_translate_action" !== $_GET["action"] ||
-            !wp_verify_nonce(
-                $_REQUEST["_wpm_bulk_translate_nonce"],
-                "wpm_bulk_translate"
+    {   
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- As this is nonce so sanitization not required
+        if ( !isset($_GET["action"], $_REQUEST["_wpm_bulk_translate_nonce"]) || "wpm_translate_action" !== $_GET["action"] || !wp_verify_nonce( $_REQUEST["_wpm_bulk_translate_nonce"], "wpm_bulk_translate"
             )
         ) {
             return $sendback;
@@ -400,7 +396,7 @@ class WPM_Bulk_Translate
                 "_" .
                 $target_lang .
                 "_" .
-                date("Y-m-d_H-i-s") .
+                gmdate("Y-m-d_H-i-s") .
                 ".xliff";
 
             header("Content-Type: application/xml");
@@ -691,7 +687,7 @@ class WPM_Bulk_Translate
             $default_lang,
             $current_lang
         );
-
+        // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
         $xliff_template = <<<XLIFF
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
@@ -700,6 +696,7 @@ class WPM_Bulk_Translate
 XLIFF;
 
         foreach ($formatted_data as $key => $data) {
+            // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
             $xliff_template .= <<<XLIFF
 
             <group restype="x-post" resname="{$data["id"]}">
@@ -711,7 +708,7 @@ XLIFF;
 XLIFF;
 
             $unit_id++;
-
+            // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
             $xliff_template .= <<<XLIFF
 
                 <trans-unit id="{$unit_id}" restype="x-post_content">
@@ -724,6 +721,7 @@ XLIFF;
             if ( is_array( $data['acf'] ) && ! empty( $data['acf'] ) ) {
                 foreach ( $data['acf'] as $acf ) {
                     if ( is_array( $acf ) && ! empty( $acf['source_value'] ) ) {
+                        // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
                         $xliff_template .= <<<XLIFF
                         
                         <trans-unit id="{$unit_id}" restype="x-acf" resname="{$acf['key']}">
@@ -739,6 +737,7 @@ XLIFF;
             if ( is_array( $data['postmeta'] ) && ! empty( $data['postmeta'] ) ) {
                 foreach ( $data['postmeta'] as $postmeta ) {
                     if ( is_array( $postmeta ) && ! empty( $postmeta['source_value'] ) ) {
+                        // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
                         $xliff_template .= <<<XLIFF
                         
                         <trans-unit id="{$unit_id}" restype="x-postmeta" resname="{$postmeta['key']}">
@@ -750,7 +749,7 @@ XLIFF;
                     }
                 }
             }
-
+            // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
             $xliff_template .= <<<XLIFF
 
                 </group>
@@ -761,6 +760,7 @@ XLIFF;
         foreach ($formatted_data as $key => $data) {
             if (!empty($data["terms"])) {
                 foreach ($data["terms"] as $tkey => $term) {
+                    // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
                     $xliff_template .= <<<XLIFF
 
             <group restype="x-term" resname="{$term["term_id"]}">
@@ -775,7 +775,7 @@ XLIFF;
                 }
             }
         }
-
+        // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
         $xliff_template .= <<<XLIFF
 
         </body>
@@ -806,7 +806,7 @@ XLIFF;
             $default_lang,
             $current_lang
         );
-
+        // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
         $xliff_template = <<<XLIFF
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="{$formatted_data[0]["source_lang"]}" trgLang="{$formatted_data[0]["target_lang"]}">
@@ -814,7 +814,7 @@ XLIFF;
 XLIFF;
 
         $xliff_template .= $this->render_xliff_groups($formatted_data);
-
+        // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
         $xliff_template .= <<<XLIFF
 
     </file>
@@ -844,7 +844,7 @@ XLIFF;
             $default_lang,
             $current_lang
         );
-
+        // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
         $xliff_template = <<<XLIFF
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.1" version="2.1" srcLang="{$formatted_data[0]["source_lang"]}" trgLang="{$formatted_data[0]["target_lang"]}">
@@ -852,7 +852,7 @@ XLIFF;
 XLIFF;
 
         $xliff_template .= $this->render_xliff_groups($formatted_data);
-
+        // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
         $xliff_template .= <<<XLIFF
 
     </file>
@@ -875,10 +875,12 @@ XLIFF;
         $xliff_template = "";
 
         foreach ($formatted_data as $key => $data) {
+            // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
             $xliff_template .= <<<XLIFF
 
         <group id="{$group_id}" type="x:post" name="{$data["id"]}">
-XLIFF;
+XLIFF;      
+            // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
             $xliff_template .= <<<XLIFF
 
             <unit id="{$unit_id}" type="x:post_title">
@@ -890,7 +892,7 @@ XLIFF;
 XLIFF;
 
             $unit_id++;
-
+            // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
             $xliff_template .= <<<XLIFF
 
             <unit id="{$unit_id}" type="x:post_content">
@@ -906,6 +908,7 @@ XLIFF;
             if ( is_array( $data['acf'] ) && isset( $data['acf'] ) ) {
                 foreach ( $data['acf'] as $acf ) {
                     if ( is_array( $acf ) && ! empty( $acf['source_value'] ) ) {
+                        // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
                         $xliff_template .= <<<XLIFF
                         
                         <unit id="{$unit_id}" type="x:acf" name="{$acf['key']}">
@@ -923,6 +926,7 @@ XLIFF;
             if ( is_array( $data['postmeta'] ) && ! empty( $data['postmeta'] ) ) {
                 foreach ( $data['postmeta'] as $postmeta ) {
                     if ( is_array( $postmeta ) && ! empty( $postmeta['source_value'] ) ) {
+                        // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
                         $xliff_template .= <<<XLIFF
                         
                         <unit id="{$unit_id}" type="x:postmeta" name="{$postmeta['key']}">
@@ -936,7 +940,7 @@ XLIFF;
                     }
                 }
             }
-
+            // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
             $xliff_template .= <<<XLIFF
         </group> 
 XLIFF;
@@ -947,6 +951,7 @@ XLIFF;
         foreach ($formatted_data as $key => $data) {
             if (!empty($data["terms"])) {
                 foreach ($data["terms"] as $tkey => $term) {
+                    // phpcs:ignore PluginCheck.CodeAnalysis.Heredoc.NotAllowed -- It's a XLIFF file generator
                     $xliff_template .= <<<XLIFF
 
         <group id="{$group_id}" type="x:term" name="{$term["term_id"]}">
@@ -1011,7 +1016,7 @@ XLIFF;
         if (!current_user_can("manage_options")) {
             return;
         }
-
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- As this is the nonce, sanitization not needed.
         if (!isset($_POST["wpm_xliff_security"])) {
             return;
         }
@@ -1036,9 +1041,7 @@ XLIFF;
                     !empty($_FILES["wpm_import_xliff_file"]) &&
                     !empty($_FILES["wpm_import_xliff_file"]["tmp_name"])
                 ) {
-                    $file_name = sanitize_text_field(
-                        $_FILES["wpm_import_xliff_file"]["name"]
-                    );
+                    $file_name = isset( $_FILES["wpm_import_xliff_file"]["name"] ) ? $_FILES["wpm_import_xliff_file"]["name"] : '';
                     $extension = pathinfo($file_name, PATHINFO_EXTENSION);
                     $filepath = sanitize_text_field(
                         $_FILES["wpm_import_xliff_file"]["tmp_name"]

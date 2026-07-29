@@ -222,7 +222,7 @@ class WPM_Acf {
 							}else{
 
 								// If parent is assigned other than settings and tools menu then get the correct base for this
-								$parse_parent	=	parse_url( $parent, PHP_URL_QUERY );
+								$parse_parent	=	wp_parse_url( $parent, PHP_URL_QUERY );
 								parse_str( $parse_parent, $params );
 								if ( is_array( $params ) && ! empty( $params['post_type'] ) ) {
 									$delimiter	=	strpos( $params['post_type'], '-' ) !== false ? '-' : '_';

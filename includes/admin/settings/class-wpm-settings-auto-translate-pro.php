@@ -55,7 +55,7 @@ class WPM_Settings_Auto_Translate_Pro {
 
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			$dir_path = plugin_dir_url( __DIR__ );
-
+			// phpcd:ignore WordPress.Security.NonceVerification.Recommended -- This is not form submission so nonce not required here.
 			$tag_id 	=	isset( $_GET['tag_ID'] ) ? intval( $_GET['tag_ID'] ) : 0;
 
 			$main_params = array(
@@ -100,7 +100,7 @@ class WPM_Settings_Auto_Translate_Pro {
 		
 		$main_params['license_status'] 		=	'';
 		$license = get_option( 'wpmpro_upgrade_license' );
-		$main_params['confirmation_message']  =  esc_html__( 'Are you sure you want to auto translate this content? It will overwrite the existing content for the current language.', 'wp-multilang-pro' );
+		$main_params['confirmation_message']  =  esc_html__( 'Are you sure you want to auto translate this content? It will overwrite the existing content for the current language.', 'wp-multilang' );
 		$main_params['nonce'] = wp_create_nonce('wpmpro_search_items');
 		if ( is_array( $license ) && ! empty( $license['pro'] ) && is_array( $license['pro'] ) && ! empty( $license['pro']['license_key_status'] ) ){
 			$main_params['license_status'] 	= 	$license['pro']['license_key_status'];
@@ -283,6 +283,7 @@ class WPM_Settings_Auto_Translate_Pro {
 	public static function is_slug_exists( $post_id, $current_lang ){
 		global $wpdb;
 		$table_name =	$wpdb->prefix.WPM_SLUG_TABLE;
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$count 		=	$wpdb->get_var( $wpdb->prepare( "SELECT count(*) FROM {$table_name} WHERE slug_id = %d AND language = %s", $post_id, $current_lang ) );
 		return $count;
 	}
@@ -290,8 +291,9 @@ class WPM_Settings_Auto_Translate_Pro {
 		
 		$response = array('status'=>true, 'message'=>esc_html__('Already Processed','wp-multilang'));
 
-		// Check if the post is excluded
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This function does not handle any form submission so nonce not needed here.
 		if (isset($_POST['excluded_items']) && !empty($_POST['excluded_items'])) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, 	WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- This function does not handle any form submission so nonce not needed here.
 			$excluded_items = json_decode(stripslashes($_POST['excluded_items']), true);
 			$post_type = get_post_type($post);
 			
@@ -1238,8 +1240,9 @@ class WPM_Settings_Auto_Translate_Pro {
 	public static function auto_translate_term( $term, $source, $target, $override = false ) {
 		$response = array('status'=>true, 'message'=>esc_html__('Already Processed','wp-multilang'));
 
-		// Check if the term is excluded
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- This function does not handle any form submission so nonce not needed here.
 		if (isset($_POST['excluded_items']) && !empty($_POST['excluded_items'])) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, 	WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- This function does not handle any form submission so nonce not needed here.
 			$excluded_items = json_decode(stripslashes($_POST['excluded_items']), true);
 			
 			if (isset($excluded_items[$term->taxonomy]) && in_array($term->term_id, $excluded_items[$term->taxonomy])) {
@@ -1393,7 +1396,7 @@ class WPM_Settings_Auto_Translate_Pro {
 		if ( wpm_is_pro_active() && $params['license_status'] !== 'active' ) {
 
 		?>
-			<p class="wpm-license-error-note" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'Your license key is inactive or expired, please check', 'wp-multilang' ); ?><a href="<?php echo esc_attr( admin_url( 'admin.php?page=wpm-settings&tab=license' ) ) ?>"><?php echo esc_html__( ' here' ); ?></a></p>
+			<p class="wpm-license-error-note" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'Your license key is inactive or expired, please check', 'wp-multilang' ); ?><a href="<?php echo esc_attr( admin_url( 'admin.php?page=wpm-settings&tab=license' ) ) ?>"><?php echo esc_html__( ' here', 'wp-multilang' ); ?></a></p>
 		<?php	
 		}else if ( ! wpm_is_pro_active() && (
 				empty( $provider ) ||
@@ -1406,11 +1409,11 @@ class WPM_Settings_Auto_Translate_Pro {
 			)
 		) {
 		?>
-			<p class="wpm-license-error-note" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'Set up', 'wp-multilang' ); ?><a href="<?php echo esc_attr( admin_url( 'admin.php?page=wpm-settings&tab=ai_integration' ) ); ?>"><?php echo esc_html__( ' AI integration' ); ?></a><?php echo esc_html__( ' to use auto-translation in the free plan, or', 'wp-multilang' ); ?><a href="<?php echo esc_url( 'https://wp-multilang.com/pricing/' ); ?>" target="_blank"><?php echo esc_html__( ' upgrade to Pro' ); ?></a><?php echo esc_html__( ' for automatic translation.', 'wp-multilang' ) ?></p>
+			<p class="wpm-license-error-note" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'Set up', 'wp-multilang' ); ?><a href="<?php echo esc_attr( admin_url( 'admin.php?page=wpm-settings&tab=ai_integration' ) ); ?>"><?php echo esc_html__( ' AI integration', 'wp-multilang' ); ?></a><?php echo esc_html__( ' to use auto-translation in the free plan, or', 'wp-multilang' ); ?><a href="<?php echo esc_url( 'https://wp-multilang.com/pricing/' ); ?>" target="_blank"><?php echo esc_html__( ' upgrade to Pro', 'wp-multilang' ); ?></a><?php echo esc_html__( ' for automatic translation.', 'wp-multilang' ) ?></p>
 		<?php	
 		}else{
 		?>
-			<p class="wpm-license-error-note wpm-hide" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'This feature requires the ', 'wp-multilang' ); ?><a href="https://wp-multilang.com/pricing/#pricings"><?php echo esc_html__( ' Premium Version' ); ?></a></p>
+			<p class="wpm-license-error-note wpm-hide" style="color: red; font-weight: 600; font-size: 14px;"><?php echo esc_html__( 'This feature requires the ', 'wp-multilang' ); ?><a href="https://wp-multilang.com/pricing/#pricings"><?php echo esc_html__( ' Premium Version', 'wp-multilang' ); ?></a></p>
 		<?php
 		}
 
@@ -1438,8 +1441,8 @@ class WPM_Settings_Auto_Translate_Pro {
 				$insert_data['slug']		=	$new_slug;
 				$insert_data['language']	=	$target;
 				$insert_data['type']		=	$type;
-				$insert_data['created_at']	=	date( 'Y-m-d H:i:s' );
-				$insert_data['updated_at']	=	date( 'Y-m-d H:i:s' );
+				$insert_data['created_at']	=	gmdate( 'Y-m-d H:i:s' );
+				$insert_data['updated_at']	=	gmdate( 'Y-m-d H:i:s' );
 
 				$wpdb->insert( $slug_table_name, $insert_data );	
 
@@ -1447,7 +1450,7 @@ class WPM_Settings_Auto_Translate_Pro {
 				$where['slug_id']			=	$slug_id;
 				$where['language']			=	$target;
 				$update_data['slug'] 		=	$new_slug;
-				$update_data['updated_at'] 	=	date( 'Y-m-d H:i:s' );
+				$update_data['updated_at'] 	=	gmdate( 'Y-m-d H:i:s' );
 				$wpdb->update( $slug_table_name, $update_data, $where );
 			}
 		}

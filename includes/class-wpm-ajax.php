@@ -593,6 +593,11 @@ class WPM_AJAX {
 	 * */
 	public static function process_batch_translation(){
 		
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( ! isset( $_POST['wpmpro_autotranslate_singular_nonce'] ) ) {
+			wp_send_json_error( array( 'message' => esc_html__( 'security nonce not found', 'wp-multilang' ) ) );
+		}
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		if ( ! wp_verify_nonce( $_POST['wpmpro_autotranslate_singular_nonce'], 'wpmpro-autotranslate-singular-nonce' ) ) {
 			wp_send_json_error( array( 'message' => esc_html__( 'security nonce not verify', 'wp-multilang' ) ) );
 		}
@@ -829,6 +834,7 @@ class WPM_AJAX {
 						    WHERE tt.term_id = %d
 						", $tag_id
 						);
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepare already applied above
 			$term 			= $wpdb->get_row( $query );
 			if ( is_object( $term ) && ! empty( $term ) ) {
 				$response 		=	WPM_Settings_Auto_Translate_Pro::auto_translate_term( $term, $source, $target, true );
@@ -983,6 +989,7 @@ class WPM_AJAX {
 				}
 			}
 			
+			/* translators: %d: User display name. */
 			wp_send_json_success( array( 
 				'total_nodes' => $total_nodes,
 				'message' => sprintf( esc_html__( 'Found %d text nodes to translate', 'wp-multilang' ), $total_nodes )
@@ -1089,6 +1096,7 @@ class WPM_AJAX {
 							    WHERE tt.term_id = %d
 							", $term->term_id
 							);
+							// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Prepare already applied above
 							$raw_term 			= $wpdb->get_row( $query );
 
 							if ( is_object( $raw_term ) && isset( $raw_term->term_id ) ) {

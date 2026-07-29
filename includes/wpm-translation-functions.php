@@ -543,9 +543,10 @@ function wpm_set_new_value( $old_value, $new_value, $config = array(), $lang = '
 	$old_value = wpm_value_to_ml_array( $old_value );
 
 	if ( wpm_is_ml_array( $old_value ) ) {
+		$is_post_save = doing_filter( 'wp_insert_post_data' ) || doing_filter( 'wp_insert_attachment_data' );
 		foreach ($old_value as $key => $lang_value) {
 			if ( is_string( $lang_value ) ) {
-				if ( strpos($lang_value, '{"') || strpos($lang_value, ':{"') || strpos($lang_value, '""')  || strpos($lang_value, '":"') ) {
+				if ( $is_post_save || strpos($lang_value, '{"') || strpos($lang_value, ':{"') || strpos($lang_value, '""')  || strpos($lang_value, '":"') ) {
 					$old_value[ $key ] = wp_slash( $lang_value );
 				}
 			}
@@ -576,16 +577,24 @@ function wpm_filter_string_for_github_md_plugin( $string ) {
 	}
 
 	// Checks if any html attribute contains json data and skips
-	if ( preg_match( '/=\s*["\'][^"\']*&quot;/i', $string ) ) {
-        $string = str_replace(
-            [ '&amp;', '&#039;', '&lt;', '&gt;' ],
-            [ '&',     "'",      '<',    '>'    ],
-            $string
-        );
-        return $string;
-    }
+	if ( in_array( 'slider-blocks/slider-blocks.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ), true )  ) ) {
+		if ( preg_match( '/=\s*["\'][^"\']*&quot;/i', $string ) ) {
+	        $string = str_replace(
+	            [ '&amp;', '&#039;', '&lt;', '&gt;' ],
+	            [ '&',     "'",      '<',    '>'    ],
+	            $string
+	        );
+	        return $string;
+	    }
+	}
 	
 	$string = htmlspecialchars_decode( $string );
+
+	if ( ! wpm_get_user_role_access() ) {
+		$string = wp_kses_post( $string );
+	}
+	
+	
 
 	return $string;
 }
@@ -936,4 +945,42 @@ function wpm_is_pro_active(){
 	$is_active 		=	is_plugin_active( 'wp-multilang-pro/wp-multilang-pro.php' );
 	return $is_active;
 
+}
+
+/**
+ * This function is used to handle the content vulnerability
+ * https://github.com/ahmedkaludi/wp-multilang/issues/272
+ * @since 	2.4.31
+ * */
+function wpm_get_user_role_access() {
+
+	if ( ! function_exists( 'is_user_logged_in' ) || ! is_user_logged_in() ) {
+		return true;
+	}
+
+	if ( ! function_exists( 'wp_get_current_user' ) ) {
+		return true;
+	}
+
+	$user = wp_get_current_user();
+
+	if ( ! ( $user instanceof WP_User ) || empty( $user->roles ) || ! is_array( $user->roles ) ) {
+		return true;
+	}
+
+	$roles = $user->roles;
+
+	if ( in_array( 'administrator', $roles, true ) ) {
+		return true;
+	}
+
+	if ( in_array( 'editor', $roles, true ) ) {
+		return true;
+	}
+
+	if ( in_array( 'author', $roles, true ) ) {
+		return true;
+	}
+
+	return false;
 }
