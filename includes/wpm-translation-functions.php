@@ -530,6 +530,20 @@ function wpm_is_ml_value( $value ) {
  *
  * @return array|bool|string
  */
+/**
+ * Recursively sanitize arrays and strings using wp_kses_post.
+ *
+ * @param mixed $value
+ * @return mixed
+ */
+function wpm_kses_post_deep( $value ) {
+	if ( is_array( $value ) ) {
+		return array_map( 'wpm_kses_post_deep', $value );
+	}
+
+	return is_string( $value ) ? wp_kses_post( $value ) : $value;
+}
+
 function wpm_set_new_value( $old_value, $new_value, $config = array(), $lang = '' ) {
 
 	if ( is_bool( $new_value ) ) {
@@ -538,6 +552,10 @@ function wpm_set_new_value( $old_value, $new_value, $config = array(), $lang = '
 
 	if ( is_serialized_string( $old_value ) || isJSON( $old_value ) ) {
 		return $old_value;
+	}
+
+	if ( function_exists( 'current_user_can' ) && ! current_user_can( 'unfiltered_html' ) ) {
+		$new_value = wpm_kses_post_deep( $new_value );
 	}
 
 	$old_value = wpm_value_to_ml_array( $old_value );
@@ -587,15 +605,6 @@ function wpm_filter_string_for_github_md_plugin( $string ) {
 	        return $string;
 	    }
 	}
-	
-	$string = htmlspecialchars_decode( $string );
-
-	if ( ! wpm_get_user_role_access() ) {
-		$string = wp_kses_post( $string );
-	}
-	
-	
-
 	return $string;
 }
 
@@ -945,42 +954,4 @@ function wpm_is_pro_active(){
 	$is_active 		=	is_plugin_active( 'wp-multilang-pro/wp-multilang-pro.php' );
 	return $is_active;
 
-}
-
-/**
- * This function is used to handle the content vulnerability
- * https://github.com/ahmedkaludi/wp-multilang/issues/272
- * @since 	2.4.31
- * */
-function wpm_get_user_role_access() {
-
-	if ( ! function_exists( 'is_user_logged_in' ) || ! is_user_logged_in() ) {
-		return true;
-	}
-
-	if ( ! function_exists( 'wp_get_current_user' ) ) {
-		return true;
-	}
-
-	$user = wp_get_current_user();
-
-	if ( ! ( $user instanceof WP_User ) || empty( $user->roles ) || ! is_array( $user->roles ) ) {
-		return true;
-	}
-
-	$roles = $user->roles;
-
-	if ( in_array( 'administrator', $roles, true ) ) {
-		return true;
-	}
-
-	if ( in_array( 'editor', $roles, true ) ) {
-		return true;
-	}
-
-	if ( in_array( 'author', $roles, true ) ) {
-		return true;
-	}
-
-	return false;
 }
