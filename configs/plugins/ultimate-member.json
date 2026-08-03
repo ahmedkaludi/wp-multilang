@@ -14,5 +14,30 @@
 		"_um_login_secondary_btn_word": {},
 		"_um_profile_primary_btn_word": {},
 		"_um_profile_secondary_btn_word": {}
-	}
+	},
+	"admin_pages": [
+		"ultimate-member_page_um_options"
+	],
+	"options": {
+  		"um_options": {
+  			"profile_title": {},
+  			"profile_desc": {},
+  			"delete_account_text": {},
+  			"restricted_access_post_title": {},
+  			"restricted_access_message": {},
+  			"welcome_email_sub": {},
+  			"checkmail_email_sub": {},
+  			"pending_email_sub": {},
+  			"approved_email_sub": {},
+  			"inactive_email_sub": {},
+  			"deletion_email_sub": {},
+  			"resetpw_email_sub": {},
+  			"changedpw_email_sub": {},
+  			"changedaccount_email_sub": {},
+  			"notification_new_user_sub": {},
+  			"notification_review_sub": {},
+  			"notification_deletion_sub": {},
+  			"suspicious-activity_sub": {}
+  		}
+  	}
 }
