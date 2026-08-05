@@ -61,7 +61,7 @@ class WPM_Settings_Auto_Translate_Pro {
 			$main_params = array(
 			    'ajax_url'                          		=>	admin_url( 'admin-ajax.php' ),
 			    'ajaxurl'                          			=>	admin_url( 'admin-ajax.php' ), // Also provide ajaxurl for compatibility
-			    'source_language'                   		=>	function_exists('wpm_get_user_language') ? wpm_get_user_language() : 'en',
+			    'source_language'                   		=>	function_exists('wpm_get_default_language') ? wpm_get_default_language() : 'en',
 			    'target_language'                   		=>	function_exists('wpm_get_language') ? wpm_get_language() : 'en',
 			    'post_id'                   				=>	get_the_ID(),
 			    'tag_id'                   					=>	$tag_id,
@@ -241,6 +241,10 @@ class WPM_Settings_Auto_Translate_Pro {
 				}
 		}
 			
+			if ( $batch_start === 0 && function_exists( 'acf_get_field' ) ) {
+				self::auto_translate_acf_fields( $post->ID, $source, $target, true );
+			}
+
 			$post_arr = array( 
 								'ID'			=>	$post->ID,
 								'post_title'	=>	$post->post_title,
@@ -1170,6 +1174,11 @@ class WPM_Settings_Auto_Translate_Pro {
 			$debug_entry .= "=== SEO META PROCESSING END ===\n\n";
 			file_put_contents($debug_file, $debug_entry, FILE_APPEND | LOCK_EX);
 
+			// ACF Auto Translation
+			if ( function_exists( 'acf_get_field' ) ) {
+				self::auto_translate_acf_fields( $post->ID, $source, $target, $override );
+			}
+
 			$post_arr = array( 
 										'ID'			=>	$post->ID,
 										'post_title'	=>	$post->post_title,
@@ -1739,5 +1748,110 @@ public static function isJson( $string ) {
 
 	return json_last_error() === JSON_ERROR_NONE;
 }
+
+	/**
+	 * Auto translate ACF fields for a post
+	 * @param 	int 	$post_id
+	 * @param 	string 	$source
+	 * @param 	string 	$target
+	 * @param 	boolean $override
+	 * @return 	boolean
+	 * @since 	2.4.32
+	 * */
+	public static function auto_translate_acf_fields( $post_id, $source, $target, $override = false ) {
+		if ( ! function_exists( 'acf_get_field' ) ) {
+			return false;
+		}
+
+		$all_metas = get_post_meta( $post_id );
+		if ( ! is_array( $all_metas ) ) {
+			return false;
+		}
+
+		$acf_updated = false;
+		$debug_file = WP_CONTENT_DIR . '/wpm_debug_translation.log';
+		$debug_entry = "=== ACF DYNAMIC PROCESSING START ===\n";
+		$debug_entry .= "Post ID: {$post_id} | Source: {$source} | Target: {$target} | Override: " . ($override ? 'Yes' : 'No') . "\n";
+
+		foreach ( $all_metas as $meta_key => $meta_values ) {
+			if ( strpos( $meta_key, '_' ) === 0 ) {
+				continue;
+			}
+
+			$ref_key = '_' . $meta_key;
+			if ( isset( $all_metas[ $ref_key ] ) ) {
+				$field_key = is_array( $all_metas[ $ref_key ] ) ? $all_metas[ $ref_key ][0] : $all_metas[ $ref_key ];
+				if ( strpos( $field_key, 'field_' ) === 0 ) {
+					$acf_field = acf_get_field( $field_key );
+					if ( $acf_field && in_array( $acf_field['type'], array( 'text', 'textarea', 'wysiwyg' ) ) ) {
+						$debug_entry .= "Processing ACF Field: {$meta_key} ({$field_key}) of type {$acf_field['type']}\n";
+
+						global $wpdb;
+						$raw_meta_value = $wpdb->get_var(
+							$wpdb->prepare(
+								"SELECT meta_value 
+								 FROM $wpdb->postmeta 
+								 WHERE meta_key = %s 
+								 AND post_id = %d",
+								$meta_key,
+								$post_id
+							)
+						);
+
+						if ( $raw_meta_value ) {
+							$is_meta_exist = wpm_ml_check_language_string( $raw_meta_value, $target );
+
+							if ( $is_meta_exist === false || $override === true ) {
+								$is_src_meta_exist = wpm_ml_check_language_string( $raw_meta_value, $source );
+
+								if ( $is_src_meta_exist === false ) {
+									$raw_meta_value = '[:' . $source . ']' . $raw_meta_value . '[:]';
+								}
+
+								$source_meta_val = wpm_ml_get_language_string( $raw_meta_value, $source );
+
+								if ( ! empty( trim( $source_meta_val ) ) ) {
+									$new_meta_val = wpm_ml_auto_translate_content( $source_meta_val, $source, $target, 0, 99999 );
+									$debug_entry .= "Original: '{$source_meta_val}' -> Translated: '{$new_meta_val}'\n";
+
+									if ( $new_meta_val && $new_meta_val !== $source_meta_val ) {
+										if ( $override === true && $is_meta_exist === true ) {
+											$pattern = '/\[:' . $target . '\][^\[]*(?:\[:\])?/';
+											$raw_meta_value = preg_replace( $pattern, '', $raw_meta_value );
+											if ( strpos( $raw_meta_value, '[:]' ) === false ) {
+												$raw_meta_value = $raw_meta_value . '[:]';
+											}
+											$raw_meta_value = str_replace( '[:]', '[:' . $target . ']' . $new_meta_val . '[:]', $raw_meta_value );
+										} else {
+											$new_meta_val_wrapped = '[:' . $target . ']' . $new_meta_val . '[:]';
+											if ( preg_match( '/\[:' . $target . '\][^\[]*(?:\[:\])?/', $raw_meta_value ) ) {
+												$raw_meta_value = preg_replace( '/\[:' . $target . '\][^\[]*(?:\[:\])?/', $new_meta_val_wrapped, $raw_meta_value );
+											} else {
+												$raw_meta_value = str_replace( '[:]', $new_meta_val_wrapped, $raw_meta_value );
+											}
+										}
+
+										$update_result = update_post_meta( $post_id, $meta_key, $raw_meta_value );
+										$debug_entry .= "Update result: " . ($update_result ? 'Success' : 'Failed') . "\n";
+
+										if ( $update_result ) {
+											$acf_updated = true;
+										}
+									}
+								}
+							} else {
+								$debug_entry .= "Skipping field {$meta_key} - target translation already exists and override is false\n";
+							}
+						}
+					}
+				}
+			}
+		}
+
+		$debug_entry .= "=== ACF DYNAMIC PROCESSING END ===\n\n";
+		file_put_contents( $debug_file, $debug_entry, FILE_APPEND | LOCK_EX );
+
+		return $acf_updated;
+	}
 
 }
