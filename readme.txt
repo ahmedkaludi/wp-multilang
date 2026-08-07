@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 7.0
-Stable tag: 2.4.31
+Stable tag: 2.4.32
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -90,6 +90,9 @@ Translations of post types, taxonomies, meta fields, options, text fields in mil
 * Internal Link Juicer
 * Strong Testimonials
 * Fluent Forms
+* Gamipress
+* PublishPress Authors
+* Autolinks Manager
 
 == Advance Woocommerce Support ==
 * Send emails in customer's selected language
@@ -254,6 +257,14 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.32 =
+- Feature: Added Compatibility With Autolink Manager #232
+- Feature: Added Compatibility With PublishPress Authors #233
+- Feature: Added Compatibility With Gamipress #234
+- Enhancement: Ultimate Member compatibility improvement $237
+- Fixed: Vulnerability fix reported by wordfence #272
+- Feature: Product type compatibility with Qodeum theme #275
+
 = 2.4.31 =
 - Fixed: Backslashes lost upon saving different language in custom HTML editor #267
 - Fixed: Yoast global settings not saving values per language #271
@@ -357,16 +368,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed code improvement for Category base translation #157
 - fixed Elementor css file creation for respective language #158
 - enhancement Auto translation code improvement when some specials characters are present #159
-
-= 2.4.17 =
-- feature Comments translation compatibility #38
-- feature Export and import content in XLIFF or xml format to translate outside #48
-- enhancement Made uninstall easy #138
-- feature Advance woocommerce support #139
-- feature Auto-translate single post/product #142
-- enhancement Checked license key for autotranslation feature #144
-- feature Added compatibility with Gravity form #148
-- fixed Execution timing issue with the code-profiler plugin #149
-- feature Auto-Translation for Reviews and Collections in Schema Plugin #150
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
