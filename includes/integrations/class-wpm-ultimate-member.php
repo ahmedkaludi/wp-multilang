@@ -26,6 +26,31 @@ class WPM_Ultimate_Member {
 	private $object_id = 0;
 
 	/**
+	 * List of um_options sub-keys that are translatable text strings.
+	 */
+	const UM_TRANSLATABLE_OPTIONS = array(
+		'profile_title',
+		'profile_desc',
+		'delete_account_text',
+		'delete_account_no_pass_required_text',
+		'restricted_access_post_title',
+		'restricted_access_message',
+		'welcome_email_sub',
+		'checkmail_email_sub',
+		'pending_email_sub',
+		'approved_email_sub',
+		'inactive_email_sub',
+		'deletion_email_sub',
+		'resetpw_email_sub',
+		'changedpw_email_sub',
+		'changedaccount_email_sub',
+		'notification_new_user_sub',
+		'notification_review_sub',
+		'notification_deletion_sub',
+		'suspicious-activity_sub',
+	);
+
+	/**
 	 * WPM_Ultimate_Member constructor.
 	 */
 	public function __construct() {
@@ -56,7 +81,7 @@ class WPM_Ultimate_Member {
 		//Install meta Filters
 		foreach ($meta_keys as $meta_key => $callbacks) {
 
-			add_filter( "wpm_{$meta_key}_meta_config", 			array( $this, 'config' ), 10, 3 );
+			add_filter( "wpm_{$meta_key}_meta_config", 		array( $this, 'config' ), 10, 3 );
 			add_filter( "wpm_add_{$meta_key}_meta_value", 		array( $this, $callbacks[0] ), 10, 1 );
 			add_filter( "wpm_update_{$meta_key}_meta_value", 	array( $this, $callbacks[0] ), 10, 1 );
 			add_filter( "wpm_get_{$meta_key}_meta_value", 		array( $this, $callbacks[1] ), 10, 1 );
@@ -66,6 +91,38 @@ class WPM_Ultimate_Member {
 		add_filter( 'um_register_form_button_two', array( $this, 'filter_form_button_two' ), 10, 2 );
 		add_filter( 'um_login_form_button_one', array( $this, 'filter_login_form_button_one' ), 10, 2 );
 		add_filter( 'um_login_form_button_two', array( $this, 'filter_login_form_button_two' ), 10, 2 );
+
+		// Translate each um_options sub-key at read time via UM's own per-option filter.
+		// This runs after get_option('um_options') so translations are applied cleanly
+		// at the point UM reads each individual option, without affecting saved DB values.
+		foreach ( self::UM_TRANSLATABLE_OPTIONS as $option_key ) {
+			add_filter( "um_get_option_filter__{$option_key}", array( $this, 'translate_um_option' ), 10, 1 );
+		}
+
+		// Translate raw multilingual strings inside the options array to plain strings
+		// before WPM's native pre_update filter check to prevent the merger from being bypassed.
+		add_filter( 'pre_update_option_um_options', array( $this, 'clean_um_options_before_save' ), 10, 1 );
+	}
+
+	/**
+	 * Translate in-memory raw multilingual strings inside um_options to the active language
+	 * before WPM's native pre_update_option filter runs, to ensure it doesn't bypass merging.
+	 *
+	 * @param array $value The array being saved.
+	 * @return array The cleaned array with only plain strings for translatable fields.
+	 */
+	public function clean_um_options_before_save( $value ) {
+		if ( ! is_array( $value ) ) {
+			return $value;
+		}
+
+		foreach ( self::UM_TRANSLATABLE_OPTIONS as $key ) {
+			if ( isset( $value[ $key ] ) && is_string( $value[ $key ] ) ) {
+				$value[ $key ] = wpm_translate_string( $value[ $key ] );
+			}
+		}
+
+		return $value;
 	}
 
 	/**
@@ -82,6 +139,20 @@ class WPM_Ultimate_Member {
 		$this->object_id = $object_id;
 
 		return $config;
+	}
+
+	/**
+	 * Translate a um_options sub-key string via wpm_translate_string.
+	 * Hooked onto um_get_option_filter__{$option_id} so it runs when UM reads individual options.
+	 *
+	 * @param mixed $value The raw stored value (may contain [:en]...[:]  multilingual tags).
+	 * @return mixed Translated string for the current language.
+	 */
+	public function translate_um_option( $value ) {
+		if ( is_string( $value ) && wpm_is_ml_value( $value ) ) {
+			return wpm_translate_string( $value );
+		}
+		return $value;
 	}
 
 

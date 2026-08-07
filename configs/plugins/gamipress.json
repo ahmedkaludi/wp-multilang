@@ -1,0 +1,33 @@
+{
+	"post_types": {
+		"points-type": {},
+		"points-award": {},
+		"points-deduct": {},
+		"achievement-type": {},
+		"rank-type": {}
+	},
+	"post_fields":{
+		"_gamipress_plural_name": {}
+	},
+	"options": {
+		"gamipress_settings": {
+			"twitter_achievement_text": {},	
+			"twitter_rank_text": {},	
+			"email_from_name": {},	
+			"email_footer_text": {},	
+			"achievement_earned_email_subject": {},	
+			"achievement_earned_email_content": {},	
+			"step_completed_email_subject": {},	
+			"step_completed_email_content": {},	
+			"points_award_completed_email_subject": {},	
+			"points_award_completed_email_content": {},	
+			"rank_earned_email_subject": {},	
+			"rank_earned_email_content": {},	
+			"rank_requirement_completed_email_subject": {},	
+			"rank_requirement_completed_email_content": {}	
+		}
+	},
+	"admin_pages": [
+		"gamipress_page_gamipress_settings"
+	]
+}
