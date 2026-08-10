@@ -14,7 +14,7 @@ class WPM_UX4G_Theme {
 
 	public function __construct(){
 		
-		add_action( 'wpm_clear_blockeditor_post_data_cache', [ $this, 'clear_cache' ] );
+		add_action( 'wpm_clear_blockeditor_post_data_cache', [ $this, 'clear_cache' ], 10, 2 );
 
 	}
 
@@ -23,7 +23,7 @@ class WPM_UX4G_Theme {
 	 * @param 	$is_block_editor	boolean
 	 * @since 	2.4.33
 	 * */
-	public function clear_cache( $is_block_editor ) {
+	public function clear_cache( $post_id, $is_block_editor ) {
 		
 		if ( $is_block_editor ) {
 			clean_post_cache( $post_id );
