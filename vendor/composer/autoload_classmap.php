@@ -68,6 +68,7 @@ $class_map_array =  array(
     'WPM\\Includes\\Integrations\\WPM_Strong_Testimonials' => $baseDir . '/includes/integrations/class-wpm-strong-testimonials.php',
     'WPM\\Includes\\Integrations\\WPM_Internal_Links' => $baseDir . '/includes/integrations/class-wpm-internal-links.php',
     'WPM\\Includes\\Integrations\\WPM_Daext_Autolinks_Manager' => $baseDir . '/includes/integrations/class-wpm-daext-autolinks-manager.php',
+    'WPM\\Includes\\Integrations\\WPM_UX4G_Theme' => $baseDir . '/includes/integrations/class-wpm-ux4g-theme.php',
     'WPM\\Includes\\Libraries\\WPM_Walker_Nav_Menu_Edit' => $baseDir . '/includes/libraries/class-wpm-walker-nav-menu-edit.php',
     'WPM\\Includes\\Libraries\\WP_Async_Request' => $baseDir . '/includes/libraries/abstract-wp-async-request.php',
     'WPM\\Includes\\Libraries\\WP_Background_Process' => $baseDir . '/includes/libraries/abstract-wp-background-process.php',

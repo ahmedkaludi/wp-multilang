@@ -79,6 +79,7 @@ class ComposerStaticInit10f68284d303303872430af9e5a79198
         'WPM\\Includes\\Integrations\\WPM_Strong_Testimonials' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-strong-testimonials.php',
         'WPM\\Includes\\Integrations\\WPM_Internal_Links' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-internal-links.php',
         'WPM\\Includes\\Integrations\\WPM_Daext_Autolinks_Manager' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-daext-autolinks-manager.php',
+        'WPM\\Includes\\Integrations\\WPM_UX4G_Theme' => __DIR__ . '/../..' . '/includes/integrations/class-wpm-ux4g-theme.php',
         'WPM\\Includes\\Libraries\\WPM_Walker_Nav_Menu_Edit' => __DIR__ . '/../..' . '/includes/libraries/class-wpm-walker-nav-menu-edit.php',
         'WPM\\Includes\\Libraries\\WP_Async_Request' => __DIR__ . '/../..' . '/includes/libraries/abstract-wp-async-request.php',
         'WPM\\Includes\\Libraries\\WP_Background_Process' => __DIR__ . '/../..' . '/includes/libraries/abstract-wp-background-process.php',
