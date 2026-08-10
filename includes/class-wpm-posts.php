@@ -409,6 +409,8 @@ class WPM_Posts extends WPM_Object {
 		// Check if current post is being edited in gutenberg block editor
 		$is_block_editor 	=	use_block_editor_for_post( $post_id );
 		
+		do_action( 'wpm_clear_blockeditor_post_data_cache', $is_block_editor );
+
 		$raw_keys 			=	array( 'post_title', 'post_excerpt' );
 		$old_value 			= 	get_post_field( $key, $post_id, 'edit' );
 

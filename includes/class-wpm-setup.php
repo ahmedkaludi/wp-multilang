@@ -552,6 +552,7 @@ class WPM_Setup {
 			'strong-testimonials' 		 => __NAMESPACE__ . '\Integrations\WPM_Strong_Testimonials',
 			'internal-links' 		 	 => __NAMESPACE__ . '\Integrations\WPM_Internal_Links',
 			'daext-autolinks-manager'    => __NAMESPACE__ . '\Integrations\WPM_Daext_Autolinks_Manager',
+			'UX4G Government Block Theme' => __NAMESPACE__ . '\Integrations\WPM_UX4G_Theme',
 		) );
 
 		$active_plugins = wp_cache_get( 'active_plugins', 'wpm' );
