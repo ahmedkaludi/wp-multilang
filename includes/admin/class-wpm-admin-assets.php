@@ -230,6 +230,9 @@ class WPM_Admin_Assets {
 	 * @since 2.4.9
 	 * */
 	public function render_language_switcher($interval = 2000){
+		global $wp_version;
+		$current_wp_version = isset( $wp_version ) ? $wp_version : ( function_exists( 'get_bloginfo' ) ? get_bloginfo( 'version' ) : '0' );
+
 		$script = "
 			(function( $ ) {
 
@@ -274,11 +277,21 @@ class WPM_Admin_Assets {
                 });
 
                 function wpm_change_switcher_margin(){
-                	if($('body').hasClass('is-fullscreen-mode')){
-                    	$('.wpm-language-switcher').css({'margin-left': '75px'});
-                    }else{
-                    	$('.wpm-language-switcher').css({'margin-left': '10px'});
-                    }	
+                	// Use the WordPress version (injected from PHP) to detect WP 7.1+.
+                	// In WP 7.1 the + inserter became the first flex child at 0px inside the toolbar,
+                	// overlapping the absolutely-positioned flag at left:10px.
+                	// Fix: add padding-left to the toolbar so + shifts right of the flag.
+                	var wpmWpVersion = parseFloat('".esc_js( $current_wp_version )."');
+                	if (wpmWpVersion >= 7.1) {
+                		$('.wpm-language-switcher').css({'left': '3%'});
+                	} else {
+                		// WP 7.0 and earlier — original behaviour, completely unchanged
+                    	if($('body').hasClass('is-fullscreen-mode')){
+                        	$('.wpm-language-switcher').css({'margin-left': '75px'});
+                        }else{
+                        	$('.wpm-language-switcher').css({'margin-left': '10px'});
+                        }
+                	}
                 }
 
 				$(document).on('click', '#wpm-language-switcher .lang-dropdown a', function(){
