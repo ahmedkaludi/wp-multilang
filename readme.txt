@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 7.1
-Stable tag: 2.4.32
+Stable tag: 2.4.33
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -257,6 +257,13 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.33 =
+- Feature: Added compatibility with a BasePress module plugin #213
+- Feature: Added compatibility with Frontend Post Submission Manager lite plugin #235
+- Fixed: Translations are overwritten by default language when editing multiple translations in Gutenberg #277
+- Tested: Tested with wordpress version 7.0 #278
+- Fixed: Language switcher design issue after updating to wordpress 7.1 #279
+
 = 2.4.32 =
 - Feature: Added Compatibility With Autolink Manager #232
 - Feature: Added Compatibility With PublishPress Authors #233
@@ -358,15 +365,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed Code improvement of translation #164
 - fixed Compatibility with WordPress 6.8 and updated readme.txt #165
 - feature Added compatibility with Cyr-To-Lat plugin #169
-
-= 2.4.18 =
-- feature Feature to enable support for any custom post type #143
-- fixed Language Switcher issue on gutenberg editor #147
-- fixed Navigation links are not translatable #151
-- fixed Code improvement for bulk translation #153
-- fixed Code improvement of on language switcher on custom post type editor #155
-- fixed code improvement for Category base translation #157
-- fixed Elementor css file creation for respective language #158
-- enhancement Auto translation code improvement when some specials characters are present #159
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
