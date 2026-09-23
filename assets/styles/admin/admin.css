@@ -198,6 +198,44 @@
   background-color: #ccc;
 }
 
+/* Modern Site Editor sidebar (WP 6.5+/7.x) */
+.edit-site-layout__sidebar .wpm-language-switcher {
+  position: relative; /* creates containing block for the absolute dropdown */
+  left: 0;            /* overrides base left:48px — safe because specificity is higher */
+}
+.edit-site-layout__sidebar .wpm-language-switcher .lang-main {
+  padding-left: 8px;
+  padding-right: 8px;
+  line-height: 36px;
+}
+.edit-site-layout__sidebar .wpm-language-switcher .lang-main img {
+  top: 2px;
+}
+.edit-site-layout__sidebar .lang-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #2c2c2c;
+  border: 1px solid #555;
+  border-radius: 4px;
+  z-index: 100000;
+  padding: 4px 0;
+}
+.edit-site-layout__sidebar .lang-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.edit-site-layout__sidebar .lang-dropdown ul a {
+  padding: 8px 10px;
+  display: block;
+  color: #f0f0f0;
+}
+.edit-site-layout__sidebar .lang-dropdown ul a:hover,
+.edit-site-layout__sidebar .lang-dropdown ul a:focus {
+  background-color: #3858e9;
+}
+
 .gutenberg .languagechecklist {
   list-style: none !important;
 }
