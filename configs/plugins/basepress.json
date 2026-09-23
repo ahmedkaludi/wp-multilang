@@ -1,0 +1,20 @@
+{
+	"post_types": {
+		"knowledgebase": {}
+	},
+	"taxonomies": {
+		"knowledgebase_cat": {}
+	},
+	"admin_pages": [
+	    "knowledgebase_page_basepress_manage_kbs",
+	    "knowledgebase_page_basepress_sections"
+  	],
+  	"term_fields": {
+  		"icon": {},
+  		"image": {
+  			"image_url": {},
+  			"image_width": {},
+  			"image_height": {}
+  		}
+  	}
+}
