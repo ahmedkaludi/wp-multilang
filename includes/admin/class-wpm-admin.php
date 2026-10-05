@@ -59,6 +59,7 @@ class WPM_Admin {
 		new WPM_Bulk_Translate();
 		new WPM_OpenAI();
 		new WPM_Deepl();
+		new WPM_Gemini();
 	}
 
 	/**

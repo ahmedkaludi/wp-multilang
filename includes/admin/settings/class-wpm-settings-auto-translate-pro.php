@@ -1412,7 +1412,7 @@ class WPM_Settings_Auto_Translate_Pro {
 				empty( $params['ai_settings'][ $integration_key ] ) ||
 				$params['ai_settings'][ $integration_key ] == 0 ||
 				(
-					$provider === 'openai' &&
+					( $provider === 'openai' || $provider === 'gemini' ) &&
 					empty( $params['ai_settings']['model'] )
 				)
 			)

@@ -4,6 +4,7 @@ namespace WPM\Includes;
 use WPM\Includes\Admin\WPM_Reset_Settings;
 use WPM\Includes\Admin\WPM_OpenAI;
 use WPM\Includes\Admin\WPM_Deepl;
+use WPM\Includes\Admin\WPM_Gemini;
 use WPM\Includes\Admin\Settings\WPM_Settings_Auto_Translate_Pro;
 use WPM\Includes\Admin\Settings\WPM_Settings_AI_Integration;
 
@@ -550,7 +551,12 @@ class WPM_AJAX {
         }
      
         try {
-        	$result 	=	WPM_OpenAI::validate_secret_key();
+        	$provider 	=	isset( $_POST['provider'] ) ? sanitize_text_field( wp_unslash( $_POST['provider'] ) ) : 'openai';
+        	if ( $provider === 'gemini' ) {
+        		$result = WPM_Gemini::validate_secret_key();
+        	} else {
+        		$result = WPM_OpenAI::validate_secret_key();
+        	}
         	if ( ! empty( $result['models'] ) ) {
         		$models 		=	$result['models'];
         		$provider 		=	$result['provider'];
@@ -1164,6 +1170,8 @@ class WPM_AJAX {
 			$response 	=	WPM_Settings_AI_Integration::check_ai_platform_quota();
 		}else if( $provider === 'deepl' ) {
 			$response 	=	WPM_Deepl::check_quota();
+		}else if( $provider === 'gemini' ) {
+			$response 	=	WPM_Gemini::check_quota();
 		}
 
 		wp_send_json($response);

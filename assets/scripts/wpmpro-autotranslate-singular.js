@@ -31,9 +31,9 @@ jQuery(document).ready(function($){
                 return false;
             }
 
-            // OpenAI requires a model, DeepL does not
+            // OpenAI and Gemini require a model, DeepL does not
             if (
-                selectedProvider === 'openai' &&
+                ( selectedProvider === 'openai' || selectedProvider === 'gemini' ) &&
                 ( !aiSettings.model || aiSettings.model.length === 0 )
             ) {
                 return false;

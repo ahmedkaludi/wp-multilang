@@ -96,6 +96,7 @@ final class WP_Multilang {
 		$this->define( 'WPM_PLUGIN_BASENAME', plugin_basename( WPM_PLUGIN_FILE ) );
 		$this->define( 'WPM_VERSION', $this->version );
 		$this->define( 'WPM_OPENAI_PROMPT', 'You are a professional translator that translates text from {{source_language}} to {{target_language}}.' );
+		$this->define( 'WPM_GEMINI_PROMPT', 'You are a professional translator that translates text from {{source_language}} to {{target_language}}.' );
 	}
 
 	/**

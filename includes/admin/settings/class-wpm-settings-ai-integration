@@ -43,9 +43,13 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 								'api_available_models'	=>	[],
 								'deepl_secret_key' 		=>	'',
 								'deepl_api_plan' 		=>	'',
+								'gemini_secret_key' 	=>	'',
+								'gemini_model' 			=>	'',
+								'gemini_prompt' 		=>	defined( 'WPM_GEMINI_PROMPT' ) ? WPM_GEMINI_PROMPT : WPM_OPENAI_PROMPT,
 							];
 		$ai_settings 	=	get_option( 'wpm_openai_settings', $defaults );
 		$ai_settings['wpm_openai_integration'] = get_option( 'wpm_openai_integration' );
+		$ai_settings['wpm_gemini_integration'] = get_option( 'wpm_gemini_integration' );
 		return $ai_settings;
 
 	}
@@ -66,6 +70,11 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 		        'name'     => 'DeepL',
 		        'endpoint' => 'https://api-free.deepl.com/v2/',
 		        'url'      => 'https://www.deepl.com/pro-api',
+		    ],
+		    'gemini' => [
+		        'name'     => 'Gemini',
+		        'endpoint' => 'https://generativelanguage.googleapis.com/v1beta/',
+		        'url'      => 'https://aistudio.google.com/',
 		    ],
         ];
 
@@ -232,23 +241,7 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 
 					<?php do_action( 'wpm_render_deepl_settings', $ai_settings ); ?>
 
-					<tr valign="top">
-					    <th scope="row" class="titledesc">
-					        <label class="wpm-label-cursor" for="wpm_gemini_integration">Gemini Integration</label>
-					    </th>
-					    <td class="forminp forminp-checkbox">
-					        <fieldset style="display:flex;align-items:center;gap:10px;">
-					            <label for="wpm_gemini_integration" style="margin:0;">
-					                <input name="wpm_gemini_integration" id="wpm_gemini_integration" 
-					                       type="checkbox" value="1" checked disabled />
-					            </label>
-
-								<span class="wpm-coming-soon" >
-								    🚀 Coming Soon
-								</span>
-					        </fieldset>
-					    </td>
-					</tr>
+					<?php do_action( 'wpm_render_gemini_settings', $ai_settings ); ?>
 
 					<tr valign="top">
 					    <th scope="row" class="titledesc">
@@ -320,13 +313,50 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 			$deepl_api_plan 	=	'free';	
 		} 
 
+		$gemini_secret_key		=	isset( $_POST['wpm_gemini_secret_key'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_gemini_secret_key'] ) ) : '';
+		$gemini_model			=	isset( $_POST['wpm_gemini_model'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_gemini_model'] ) ) : '';
+		$gemini_prompt			=	isset( $_POST['wpm_gemini_prompt'] ) ? sanitize_textarea_field( wp_unslash( $_POST['wpm_gemini_prompt'] ) ) : '';
+
+		if ( ! empty( $gemini_prompt ) ) {
+			foreach ( $required_placeholders as $placeholder ) {
+				if ( strpos( $gemini_prompt, $placeholder ) === false ) {
+					wp_send_json_error( [
+						'message' => sprintf(
+							'Gemini prompt must contain the placeholder: %s',
+							$placeholder
+						)
+					] );
+					return;
+				}
+			}
+		}
+
 		$api_settings 	=	self::get_openai_settings();
+
+		if ( $provider === 'gemini' ) {
+			if ( ! empty( $gemini_model ) ) {
+				$model = $gemini_model;
+			}
+			if ( ! empty( $gemini_prompt ) ) {
+				$prompt = $gemini_prompt;
+			}
+		}
 
 		$api_settings['api_provider']		=	$provider;
 		$api_settings['model']				=	$model;
 		$api_settings['api_prompt']			=	$prompt;
 		$api_settings['deepl_secret_key']	=	$deepl_secret_key;
 		$api_settings['deepl_api_plan']		=	$deepl_api_plan;
+		$api_settings['gemini_secret_key']	=	$gemini_secret_key;
+		$api_settings['gemini_model']		=	$gemini_model;
+		$api_settings['gemini_prompt']		=	$gemini_prompt;
+
+		if ( ! empty( $gemini_secret_key ) ) {
+			if ( ! isset( $api_settings['api_keys'] ) || ! is_array( $api_settings['api_keys'] ) ) {
+				$api_settings['api_keys'] = [];
+			}
+			$api_settings['api_keys']['gemini'] = $gemini_secret_key;
+		}
 
 		update_option( 'wpm_openai_settings', $api_settings );
 
@@ -336,7 +366,8 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 		$wpm_deepl_integration = isset( $_POST['wpm_deepl_integration'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_deepl_integration'] ) ) : '0';
 		update_option( 'wpm_deepl_integration', $wpm_deepl_integration );
 
-		$deepl_settings 	=	
+		$wpm_gemini_integration = isset( $_POST['wpm_gemini_integration'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_gemini_integration'] ) ) : '0';
+		update_option( 'wpm_gemini_integration', $wpm_gemini_integration );
 
 	    wp_send_json_success( [
 	        'message' => 'Settings saved successfully.'

@@ -4,21 +4,21 @@
 	display: none;
 }
 
-#wpm-secret-key-error, #wpm-prompt-error{
+#wpm-secret-key-error, #wpm-prompt-error, #wpm-gemini-secret-key-error, #wpm-gemini-prompt-error{
 	display: none; 
 	color: red; 
 	font-weight: 400; 
 	margin-top: 5px;
 }
 
-.wpm-openai-api-success-note{
+.wpm-openai-api-success-note, .wpm-gemini-api-success-note{
 	display: none;
 	color: green;
 	font-weight: 600;
 	margin-top: 5px;
 }
 
-.wpm-openai-api-error-note{
+.wpm-openai-api-error-note, .wpm-gemini-api-error-note{
 	display: none;
 	color: red;
 	font-weight: 600;
