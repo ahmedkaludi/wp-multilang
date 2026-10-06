@@ -46,10 +46,14 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 								'gemini_secret_key' 	=>	'',
 								'gemini_model' 			=>	'',
 								'gemini_prompt' 		=>	defined( 'WPM_GEMINI_PROMPT' ) ? WPM_GEMINI_PROMPT : WPM_OPENAI_PROMPT,
+								'deepseek_secret_key' 	=>	'',
+								'deepseek_model' 		=>	'',
+								'deepseek_prompt' 		=>	defined( 'WPM_DEEPSEEK_PROMPT' ) ? WPM_DEEPSEEK_PROMPT : WPM_OPENAI_PROMPT,
 							];
 		$ai_settings 	=	get_option( 'wpm_openai_settings', $defaults );
 		$ai_settings['wpm_openai_integration'] = get_option( 'wpm_openai_integration' );
 		$ai_settings['wpm_gemini_integration'] = get_option( 'wpm_gemini_integration' );
+		$ai_settings['wpm_deepseek_integration'] = get_option( 'wpm_deepseek_integration' );
 		return $ai_settings;
 
 	}
@@ -75,6 +79,11 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 		        'name'     => 'Gemini',
 		        'endpoint' => 'https://generativelanguage.googleapis.com/v1beta/',
 		        'url'      => 'https://aistudio.google.com/',
+		    ],
+		    'deepseek' => [
+		        'name'     => 'DeepSeek',
+		        'endpoint' => 'https://api.deepseek.com/',
+		        'url'      => 'https://platform.deepseek.com/',
 		    ],
         ];
 
@@ -163,7 +172,7 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 				<tbody>
 					<tr valign="top">
 						<th scope="row" class="titledesc">
-							<label class="wpm-label-cursor" style="cursor:pointer;" for="wpm-ai-provider"><?php echo esc_html__( 'Select Platform', 'wp-multilang' ); ?></label>
+							<label class="wpm-label-cursor" for="wpm-ai-provider"><?php echo esc_html__( 'Select Platform', 'wp-multilang' ); ?></label>
 						</th>
 						<td class="forminp forminp-checkbox">
 							<select name="wpm-ai-provider" id="wpm-ai-provider">
@@ -181,7 +190,7 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 					</tr>
 					<tr valign="top">
 						<th scope="row" class="titledesc">
-							<label class="wpm-label-cursor" style="cursor:pointer;" for="wpm_openai_integration"><?php echo esc_html__( 'OpenAI Integration', 'wp-multilang' ); ?></label>
+							<label class="wpm-label-cursor" for="wpm_openai_integration"><?php echo esc_html__( 'OpenAI Integration', 'wp-multilang' ); ?></label>
 						</th>
 						<td class="forminp forminp-checkbox">
 							<fieldset>
@@ -198,7 +207,7 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 						<td class="wpm-pl-20">
 							<input class="regular-text" type="password" id="wpm-openai-secretkey" name="wpm_openai_secretkey" value="<?php echo esc_attr( $secret_key ); ?>">
 							<button type="button" id="wpm-validate-openai-key" class="button"><?php echo esc_html__( 'Validate API Key', 'wp-multilang' ); ?></button>
-							<span class="description" style="padding-left: 10px;"><a href="https://platform.openai.com/" target="__blank"><?php echo esc_html__( 'Get API Key.' ); ?></a></span>
+							<span class="description wpm-pl-10"><a href="https://platform.openai.com/" target="__blank"><?php echo esc_html__( 'Get API Key.' ); ?></a></span>
 							<div id="wpm-secret-key-error"><?php echo esc_html__('Secret key cannot be blank', 'wp-multilang'); ?></div>
 							<div class="wpm-openai-api-success-note"></div>
 							<div class="wpm-openai-api-error-note"></div>
@@ -243,23 +252,7 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 
 					<?php do_action( 'wpm_render_gemini_settings', $ai_settings ); ?>
 
-					<tr valign="top">
-					    <th scope="row" class="titledesc">
-					        <label class="wpm-label-cursor" for="wpm_deepseek_integration">DeepSeek Integration</label>
-					    </th>
-					    <td class="forminp forminp-checkbox">
-					        <fieldset style="display:flex;align-items:center;gap:10px;">
-					            <label for="wpm_deepseek_integration" style="margin:0;">
-					                <input name="wpm_deepseek_integration" id="wpm_deepseek_integration" 
-					                       type="checkbox" value="1" checked disabled />
-					            </label>
-
-					            <span class="wpm-coming-soon" >
-								    🚀 Coming Soon
-								</span>
-					        </fieldset>
-					    </td>
-					</tr>
+					<?php do_action( 'wpm_render_deepseek_settings', $ai_settings ); ?>
 
 					<tr valign="top">
 						<td id="wpm-save-openai-settings-td">
@@ -331,6 +324,24 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 			}
 		}
 
+		$deepseek_secret_key	=	isset( $_POST['wpm_deepseek_secret_key'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_deepseek_secret_key'] ) ) : '';
+		$deepseek_model			=	isset( $_POST['wpm_deepseek_model'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_deepseek_model'] ) ) : '';
+		$deepseek_prompt		=	isset( $_POST['wpm_deepseek_prompt'] ) ? sanitize_textarea_field( wp_unslash( $_POST['wpm_deepseek_prompt'] ) ) : '';
+
+		if ( ! empty( $deepseek_prompt ) ) {
+			foreach ( $required_placeholders as $placeholder ) {
+				if ( strpos( $deepseek_prompt, $placeholder ) === false ) {
+					wp_send_json_error( [
+						'message' => sprintf(
+							'DeepSeek prompt must contain the placeholder: %s',
+							$placeholder
+						)
+					] );
+					return;
+				}
+			}
+		}
+
 		$api_settings 	=	self::get_openai_settings();
 
 		if ( $provider === 'gemini' ) {
@@ -339,6 +350,13 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 			}
 			if ( ! empty( $gemini_prompt ) ) {
 				$prompt = $gemini_prompt;
+			}
+		} elseif ( $provider === 'deepseek' ) {
+			if ( ! empty( $deepseek_model ) ) {
+				$model = $deepseek_model;
+			}
+			if ( ! empty( $deepseek_prompt ) ) {
+				$prompt = $deepseek_prompt;
 			}
 		}
 
@@ -350,12 +368,22 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 		$api_settings['gemini_secret_key']	=	$gemini_secret_key;
 		$api_settings['gemini_model']		=	$gemini_model;
 		$api_settings['gemini_prompt']		=	$gemini_prompt;
+		$api_settings['deepseek_secret_key']	=	$deepseek_secret_key;
+		$api_settings['deepseek_model']			=	$deepseek_model;
+		$api_settings['deepseek_prompt']		=	$deepseek_prompt;
 
 		if ( ! empty( $gemini_secret_key ) ) {
 			if ( ! isset( $api_settings['api_keys'] ) || ! is_array( $api_settings['api_keys'] ) ) {
 				$api_settings['api_keys'] = [];
 			}
 			$api_settings['api_keys']['gemini'] = $gemini_secret_key;
+		}
+
+		if ( ! empty( $deepseek_secret_key ) ) {
+			if ( ! isset( $api_settings['api_keys'] ) || ! is_array( $api_settings['api_keys'] ) ) {
+				$api_settings['api_keys'] = [];
+			}
+			$api_settings['api_keys']['deepseek'] = $deepseek_secret_key;
 		}
 
 		update_option( 'wpm_openai_settings', $api_settings );
@@ -368,6 +396,9 @@ class WPM_Settings_AI_Integration extends WPM_Settings_Page {
 
 		$wpm_gemini_integration = isset( $_POST['wpm_gemini_integration'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_gemini_integration'] ) ) : '0';
 		update_option( 'wpm_gemini_integration', $wpm_gemini_integration );
+
+		$wpm_deepseek_integration = isset( $_POST['wpm_deepseek_integration'] ) ? sanitize_text_field( wp_unslash( $_POST['wpm_deepseek_integration'] ) ) : '0';
+		update_option( 'wpm_deepseek_integration', $wpm_deepseek_integration );
 
 	    wp_send_json_success( [
 	        'message' => 'Settings saved successfully.'

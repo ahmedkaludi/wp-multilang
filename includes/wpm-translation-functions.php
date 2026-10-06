@@ -13,6 +13,7 @@ use WPM\Includes\WPM_Custom_Post_Types;
 use WPM\Includes\Admin\WPM_OpenAI;
 use WPM\Includes\Admin\WPM_Deepl;
 use WPM\Includes\Admin\WPM_Gemini;
+use WPM\Includes\Admin\WPM_DeepSeek;
 use WPM\Includes\Admin\Settings\WPM_Settings_AI_Integration;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -916,6 +917,20 @@ if ( ! function_exists( 'wpm_ml_auto_fetch_translation' ) ) {
 					} catch ( \Throwable $e ) {
 						if ( $enable_logging ) {
 	                        wpm_ml_log_message( sprintf('Error in Gemini translation: %s', $e->getMessage()), 'error' );
+	                    }
+					}	
+				}
+
+			break;
+
+			case 'deepseek':
+
+				if ( ! empty( $ai_settings['deepseek_secret_key'] ) || ( ! empty( $ai_settings['api_keys'] ) && ! empty( $ai_settings['api_keys']['deepseek'] ) ) ) {
+					try {
+						$string 	=	WPM_DeepSeek::translate_content( $string, $source, $target, $ai_settings );
+					} catch ( \Throwable $e ) {
+						if ( $enable_logging ) {
+	                        wpm_ml_log_message( sprintf('Error in DeepSeek translation: %s', $e->getMessage()), 'error' );
 	                    }
 					}	
 				}

@@ -21,7 +21,7 @@ jQuery(document).ready(function($){
                 element.checked = true;
                 
                 if ( ( wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.license_status === 'active' ) 
-                    || ( ( selectedProvider === 'openai' || selectedProvider === 'gemini' ) && wpmpro_autotranslate_localize_data.ai_settings.model.length > 0 )  ) {
+                    || ( ( selectedProvider === 'openai' || selectedProvider === 'gemini' || selectedProvider === 'deepseek' ) && wpmpro_autotranslate_localize_data.ai_settings.model.length > 0 )  ) {
                     // Show exclude wrapper for this item
                     const excludeWrapper = $(element).closest('li').find('.exclude-wrapper');
                     if (excludeWrapper.length > 0) {
@@ -68,7 +68,7 @@ jQuery(document).ready(function($){
             //         $(this).next('label').after(licenseKeyError);
             // }
             if ( ( wpmpro_autotranslate_localize_data.is_pro_active && wpmpro_autotranslate_localize_data.license_status === 'active' ) 
-                    || ( ( selectedProvider === 'openai' || selectedProvider === 'gemini' ) && wpmpro_autotranslate_localize_data.ai_settings.model.length > 0 )  ) {
+                    || ( ( selectedProvider === 'openai' || selectedProvider === 'gemini' || selectedProvider === 'deepseek' ) && wpmpro_autotranslate_localize_data.ai_settings.model.length > 0 )  ) {
                 excludeWrapper.show();
             }
         } else {
@@ -250,9 +250,9 @@ jQuery(document).ready(function($){
                 return false;
             }
 
-            // Model required for OpenAI and Gemini
+            // Model required for OpenAI, Gemini, and DeepSeek
             if (
-                ( selectedProvider === 'openai' || selectedProvider === 'gemini' ) &&
+                ( selectedProvider === 'openai' || selectedProvider === 'gemini' || selectedProvider === 'deepseek' ) &&
                 ( ! aiSettings.model || aiSettings.model.length === 0 )
             ) {
                 return false;
@@ -718,7 +718,7 @@ jQuery(document).ready(function($){
     async function wpmHandleAITranslationCheck(selectedProvider) {
         let openAIStatus = true;
 
-        const requiresModel = ( selectedProvider === 'openai' || selectedProvider === 'gemini' );
+        const requiresModel = ( selectedProvider === 'openai' || selectedProvider === 'gemini' || selectedProvider === 'deepseek' );
         const aiSettings = wpmpro_autotranslate_localize_data.ai_settings;
         const integrationKey = `wpm_${selectedProvider}_integration`;
 

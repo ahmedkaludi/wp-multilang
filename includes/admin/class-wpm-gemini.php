@@ -56,7 +56,7 @@ class WPM_Gemini {
 		?>
 		<tr valign="top">
 			<th scope="row" class="titledesc">
-				<label class="wpm-label-cursor" style="cursor:pointer;" for="wpm_gemini_integration"><?php echo esc_html__( 'Gemini Integration', 'wp-multilang' ); ?></label>
+				<label class="wpm-label-cursor" for="wpm_gemini_integration"><?php echo esc_html__( 'Gemini Integration', 'wp-multilang' ); ?></label>
 			</th>
 			<td class="forminp forminp-checkbox">
 				<fieldset>
@@ -74,10 +74,10 @@ class WPM_Gemini {
 			<td class="wpm-pl-20">
 				<input class="regular-text" type="password" id="wpm-gemini-secretkey" name="wpm_gemini_secretkey" value="<?php echo esc_attr( $secret_key ); ?>">
 				<button type="button" id="wpm-validate-gemini-key" class="button"><?php echo esc_html__( 'Validate API Key', 'wp-multilang' ); ?></button>
-				<span class="description" style="padding-left: 10px;"><a href="https://aistudio.google.com/app/apikey" target="_blank"><?php echo esc_html__( 'Get API Key.', 'wp-multilang' ); ?></a></span>
-				<div id="wpm-gemini-secret-key-error" style="display:none; color:red; margin-top:5px;"><?php echo esc_html__( 'API key cannot be blank', 'wp-multilang' ); ?></div>
-				<div class="wpm-gemini-api-success-note" style="display:none; color:green; font-weight:600; margin-top:5px;"></div>
-				<div class="wpm-gemini-api-error-note" style="display:none; color:red; font-weight:600; margin-top:5px;"></div>
+				<span class="description wpm-pl-10"><a href="https://aistudio.google.com/app/apikey" target="_blank"><?php echo esc_html__( 'Get API Key.', 'wp-multilang' ); ?></a></span>
+				<div id="wpm-gemini-secret-key-error"><?php echo esc_html__( 'API key cannot be blank', 'wp-multilang' ); ?></div>
+				<div class="wpm-gemini-api-success-note"></div>
+				<div class="wpm-gemini-api-error-note"></div>
 			</td>
 		</tr>
 
@@ -108,7 +108,7 @@ class WPM_Gemini {
 			<td class="wpm-pl-20">
 				<textarea class="regular-text" rows="5" id="wpm-gemini-prompt" name="wpm_gemini_prompt"><?php echo esc_html( $prompt ); ?></textarea>
 				<p class="description"><?php echo esc_html__( 'Please ensure the prompt contains the placeholders ', 'wp-multilang' ); ?> <code>{{source_language}}</code> <?php echo esc_html__( 'and ', 'wp-multilang' ); ?> <code>{{target_language}}</code>, <?php echo esc_html__( 'which will be dynamically replaced during translation.', 'wp-multilang' ); ?></p>
-				<div id="wpm-gemini-prompt-error" style="display:none; color:red; margin-top:5px;"></div>
+				<div id="wpm-gemini-prompt-error"></div>
 			</td>
 		</tr>
 		<?php

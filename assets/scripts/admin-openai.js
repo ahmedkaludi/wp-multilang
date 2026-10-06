@@ -100,6 +100,53 @@ jQuery(document).ready(function($){
 		});
 	}); 
 
+	// Validate deepseek key
+	$(document).on('click', '#wpm-validate-deepseek-key', function(e) {
+		e.preventDefault();
+		const rawSecretKey = $('#wpm-deepseek-secretkey').val();
+		const secretKey = rawSecretKey ? rawSecretKey.trim() : '';
+		if ( secretKey.length === 0 ) {
+			$('#wpm-deepseek-secret-key-error').show();
+			return;
+		}
+		const provider = 'deepseek';
+
+		$('#wpm-deepseek-secret-key-error').hide();
+		$('#wpm-deepseek-prompt-error').hide();
+		$('.wpm-deepseek-api-success-note').hide();
+		$('.wpm-deepseek-api-error-note').hide();
+		$(this).addClass('updating-message');
+		$.ajax({
+			url: ajaxurl,
+			type: 'POST',
+			data: {action: 'wpm_validate_secret_key', provider: provider, secret_key: secretKey, security: wpm_openai_params.wpmpro_openai_nonce},
+			success: function(response) {
+				$('#wpm-validate-deepseek-key').removeClass('updating-message');
+				if ( response.success ) {
+					const models 	=	response.data.models;
+
+					let optionsHtml = '';
+					$.each(models, function(index, value) {
+						optionsHtml += `<option value="${value}">${value}</option>`;
+					});
+					$('#wpm-hide-deepseek-models-wrapper').show();
+					$('#wpm-deepseek-models').html(optionsHtml);
+					$('.wpm-deepseek-api-success-note').show();
+					$('.wpm-deepseek-api-success-note').text( response.data.message );
+				} else {
+					if ( response.data && response.data.message ) {
+						$('.wpm-deepseek-api-error-note').show();
+						$('.wpm-deepseek-api-error-note').text( response.data.message );
+					}	
+				}
+			},
+			error: function() {
+				$('#wpm-validate-deepseek-key').removeClass('updating-message');
+				$('.wpm-deepseek-api-error-note').show().text('Validation failed. Please try again.');
+			}
+		});
+	}); 
+
 	$(document).on('click', '#wpm-save-openai-settings', function(e) {
 		e.preventDefault();
 
@@ -107,6 +154,8 @@ jQuery(document).ready(function($){
 		$('#wpm-prompt-error').hide();
 		$('#wpm-gemini-secret-key-error').hide();
 		$('#wpm-gemini-prompt-error').hide();
+		$('#wpm-deepseek-secret-key-error').hide();
+		$('#wpm-deepseek-prompt-error').hide();
 		let provider = $('#wpm-ai-provider').val();
 		let providerExists 	=	false;
 		const aiApiProviders = wpm_openai_params.ai_api_providers;
@@ -125,6 +174,14 @@ jQuery(document).ready(function($){
 				}
 			}
 			prompt = $('#wpm-gemini-prompt').val() || '';
+		} else if ( provider === 'deepseek' ) {
+			if ( $('#wpm-deepseek-models').length > 0 ) {
+				model = $('#wpm-deepseek-models').val();
+				if ( model ) {
+					model = model.trim();
+				}
+			}
+			prompt = $('#wpm-deepseek-prompt').val() || '';
 		} else {
 			if ( $('#wpm-openai-models').length > 0 ) {
 				model = $('#wpm-openai-models').val();
@@ -156,6 +213,14 @@ jQuery(document).ready(function($){
 		let geminiModel = $('#wpm-gemini-models').val() || '';
 		let geminiPrompt = $('#wpm-gemini-prompt').val() || '';
 
+		let deepseekEnabled = '0';
+		if ( $('#wpm_deepseek_integration').is(':checked') ) {
+			deepseekEnabled = '1';
+		}
+		let deepseekSecretKey = $('#wpm-deepseek-secretkey').val() || '';
+		let deepseekModel = $('#wpm-deepseek-models').val() || '';
+		let deepseekPrompt = $('#wpm-deepseek-prompt').val() || '';
+
 		let $button = $('#wpm-save-openai-settings');
 
 		if ( providerExists ) {
@@ -178,11 +243,19 @@ jQuery(document).ready(function($){
 					wpm_gemini_secret_key: geminiSecretKey,
 					wpm_gemini_model: geminiModel,
 					wpm_gemini_prompt: geminiPrompt,
+					wpm_deepseek_integration: deepseekEnabled,
+					wpm_deepseek_secret_key: deepseekSecretKey,
+					wpm_deepseek_model: deepseekModel,
+					wpm_deepseek_prompt: deepseekPrompt,
 					security: wpm_openai_params.wpmpro_openai_nonce},
 				success: function(response) {
 					if (!response.success) {
 						if ( provider === 'gemini' ) {
 							$('#wpm-gemini-prompt-error')
+								.text(response.data.message)
+								.show();
+						} else if ( provider === 'deepseek' ) {
+							$('#wpm-deepseek-prompt-error')
 								.text(response.data.message)
 								.show();
 						} else {
@@ -237,6 +310,17 @@ jQuery(document).ready(function($){
 			}
 		}else{
 			$('.wpm-gemini-children').hide();
+		}
+	});
+
+	$(document).on('click', '#wpm_deepseek_integration', function(e) {
+		if($(this).is(':checked')) {
+			$('.wpm-deepseek-children').show();
+			if( $('#wpm-deepseek-models option').length === 0 ) {
+				$('#wpm-hide-deepseek-models-wrapper').hide();
+			}
+		}else{
+			$('.wpm-deepseek-children').hide();
 		}
 	});
 
