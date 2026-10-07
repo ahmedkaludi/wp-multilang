@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 7.1
-Stable tag: 2.4.33
+Stable tag: 2.4.34
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -257,6 +257,13 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.34 =
+- Fixed: Links are broken when using the "List" language switcher type #280
+- Fixed: Language swithcer issue on site editor sidebar after recent wordpress update #282
+- Fixed: WP Multilang 2.4.33 HTML-escapes existing language content when saving another language #283
+- Feature: Added Gemini AI Integration #284
+- Feature: Added Deepseek AI Integration #285
+
 = 2.4.33 =
 - Feature: Added compatibility with a BasePress module plugin #213
 - Feature: Added compatibility with Frontend Post Submission Manager lite plugin #235
@@ -356,14 +363,5 @@ If you have opened several browser tabs for editing this post in different langu
 
 = 2.4.19.1 =
 - fixed Vulnerability fix reported by patchstack
-
-= 2.4.19 =
-- fixed Code-profiler plugin execution time issue #149
-- fixed Woocommerce settings translation improvement #161
-- feature Compatibility with ACF Pro Pages Option #162
-- fixed Conflict issue with pinnacle theme #163
-- fixed Code improvement of translation #164
-- fixed Compatibility with WordPress 6.8 and updated readme.txt #165
-- feature Added compatibility with Cyr-To-Lat plugin #169
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
