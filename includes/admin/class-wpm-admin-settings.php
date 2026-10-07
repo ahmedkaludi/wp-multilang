@@ -554,7 +554,7 @@ class WPM_Admin_Settings {
 						</tr>
 					<?php
 					}
-					// echo "<pre>value===== "; print_r($value); die;
+					
 
 				break;	
 
