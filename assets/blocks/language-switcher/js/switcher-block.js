@@ -1,11 +1,9 @@
 jQuery(document).ready(function($){
 	if($('.wpm-language-switcher').length > 0){
-		let switcherDiv = $('.wpm-language-switcher')
-		let findUl = $(switcherDiv).find('ul');
+		let hasLinks = $('.wpm-language-switcher a').length > 0;
+		let selectSwitcher = $('.wpm-language-switcher.wpm-switcher-select, .wpm-language-switcher .wpm-switcher-select');
 
-		let selectSwitcher = switcherDiv.find('.wpm-switcher-select');
-
-		if(findUl.length > 0 || selectSwitcher.length > 0){
+		if(hasLinks || selectSwitcher.length > 0){
 
 			let nonce = wpm_localize_data.wpm_block_switch_nonce;
 
@@ -19,36 +17,52 @@ jQuery(document).ready(function($){
                     security:wpm_localize_data.wpm_block_switch_nonce
                 },
                 success:function(response){ 
-                	if(findUl.length > 0){
-			            $('.wpm-language-switcher a').each(function(i, e){
-							var lang = $(this).data('lang');
+                	let currentLang = wpm_localize_data.current_lang || '';
 
-							let langUrl = '';
-							
-							$.each(response, function(bi, be){
-								if(lang == bi){
-									langUrl = be;
-								}
-							});
+                	// Handle List switcher: dynamically update active language and links
+                	$('.wpm-language-switcher.wpm-switcher-list, .wpm-language-switcher .wpm-switcher-list').each(function(){
+                		let listUl = $(this).is('ul') ? $(this) : $(this).find('ul');
+                		listUl.children('li').each(function(){
+                			let $li = $(this);
+                			let $child = $li.children('a, span');
+                			let lang = $child.data('lang');
+                			let langUrl = (response && response[lang]) ? response[lang] : '';
 
-							$(this).attr('href', langUrl);
-						});
-					}
+                			if(currentLang && lang === currentLang){
+                				$li.addClass('active');
+                				if($child.is('a')){
+                					// Current language should be a span (inactive link)
+                					let $span = $('<span/>').attr('data-lang', lang).html($child.html());
+                					$child.replaceWith($span);
+                				}
+                			} else {
+                				$li.removeClass('active');
+                				if($child.is('span')){
+                					// Other languages should be clickable links
+                					let $a = $('<a/>').attr('href', langUrl).attr('data-lang', lang).html($child.html());
+                					$child.replaceWith($a);
+                				} else if($child.is('a')){
+                					$child.attr('href', langUrl);
+                				}
+                			}
+                		});
+                	});
+
+                	// Handle Dropdown links (for any dropdown links in the switcher)
+                	$('.wpm-language-switcher:not(.wpm-switcher-list) a, .wpm-switcher-dropdown a').each(function(i, e){
+                		var lang = $(this).data('lang');
+                		let langUrl = (response && response[lang]) ? response[lang] : '';
+                		$(this).attr('href', langUrl);
+                	});
 
 					if(selectSwitcher.length > 0){
 						$('.wpm-language-switcher option').each(function(i, e){
 							var lang = $(this).data('lang');
-
-							let langUrl = '';
-							
-							$.each(response, function(bi, be){
-								if(lang == bi){
-									langUrl = be;
-								}
-							});
-
+							let langUrl = (response && response[lang]) ? response[lang] : '';
 							$(this).attr('value', langUrl);
-
+							if(currentLang && lang === currentLang){
+								$(this).prop('selected', true);
+							}
 						});
 					}     
                 }

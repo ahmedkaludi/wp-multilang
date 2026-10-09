@@ -188,7 +188,8 @@ class WPM_Frontend_Scripts {
 		$script_data = array(
                 'wpm_block_switch_nonce'    => wp_create_nonce( 'wpm_ajax_security_nonce' ),
                 'ajax_url'              	=> admin_url( 'admin-ajax.php' ),
-                'current_url'				=> wpm_get_current_url()
+                'current_url'				=> wpm_get_current_url(),
+                'current_lang'              => wpm_get_language()
         );
 
 		$filename = '/assets/blocks/language-switcher/js/switcher-block' . $suffix . '.js';

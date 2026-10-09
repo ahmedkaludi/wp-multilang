@@ -412,15 +412,13 @@ class WPM_Posts extends WPM_Object {
 		do_action( 'wpm_clear_blockeditor_post_data_cache', $post_id, $is_block_editor );
 
 		$raw_keys 			=	array( 'post_title', 'post_excerpt' );
-		$old_value 			= 	get_post_field( $key, $post_id, 'edit' );
 
-		if ( $is_block_editor ) {
-			if ( in_array( $key, $raw_keys ) ) {
-				$old_value 			= 	get_post_field( $key, $post_id, 'raw' );
-			}
+		// Fix for: https://github.com/ahmedkaludi/wp-multilang/issues/283
+		if ( in_array( $key, $raw_keys, true ) ) {
+			return get_post_field( $key, $post_id, 'raw' );
 		}
 
-		return $old_value;
+		return get_post_field( $key, $post_id, 'edit' );
 	}
 
 	/**

@@ -4,6 +4,8 @@ namespace WPM\Includes;
 use WPM\Includes\Admin\WPM_Reset_Settings;
 use WPM\Includes\Admin\WPM_OpenAI;
 use WPM\Includes\Admin\WPM_Deepl;
+use WPM\Includes\Admin\WPM_Gemini;
+use WPM\Includes\Admin\WPM_DeepSeek;
 use WPM\Includes\Admin\Settings\WPM_Settings_Auto_Translate_Pro;
 use WPM\Includes\Admin\Settings\WPM_Settings_AI_Integration;
 
@@ -110,7 +112,7 @@ class WPM_AJAX {
 			'newsletter_hide_form' => false,
 			'settings_newsletter_submit' => false,
 			'block_lang_switcher' => true,
-			'reset_settings' 		=> true,
+			'reset_settings' 		=> false,
 			'validate_secret_key' 	=> false,
 			'save_openai_settings' 	=> false,
 			'do_auto_translate' 		=> false,
@@ -144,6 +146,10 @@ class WPM_AJAX {
 	 */
 	public static function delete_lang() {
 
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( -1 );
+		}
+
 		check_ajax_referer( 'delete-lang', 'security' );
 
 		$language = wpm_get_post_data_by_key( 'language' );
@@ -166,6 +172,10 @@ class WPM_AJAX {
 	 * Remove installed language files and option
 	 */
 	public static function delete_localization() {
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( -1 );
+		}
 
 		check_ajax_referer( 'delete-localization', 'security' );
 
@@ -226,6 +236,10 @@ class WPM_AJAX {
 	 * @author   Soft79
 	 */
 	public static function qtx_import() {
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( -1 );
+		}
 
 		check_ajax_referer( 'qtx-import', 'security' );
 
@@ -392,8 +406,7 @@ class WPM_AJAX {
         }
                         
     	$name    = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-        $email   = isset( $_POST['email'] ) ? sanitize_email( $_POST['email'] ) : '';
+        $email   = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
         $website = isset( $_POST['website'] ) ? sanitize_text_field( wp_unslash( $_POST['website'] ) ) : '';
         
         if($email){
@@ -458,7 +471,6 @@ class WPM_AJAX {
         if ( !wp_verify_nonce( $_POST['wpm_admin_settings_nonce'], 'wpm_admin_settings_nonce' ) ){
            wp_die( -1 );  
         } 
-
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Reason unslash not needed because data is not getting stored in database, it's just being used.
 	    if ( isset ( $_POST['email'] ) && ! empty( $_POST['email'] ) ){
 			global $current_user;
@@ -550,7 +562,14 @@ class WPM_AJAX {
         }
      
         try {
-        	$result 	=	WPM_OpenAI::validate_secret_key();
+        	$provider 	=	isset( $_POST['provider'] ) ? sanitize_text_field( wp_unslash( $_POST['provider'] ) ) : 'openai';
+        	if ( $provider === 'gemini' ) {
+        		$result = WPM_Gemini::validate_secret_key();
+        	} elseif ( $provider === 'deepseek' ) {
+        		$result = WPM_DeepSeek::validate_secret_key();
+        	} else {
+        		$result = WPM_OpenAI::validate_secret_key();
+        	}
         	if ( ! empty( $result['models'] ) ) {
         		$models 		=	$result['models'];
         		$provider 		=	$result['provider'];
@@ -1164,6 +1183,10 @@ class WPM_AJAX {
 			$response 	=	WPM_Settings_AI_Integration::check_ai_platform_quota();
 		}else if( $provider === 'deepl' ) {
 			$response 	=	WPM_Deepl::check_quota();
+		}else if( $provider === 'gemini' ) {
+			$response 	=	WPM_Gemini::check_quota();
+		}else if( $provider === 'deepseek' ) {
+			$response 	=	WPM_DeepSeek::check_quota();
 		}
 
 		wp_send_json($response);

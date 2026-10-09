@@ -46,7 +46,7 @@ class WPM_Deepl {
 
 		<tr valign="top">
 			<th scope="row" class="titledesc">
-				<label class="wpm-label-cursor" style="cursor:pointer;" for="wpm_deepl_integration"><?php echo esc_html__( 'DeepL Integration', 'wp-multilang' ); ?></label>
+				<label class="wpm-label-cursor" for="wpm_deepl_integration"><?php echo esc_html__( 'DeepL Integration', 'wp-multilang' ); ?></label>
 			</th>
 			<td class="forminp forminp-checkbox">
 				<fieldset>

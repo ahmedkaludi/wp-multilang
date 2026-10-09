@@ -253,10 +253,24 @@ class WPM_Admin_Assets {
                         window.setTimeout(wpm_add_language_switcher_deferred, ".esc_js( $interval ).");
 
                         wpm_site_editor_lang_switcher_deferred = function() {
+                            if ($('#wpm-language-switcher').length > 0) return;
+
+                            // Legacy: WP 6.0 - 6.4 site hub
                             var SiteToolBar = $('.edit-site-site-hub .edit-site-site-hub__title');
-                            
-                            if(SiteToolBar.length) {
+                            if (SiteToolBar.length) {
                                 SiteToolBar.before(language_switcher);
+                                return;
+                            }
+
+                            // Modern: WP 6.5+ / 7.x
+                            // Find sidebar h1 (e.g. 'Design') and inject into its parent flex row.
+                            // \ and \ use backslash-escape so PHP does not treat them as PHP vars.
+                            var \$h1 = $('.edit-site-layout__sidebar h1').first();
+                            if (\$h1.length) {
+                                var \$row = \$h1.parent();
+                                if (\$row.find('#wpm-language-switcher').length === 0) {
+                                    \$row.append(language_switcher);
+                                }
                             }
                         }
 
