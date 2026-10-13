@@ -1,0 +1,34 @@
+{
+  "admin_pages": [
+    "toplevel_page_complianz",
+    "complianz_page_cmplz-wizard",
+    "complianz_page_cmplz-cookiebanner",
+    "complianz_page_cmplz-settings",
+    "complianz_page_cmplz-documents",
+    "complianz_page_cmplz-integrations",
+    "complianz_page_cmplz-proof-of-consent",
+    "complianz_page_cmplz-records-of-consent",
+    "complianz_page_cmplz-dashboard"
+  ],
+  "options": {
+    "cmplz_options": {
+      "organisation_name": {},
+      "address_company": {},
+      "country_company": {},
+      "email_company": {},
+      "telephone_company": {},
+      "ca_name_accountable_person": {},
+      "ca_address_accountable_person": {},
+      "contact_retain_wmy": {},
+      "statistics_retain_wmy": {},
+      "privacy-statement-title": {},
+      "cookie-statement-title": {},
+      "disclaimer-title": {},
+      "impressum-title": {},
+      "purpose_personaldata_other": {},
+      "data_protection_officer": {},
+      "thirdparties": {},
+      "processors": {}
+    }
+  }
+}

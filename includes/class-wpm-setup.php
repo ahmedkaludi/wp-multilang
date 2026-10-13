@@ -554,6 +554,8 @@ class WPM_Setup {
 			'daext-autolinks-manager'    => __NAMESPACE__ . '\Integrations\WPM_Daext_Autolinks_Manager',
 			'frontend-post-submission-manager-lite'    => __NAMESPACE__ . '\Integrations\WPM_Fpsml',
 			'UX4G Government Block Theme' => __NAMESPACE__ . '\Integrations\WPM_UX4G_Theme',
+			'complianz-gdpr' 			 => __NAMESPACE__ . '\Integrations\WPM_Complianz',
+			'complianz-gdpr-premium' 	 => __NAMESPACE__ . '\Integrations\WPM_Complianz',
 		) );
 
 		$active_plugins = wp_cache_get( 'active_plugins', 'wpm' );
