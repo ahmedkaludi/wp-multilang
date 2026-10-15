@@ -1,0 +1,28 @@
+{
+	"post_types": {
+		"affreviews_reviews": {}
+	},
+	"post_fields": {
+		"affreviews_bonus": {},
+		"affreviews_description": {},
+		"affreviews_afflink": {},
+		"affreviews_terms": {},
+		"affreviews_tag_text": {},
+		"affreviews_logo_background_color": {},
+		"affreviews_positives": {
+			"wpm_each": {}
+		},
+		"affreviews_negatives": {
+			"wpm_each": {}
+		},
+		"affreviews_group_info_list": {
+			"wpm_each": {
+				"title": {},
+				"value": {}
+			}
+		}
+	},
+	"taxonomies": {
+		"affreviews_tax": {}
+	}
+}
