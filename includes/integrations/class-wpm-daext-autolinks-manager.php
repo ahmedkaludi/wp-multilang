@@ -66,7 +66,15 @@ class WPM_Daext_Autolinks_Manager {
 		$current_lang = wpm_get_language();
 		$default_lang = wpm_get_default_language();
 
+		// 1. Capability check: Only users with 'manage_options' or 'edit_others_posts' can modify autolinks or categories.
+		if ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'edit_others_posts' ) ) {
+			return;
+		}
+
 		if ( $_GET['page'] === 'daextam-categories' && ( isset( $_POST['form_submitted'] ) || isset( $_POST['update_id'] ) ) ) {
+			// 2. Nonce check: Verify the category form nonce.
+			check_admin_referer( 'daextam_create_update_category', 'daextam_create_update_category_nonce' );
+
 			$update_id = isset( $_POST['update_id'] ) ? intval( $_POST['update_id'], 10 ) : null;
 
 			if ( $update_id ) {
@@ -95,6 +103,9 @@ class WPM_Daext_Autolinks_Manager {
 		}
 
 		if ( $_GET['page'] === 'daextam-autolinks' && ( isset( $_POST['form_submitted'] ) || isset( $_POST['update_id'] ) ) ) {
+			// 2. Nonce check: Verify the autolink form nonce.
+			check_admin_referer( 'daextam_create_update_autolink', 'daextam_create_update_autolink_nonce' );
+
 			$update_id = isset( $_POST['update_id'] ) ? intval( $_POST['update_id'], 10 ) : null;
 
 			if ( $update_id ) {

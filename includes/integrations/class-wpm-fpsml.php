@@ -140,12 +140,41 @@ class WPM_Fpsml {
 	 * (alias, status) so the DB table row stays clean in default-language values.
 	 */
 	public function intercept_admin_form_save() {
+		// 1. Capability check: Only users with 'manage_options' can modify FPSML forms.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json( array(
+				'status'  => 403,
+				'message' => esc_html__( 'Permission denied.', 'wp-multilang' ),
+			) );
+		}
+
+		// 2. Nonce check: Verify the FPSML backend AJAX nonce.
+		$nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'fpsml_backend_ajax_nonce' ) ) {
+			wp_send_json( array(
+				'status'  => 403,
+				'message' => esc_html__( 'Security check failed. Please refresh the page and try again.', 'wp-multilang' ),
+			) );
+		}
+
 		if ( empty( $_POST['form_data'] ) ) {
 			return;
 		}
 
 		$form_data = array();
 		parse_str( wp_unslash( $_POST['form_data'] ), $form_data );
+
+		// 3. Sanitize form data using FPSML's native sanitization rules if available.
+		global $fpsml_library_obj;
+		if ( isset( $fpsml_library_obj ) && method_exists( $fpsml_library_obj, 'sanitize_array' ) ) {
+			$sanitize_rule = array(
+				'notification_message' => 'to_br',
+				'login_note'           => 'html',
+				'field_note'           => 'html',
+				'custom_css'           => 'to_br',
+			);
+			$form_data     = $fpsml_library_obj->sanitize_array( $form_data, $sanitize_rule );
+		}
 
 		// Read the language from the hidden `edit_lang` input WP-Multilang injects.
 		$lang             = isset( $form_data['edit_lang'] ) ? sanitize_text_field( $form_data['edit_lang'] ) : wpm_get_language();
