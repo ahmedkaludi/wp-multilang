@@ -299,6 +299,12 @@ function wpm_set_language_value( $localize_array, $value, $config = array(), $la
 	}
 
 	if ( is_array( $value ) && null !== $config ) {
+		// A stored empty string (e.g. an ACF link field saved empty) is not an array:
+		// writing a string offset into it is a fatal TypeError on PHP 8.
+		if ( ! is_array( $localize_array ) ) {
+			$localize_array = array();
+		}
+
 		foreach ( $value as $key => $item ) {
 			if ( isset( $config['wpm_each'] ) ) {
 				$config_key = $config['wpm_each'];
