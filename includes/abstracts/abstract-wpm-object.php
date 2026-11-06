@@ -95,7 +95,7 @@ abstract class WPM_Object {
 
 		$column      = sanitize_key( $this->object_type . '_id' );
 		$id_column   = 'user' === $this->object_type ? 'umeta_id' : 'meta_id';
-		$cache_key	 = 'wpm_meta_field_'.$meta_key.'_'.$object_id.'_'.$id_column;
+		$cache_key   = $this->get_meta_field_cache_key( $meta_key, $object_id );
 		$meta_values = wp_cache_get( $cache_key );
 		$values      = array();
 
@@ -336,7 +336,11 @@ abstract class WPM_Object {
 			return false;
 		}
 
-		wp_cache_delete( $object_id, $this->object_type . '_' . $meta_key . '_wpm_meta' );
+		if ( 'post' === $this->object_type ) {
+			wp_cache_delete( $object_id, 'post_meta' );
+		} else {
+			wp_cache_delete( $object_id, $this->object_type . '_' . $meta_key . '_wpm_meta' );
+		}
 
 		foreach ( $meta_ids as $meta_id ) {
 			/**
@@ -518,6 +522,36 @@ abstract class WPM_Object {
 			return;
 		}
 
-		wp_cache_delete( $object_id, $this->object_type . '_' . $meta_key . '_wpm_meta' );
+		if ( 'post' === $this->object_type ) {
+			wp_cache_delete( $object_id, 'post_meta' );
+		} else {
+			wp_cache_delete( $object_id, $this->object_type . '_' . $meta_key . '_wpm_meta' );
+		}
+	}
+
+	/**
+	 * Generate cache key for a translatable meta field.
+	 *
+	 * @param string $meta_key
+	 * @param int    $object_id
+	 *
+	 * @return string
+	 */
+	public function get_meta_field_cache_key( $meta_key, $object_id ) {
+		$id_column = 'user' === $this->object_type ? 'umeta_id' : 'meta_id';
+		return 'wpm_meta_field_' . $meta_key . '_' . $object_id . '_' . $id_column;
+	}
+
+	/**
+	 * Invalidate WPM meta field cache on add/update/delete.
+	 *
+	 * @param int|array $meta_ids
+	 * @param int       $object_id
+	 * @param string    $meta_key
+	 */
+	public function clean_meta_field_cache( $meta_ids, $object_id, $meta_key ) {
+		if ( 'post' === $this->object_type && ! empty( $meta_key ) && ! empty( $object_id ) ) {
+			wp_cache_delete( $this->get_meta_field_cache_key( $meta_key, $object_id ) );
+		}
 	}
 }

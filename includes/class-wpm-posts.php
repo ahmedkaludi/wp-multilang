@@ -50,6 +50,9 @@ class WPM_Posts extends WPM_Object {
 		add_filter( "update_{$this->object_type}_metadata", array( $this, 'update_meta_field' ), 99, 5 );
 		add_filter( "add_{$this->object_type}_metadata", array( $this, 'add_meta_field' ), 99, 5 );
 		add_action( "delete_{$this->object_type}_metadata", array( $this, 'delete_meta_field' ), 99, 3 );
+		add_action( "added_{$this->object_type}_meta", array( $this, 'clean_meta_field_cache' ), 10, 3 );
+		add_action( "updated_{$this->object_type}_meta", array( $this, 'clean_meta_field_cache' ), 10, 3 );
+		add_action( "deleted_{$this->object_type}_meta", array( $this, 'clean_meta_field_cache' ), 10, 3 );
 		add_action( 'wp', array( $this, 'translate_queried_object' ), 5 );
 		add_filter( 'wp_insert_post_data', array( $this, 'save_post' ), 99, 2 );
 		add_filter( 'wp_insert_attachment_data', array( $this, 'save_post' ), 99, 2 );
