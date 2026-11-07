@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 7.1
-Stable tag: 2.4.34
+Stable tag: 2.4.35
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -257,6 +257,14 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.35 =
+- Feature: Added compability with complianz-gdpr plugin #179
+- Feature: Added compatibility with Affiliate Reviews plugin #202
+- Fixed: Language switcher issue #286
+- Fixed: ACF flexible content / repeater: adding, moving or deleting a row loses or swaps other languages translations #290
+- Fixed: Vulnerability fix researched & reported by wellknown.info #291
+- Fixed: Stale translatable post meta served when persistent object cache is enabled #292
+
 = 2.4.34 =
 - Fixed: Links are broken when using the "List" language switcher type #280
 - Fixed: Language swithcer issue on site editor sidebar after recent wordpress update #282
@@ -360,8 +368,5 @@ If you have opened several browser tabs for editing this post in different langu
 - fixed Yoast default title issue #181
 - feature Added support for exporting and importing content in XLIFF or XML format for pages #182
 - fixed Code improvement for custom post taxonomy description #183
-
-= 2.4.19.1 =
-- fixed Vulnerability fix reported by patchstack
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
