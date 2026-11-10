@@ -48,11 +48,64 @@ jQuery(document).ready(function($){
                 		});
                 	});
 
-                	// Handle Dropdown links (for any dropdown links in the switcher)
-                	$('.wpm-language-switcher:not(.wpm-switcher-list) a, .wpm-switcher-dropdown a').each(function(i, e){
-                		var lang = $(this).data('lang');
-                		let langUrl = (response && response[lang]) ? response[lang] : '';
-                		$(this).attr('href', langUrl);
+                	// Handle Dropdown switcher: dynamically update active language and links
+                	$('.wpm-language-switcher.wpm-switcher-dropdown, .wpm-language-switcher .wpm-switcher-dropdown, .wpm-switcher-dropdown').each(function(){
+                		let $switcher = $(this).is('ul') ? $(this) : $(this).find('ul.wpm-switcher-dropdown');
+                		let $mainLi = $switcher.children('li.wpm-item-language-main');
+                		if(!$mainLi.length){
+                			$mainLi = $switcher.find('li.wpm-item-language-main');
+                		}
+                		if(!$mainLi.length){
+                			return;
+                		}
+
+                		let $mainSpan = $mainLi.children('span');
+                		let $dropdownUl = $mainLi.children('ul.wpm-language-dropdown');
+
+                		// Extract current main language code
+                		let mainLang = $mainSpan.attr('data-lang') || '';
+                		if(!mainLang){
+                			let classes = ($mainLi.attr('class') || '').split(/\s+/);
+                			for(let i = 0; i < classes.length; i++){
+                				if(classes[i].indexOf('wpm-item-language-') === 0 && classes[i] !== 'wpm-item-language-main'){
+                					mainLang = classes[i].replace('wpm-item-language-', '');
+                					break;
+                				}
+                			}
+                		}
+
+                		// If main language does not match the active site language, swap them
+                		if(currentLang && mainLang && mainLang !== currentLang){
+                			let $targetLi = $dropdownUl.children('li.wpm-item-language-' + currentLang);
+                			if(!$targetLi.length){
+                				$targetLi = $dropdownUl.children('li').filter(function(){
+                					return $(this).find('a').attr('data-lang') === currentLang || $(this).find('a').data('lang') === currentLang;
+                				});
+                			}
+
+                			if($targetLi.length){
+                				let $targetA = $targetLi.find('a');
+                				let targetHtml = $targetA.html();
+                				let mainHtml = $mainSpan.html();
+
+                				// Update main displayed language
+                				$mainSpan.html(targetHtml).attr('data-lang', currentLang);
+                				$mainLi.removeClass('wpm-item-language-' + mainLang).addClass('wpm-item-language-' + currentLang);
+
+                				// Move previous main language into the dropdown list
+                				$targetLi.removeClass('wpm-item-language-' + currentLang).addClass('wpm-item-language-' + mainLang);
+                				$targetA.attr('data-lang', mainLang).data('lang', mainLang).html(mainHtml);
+                			}
+                		} else if(currentLang && !mainLang){
+                			$mainSpan.attr('data-lang', currentLang);
+                		}
+
+                		// Update URLs in the dropdown list
+                		$dropdownUl.find('a').each(function(){
+                			let lang = $(this).attr('data-lang') || $(this).data('lang');
+                			let langUrl = (response && response[lang]) ? response[lang] : '';
+                			$(this).attr('href', langUrl);
+                		});
                 	});
 
 					if(selectSwitcher.length > 0){
@@ -70,7 +123,7 @@ jQuery(document).ready(function($){
 		}
 	}
 
-	$(document).on('change', '.wpm-language-switcher .wpm-switcher-select', function(e){
+	$(document).on('change', '.wpm-language-switcher.wpm-switcher-select, .wpm-language-switcher .wpm-switcher-select', function(e){
 		let selectedOpt = $(this).val();
 		window.location.href = selectedOpt;
 	});
