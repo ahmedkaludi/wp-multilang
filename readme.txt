@@ -258,7 +258,7 @@ If you have opened several browser tabs for editing this post in different langu
 == Changelog ==
 
 = 2.4.36 =
-- Enhancement: Add Black Friday / Cyber Monday promotional banner on settings page #294
+- Enhancement: Added Black Friday / Cyber Monday promotional banner #294
 
 = 2.4.35 =
 - Feature: Added compability with complianz-gdpr plugin #179
