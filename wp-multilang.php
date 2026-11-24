@@ -31,6 +31,9 @@ if ( ! defined( 'WPM_PLUGIN_FILE' ) ) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/includes/wpm-widget-block-editor.php';
+if ( is_admin() ) {
+	require_once __DIR__ . '/includes/admin/class-wpm-black-friday-banner.php';
+}
 
 function wpm() {
 	return WP_Multilang::instance();
