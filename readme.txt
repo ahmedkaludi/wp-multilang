@@ -5,7 +5,7 @@ Donate link: https://paypal.me/kaludi
 Tags: localization, multilanguage, multilingual, translation, translate
 Requires at least: 4.7
 Tested up to: 7.1
-Stable tag: 2.4.35
+Stable tag: 2.4.36
 Requires PHP: 5.6.20
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -257,6 +257,9 @@ If you have opened several browser tabs for editing this post in different langu
 
 == Changelog ==
 
+= 2.4.36 =
+- Enhancement: Added Black Friday / Cyber Monday promotional banner #294
+
 = 2.4.35 =
 - Feature: Added compability with complianz-gdpr plugin #179
 - Feature: Added compatibility with Affiliate Reviews plugin #202
@@ -358,15 +361,5 @@ If you have opened several browser tabs for editing this post in different langu
 - feature Added Bulk Translation Option for Tag and Categories #191
 - fixed Retranslation issue with Elementor pages #192
 - fixed Code improvement for duplicate queries #194
-
-= 2.4.20 =
-- feature Compatibility with SEOpress #170
-- feature Auto url slug translation #171
-- fixed Divi builder content translation improvement #173
-- fixed Conflict with latest pro 1.12 version #178
-- feature Added option to retranslate #180
-- fixed Yoast default title issue #181
-- feature Added support for exporting and importing content in XLIFF or XML format for pages #182
-- fixed Code improvement for custom post taxonomy description #183
 
 All changelog available on [GitHub](https://github.com/ahmedkaludi/wp-multilang/releases).
